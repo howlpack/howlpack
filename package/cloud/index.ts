@@ -1,2 +1,2 @@
 export * as landing from "./landing";
-export * as website from "./webapp";
+export * as webapp from "./webapp";

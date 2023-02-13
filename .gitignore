@@ -51,3 +51,5 @@ node_modules/
 env/*.env.local.*
 
 package/**/package-lock.json
+
+package/ui/dist
