@@ -10,9 +10,25 @@ function App() {
         <li>new followers</li>
         <li>likes</li>
       </ul>
-      <a href="https://beta.howl.social/howlpack">howl</a> |{" "}
-      <a href="https://twitter.com/howlpack">twitter</a> |{" "}
-      <a href="https://github.com/howlpack/howlpack/">github</a>
+      <a
+        href="https://beta.howl.social/howlpack"
+        target={"_blank"}
+        rel="noreferrer"
+      >
+        howl
+      </a>{" "}
+      |{" "}
+      <a href="https://twitter.com/howlpack" target={"_blank"} rel="noreferrer">
+        twitter
+      </a>{" "}
+      |{" "}
+      <a
+        href="https://github.com/howlpack/howlpack/"
+        target={"_blank"}
+        rel="noreferrer"
+      >
+        github
+      </a>
       <p className="read-the-docs">
         Be sure to check{" "}
         <a href="https://beta.howl.social" target={"_blank"} rel="noreferrer">
