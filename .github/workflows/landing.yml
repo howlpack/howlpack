@@ -3,7 +3,7 @@ name: Landing
 on:
   push:
     paths:
-      - .github/workflows/website.yml
+      - .github/workflows/landing.yml
       - package/cloud/**
       - package/landing/**
 

@@ -3,7 +3,7 @@ name: UI
 on:
   push:
     paths:
-      - .github/workflows/website.yml
+      - .github/workflows/ui.yml
       - package/cloud/**
       - package/ui/**
 
