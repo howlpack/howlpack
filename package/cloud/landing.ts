@@ -10,7 +10,7 @@ const contentBucket = new aws.s3.Bucket(landingPackageName + "-contentBucket", {
   bucket: domain,
   acl: "public-read",
   website: {
-    redirectAllRequestsTo: new pulumi.Config("webapp").require("API_DOMAIN"),
+    indexDocument: "index.html",
   },
 });
 
