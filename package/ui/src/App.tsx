@@ -1,18 +1,21 @@
-import "./App.css";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { RecoilRoot } from "recoil";
+import AppLayout from "./layout/app";
+import Root from "./pages";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <AppLayout />,
+    children: [{ index: true, element: <Root /> }],
+  },
+]);
 
 function App() {
   return (
-    <div className="App">
-      <h1>🚧 Howlpack.social 🚧</h1>
-
-      <p className="read-the-docs">
-        Be sure to check{" "}
-        <a href="https://beta.howl.social" target={"_blank"} rel="noreferrer">
-          howl.social
-        </a>{" "}
-        first.
-      </p>
-    </div>
+    <RecoilRoot>
+      <RouterProvider router={router} />
+    </RecoilRoot>
   );
 }
 
