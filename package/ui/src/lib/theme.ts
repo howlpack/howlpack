@@ -3,6 +3,9 @@ import { createTheme, darkScrollbar, responsiveFontSizes } from "@mui/material";
 const abstractTheme = {
   typography: {
     fontFamily: ["sans-serif"].join(","),
+    h1: {
+      fontSize: "2rem",
+    },
   },
   breakpoints: {
     values: {
