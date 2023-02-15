@@ -1,5 +1,10 @@
 import { createTheme, darkScrollbar, responsiveFontSizes } from "@mui/material";
 
+const dummyTheme = createTheme({});
+
+const createColor = (mainColor: string) =>
+  dummyTheme.palette.augmentColor({ color: { main: mainColor } });
+
 const abstractTheme = {
   typography: {
     fontFamily: ["sans-serif"].join(","),
@@ -19,6 +24,12 @@ const abstractTheme = {
   },
   components: {
     MuiButton: {},
+  },
+  palette: {
+    bluegreen: createColor("#73C4D3"),
+    red: createColor("#f34b1c"),
+    darkgrey: createColor("#182123"),
+    lightgrey: createColor("#eeeeee"),
   },
 };
 
@@ -43,7 +54,16 @@ export const darkTheme = responsiveFontSizes(
 export const lightTheme = responsiveFontSizes(
   createTheme(
     {
-      palette: { mode: "light" },
+      palette: {
+        mode: "light",
+        primary: abstractTheme.palette.bluegreen,
+        secondary: abstractTheme.palette.red,
+      },
+      typography: {
+        allVariants: {
+          color: abstractTheme.palette.darkgrey.main,
+        },
+      },
     },
     abstractTheme
   ),

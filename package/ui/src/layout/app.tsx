@@ -11,6 +11,7 @@ export default function App() {
   return (
     <ThemeProvider theme={prefersDarkMode ? darkTheme : lightTheme}>
       <CssBaseline />
+
       <Container maxWidth="lg">
         <Header />
         <Outlet />

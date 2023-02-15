@@ -1,4 +1,6 @@
 import { Grid, Typography } from "@mui/material";
+import KeplrButton from "../../components/keplr-button";
+import NotificationButton from "../../components/notification-button";
 
 export default function Header() {
   return (
@@ -8,7 +10,8 @@ export default function Header() {
       </Grid>
 
       <Grid item xs={12} sm={"auto"}>
-        Connect Keplr
+        <NotificationButton />
+        <KeplrButton />
       </Grid>
     </Grid>
   );
