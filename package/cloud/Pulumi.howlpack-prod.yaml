@@ -1,6 +1,9 @@
 encryptionsalt: v1:AAIckjzFUn8=:v1:3fKUDcsjIDbJtlvb:uGHULdxJOLN8R6xV3yHtt0JJ9xtFNg==
 config:
   aws:region: eu-central-1
+  pulumi:env_files: []
+  backend:API_DOMAIN: api.howlpack.social
+  backend:ROUTE53_ZONE_NAME: howlpack.social
   landing:API_DOMAIN: howlpack.social
   landing:ROUTE53_ZONE_NAME: howlpack.social
   webapp:API_DOMAIN: get.howlpack.social
