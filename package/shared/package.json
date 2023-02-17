@@ -6,8 +6,10 @@
   "scripts": {
     "test": "dotenv -e ../../env/.env.local.test -e ../../env/.env.test -- node --no-warnings --experimental-vm-modules ../../node_modules/.bin/jest --runInBand --passWithNoTests"
   },
-  "devDependencies": {},
+  "type": "module",
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.272.0",
+    "@aws-sdk/lib-dynamodb": "^3.272.0",
     "ramda": "0.28.0"
   }
 }

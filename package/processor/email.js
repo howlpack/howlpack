@@ -1,6 +1,8 @@
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 
-const client = new SESClient({});
+const client = new SESClient({
+  region: "eu-west-1",
+});
 
 const source = "notification@howlpack.social";
 

@@ -1,5 +1,5 @@
 import createHttpError from "http-errors";
-import { decrypt } from "@howlpack/howlpack-shared/crypto.mjs";
+import { decrypt } from "@howlpack/howlpack-shared/crypto.js";
 
 export function decryptProductId(encryptedProductId) {
   try {

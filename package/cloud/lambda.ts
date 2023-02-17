@@ -6,6 +6,7 @@ import { url as webappUrl } from "./webapp";
 import { url as backendUrl } from "./backend";
 import { buildCodeAsset } from "./lambda-builder";
 import { notification_queue } from "./queue";
+import { lastProcessedBlockTable } from "./dynamo";
 
 const projectConfig = new pulumi.Config("pulumi");
 const names = JSON.parse(projectConfig.require("env_files")) || [];
@@ -74,6 +75,43 @@ const sqsLambdaPolicy = new aws.iam.Policy(lambdaPackageName + "-sqs", {
   ),
 });
 
+const dynamoLambdaPolicy = new aws.iam.Policy(lambdaPackageName + "-dynamo", {
+  policy: lastProcessedBlockTable.arn.apply((arn) =>
+    JSON.stringify({
+      Version: "2012-10-17",
+      Statement: [
+        {
+          Effect: "Allow",
+          Action: [
+            "dynamodb:List*",
+            "dynamodb:DescribeReservedCapacity*",
+            "dynamodb:DescribeLimits",
+            "dynamodb:DescribeTimeToLive",
+          ],
+          Resource: "*",
+        },
+        {
+          Effect: "Allow",
+          Action: [
+            "dynamodb:BatchGet*",
+            "dynamodb:DescribeStream",
+            "dynamodb:DescribeTable",
+            "dynamodb:Get*",
+            "dynamodb:Query",
+            "dynamodb:Scan",
+            "dynamodb:BatchWrite*",
+            "dynamodb:CreateTable",
+            "dynamodb:Delete*",
+            "dynamodb:Update*",
+            "dynamodb:PutItem",
+          ],
+          Resource: arn,
+        },
+      ],
+    })
+  ),
+});
+
 new aws.iam.RolePolicyAttachment(lambdaPackageName + "-lambdaExecute", {
   role: lambdaRole,
   policyArn: aws.iam.ManagedPolicies.AWSLambdaExecute,
@@ -87,6 +125,11 @@ new aws.iam.RolePolicyAttachment(lambdaPackageName + "-sesPolicy", {
 new aws.iam.RolePolicyAttachment(lambdaPackageName + "-sqsPolicy", {
   role: lambdaRole,
   policyArn: sqsLambdaPolicy.arn,
+});
+
+new aws.iam.RolePolicyAttachment(lambdaPackageName + "-dynamoPolicy", {
+  role: lambdaRole,
+  policyArn: dynamoLambdaPolicy.arn,
 });
 
 export const apiBackend = new aws.lambda.Function(
@@ -143,4 +186,64 @@ new aws.lambda.EventSourceMapping(lambdaPackageName + "-notificationEmail", {
       },
     ],
   },
+});
+
+export const processor = new aws.lambda.Function(
+  lambdaPackageName + "-processor",
+  {
+    code: buildCodeAsset(
+      require.resolve("@howlpack/howlpack-processor/index.js")
+    ),
+    handler: "index.handler",
+    runtime: "nodejs18.x",
+    role: lambdaRole.arn,
+    timeout: 55,
+    memorySize: 512,
+    environment: {
+      variables: {
+        ...environment,
+        FRONTEND_URL: webappUrl,
+        BACKEND_URL: backendUrl,
+      },
+    },
+  }
+);
+
+const cronRule = new aws.cloudwatch.EventRule(lambdaPackageName + "-cron", {
+  scheduleExpression: "rate(1 minute)",
+});
+
+export const watcher = new aws.lambda.Function(lambdaPackageName + "-watcher", {
+  code: buildCodeAsset(require.resolve("@howlpack/howlpack-watcher/index.js")),
+  handler: "index.handler",
+  runtime: "nodejs18.x",
+  role: lambdaRole.arn,
+  timeout: 55,
+  memorySize: 512,
+  environment: {
+    variables: {
+      ...environment,
+      FRONTEND_URL: webappUrl,
+      BACKEND_URL: backendUrl,
+      RPC_ENDPOINT: "https://juno-rpc.reece.sh/",
+      DYNAMO_LAST_PROCESSED_TABLE: lastProcessedBlockTable.name,
+    },
+  },
+});
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const cronPermission = new aws.lambda.Permission(
+  lambdaPackageName + "-watcher",
+  {
+    action: "lambda:InvokeFunction",
+    function: watcher.name,
+    principal: "events.amazonaws.com",
+    sourceArn: cronRule.arn,
+  }
+);
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const cronTarget = new aws.cloudwatch.EventTarget(lambdaPackageName, {
+  arn: watcher.arn,
+  rule: cronRule.name,
 });
