@@ -143,5 +143,4 @@ new aws.lambda.EventSourceMapping(lambdaPackageName + "-notificationEmail", {
       },
     ],
   },
-  maximumRetryAttempts: 5,
 });
