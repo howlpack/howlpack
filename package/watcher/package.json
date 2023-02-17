@@ -1,5 +1,5 @@
 {
-  "name": "@howlpack/howlpack-processor",
+  "name": "@howlpack/howlpack-watcher",
   "version": "0.0.0",
   "description": "",
   "main": "index.js",
@@ -7,13 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 0"
   },
   "author": "",
-  "license": "ISC",
   "type": "module",
-  "devDependencies": {
-    "nodemon": "2.0.20",
-    "supertest": "6.3.3"
-  },
+  "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-ses": "3.272.0"
+    "@cosmjs/cosmwasm-stargate": "0.29.5"
   }
 }
