@@ -16,7 +16,7 @@
     "csv": "6.2.7",
     "dotenv-cli": "6.0.0",
     "http-errors": "2.0.0",
-    "joi": "17.7.0",
+    "joi": "17.7.1",
     "koa": "2.14.1",
     "koa-bodyparser": "4.3.0",
     "koa-session": "6.2.0",
