@@ -213,6 +213,8 @@ const cronRule = new aws.cloudwatch.EventRule(lambdaPackageName + "-cron", {
   scheduleExpression: "rate(1 minute)",
 });
 
+const junoConfig = new pulumi.Config("juno");
+
 export const watcher = new aws.lambda.Function(lambdaPackageName + "-watcher", {
   code: buildCodeAsset(require.resolve("@howlpack/howlpack-watcher/index.js")),
   handler: "index.handler",
@@ -226,6 +228,7 @@ export const watcher = new aws.lambda.Function(lambdaPackageName + "-watcher", {
       FRONTEND_URL: webappUrl,
       BACKEND_URL: backendUrl,
       RPC_ENDPOINT: "https://juno-rpc.reece.sh/",
+      RPC_ENDPOINTS: (JSON.parse(junoConfig.require("rpcs")) || []).join(","),
       DYNAMO_LAST_PROCESSED_TABLE: lastProcessedBlockTable.name,
     },
   },
