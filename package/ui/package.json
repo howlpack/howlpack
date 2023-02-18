@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@cosmjs/stargate": "0.29.5",
-    "@emotion/react": "11.10.5",
-    "@emotion/styled": "11.10.5",
+    "@emotion/react": "11.10.6",
+    "@emotion/styled": "11.10.6",
     "@keplr-wallet/types": "0.11.41",
     "@mui/material": "5.11.9",
     "react": "18.2.0",
