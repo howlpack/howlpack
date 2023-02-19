@@ -22,5 +22,8 @@
     "nodemon": "2.0.20",
     "prettier": "2.8.4",
     "supertest": "6.3.3"
+  },
+  "dependencies": {
+    "dotenv-cli": "^7.0.0"
   }
 }

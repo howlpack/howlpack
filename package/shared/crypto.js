@@ -9,13 +9,16 @@ export const encrypt = (text) => {
 
   const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
 
-  return {
-    iv: iv.toString("hex"),
-    content: encrypted.toString("hex"),
-  };
+  return Buffer.from(
+    JSON.stringify({
+      iv: iv.toString("hex"),
+      content: encrypted.toString("hex"),
+    })
+  ).toString("base64");
 };
 
 export const decrypt = (hash) => {
+  hash = JSON.parse(Buffer.from(hash, "base64"));
   const decipher = crypto.createDecipheriv(
     algorithm,
     secretKey,
