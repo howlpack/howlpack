@@ -31,6 +31,7 @@ config:
       https://rpc.juno.omniflix.co/,
       https://rpc.juno.silknodes.io/,
     ]
+  juno:notifications_contract: juno1dzp7r8q5492hmncrpk02kmrjj37e5n8sjer4vnka2zq62pqufjcqugvpef
   backend:API_DOMAIN: api.howlpack.social
   backend:ROUTE53_ZONE_NAME: howlpack.social
   landing:API_DOMAIN: howlpack.social

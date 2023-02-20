@@ -229,6 +229,7 @@ export const watcher = new aws.lambda.Function(lambdaPackageName + "-watcher", {
       BACKEND_URL: backendUrl,
       RPC_ENDPOINT: "https://juno-rpc.reece.sh/",
       RPC_ENDPOINTS: (JSON.parse(junoConfig.require("rpcs")) || []).join(","),
+      NOTIFICATIONS_CONTRACT: junoConfig.get("notifications_contract"),
       DYNAMO_LAST_PROCESSED_TABLE: lastProcessedBlockTable.name,
     },
   },
