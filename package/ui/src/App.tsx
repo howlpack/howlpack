@@ -3,12 +3,19 @@ import { RecoilRoot } from "recoil";
 import KeplrWatcher from "./components/keplr-watcher";
 import AppLayout from "./layout/app";
 import Root from "./pages";
+import FAQ from "./pages/faq";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <AppLayout />,
-    children: [{ index: true, element: <Root /> }],
+    children: [
+      { index: true, element: <Root /> },
+      {
+        path: "faq",
+        element: <FAQ />,
+      },
+    ],
   },
 ]);
 
