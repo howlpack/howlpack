@@ -1,9 +1,9 @@
+import { HOWL_POSTS_ADDR } from "@howlpack/howlpack-shared/cosmwasm.js";
 import { EVENT_TYPES } from "../../shared/constants.js";
-import { HOWL_POSTS_ADDR } from "../lib.js";
 
 /**
  *
- * @param {import("../types").DecodedMsgExecuteContract} txMessage
+ * @param {import("@howlpack/howlpack-shared/types").DecodedMsgExecuteContract} txMessage
  */
 export default function newFollower(txMessage) {
   if (txMessage.contract !== HOWL_POSTS_ADDR) {

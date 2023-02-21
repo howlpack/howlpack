@@ -1,9 +1,12 @@
+import {
+  HOWL_POSTS_ADDR,
+  withClient,
+} from "@howlpack/howlpack-shared/cosmwasm.js";
 import { EVENT_TYPES } from "../../shared/constants.js";
-import { HOWL_POSTS_ADDR, withClient } from "../lib.js";
 
 /**
  *
- * @param {import("../types").DecodedMsgExecuteContract} txMessage
+ * @param {import("@howlpack/howlpack-shared/types").DecodedMsgExecuteContract} txMessage
  */
 export default async function newReply(txMessage) {
   if (txMessage.contract !== HOWL_POSTS_ADDR) {

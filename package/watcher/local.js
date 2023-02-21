@@ -1,4 +1,4 @@
-import { withClient } from "./lib.js";
+import { withClient } from "@howlpack/howlpack-shared/cosmwasm.js";
 import { handler, processTx } from "./index.js";
 
 // handler();

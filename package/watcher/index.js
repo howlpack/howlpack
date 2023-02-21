@@ -7,7 +7,7 @@ import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx.js";
 import { fromUtf8 } from "@cosmjs/encoding";
 import { decodeTxRaw } from "@cosmjs/proto-signing";
-import { withClient } from "./lib.js";
+import { withClient } from "@howlpack/howlpack-shared/cosmwasm.js";
 import { decode } from "./decoder/index.js";
 
 export function processTx(tx) {

@@ -3,7 +3,7 @@ import newReply from "./new-reply.js";
 
 /**
  *
- * @param {import("../types").DecodedMsgExecuteContract} txMessage
+ * @param {import("@howlpack/howlpack-shared/types").DecodedMsgExecuteContract} txMessage
  */
 export async function decode(txMessage) {
   let result = null;
