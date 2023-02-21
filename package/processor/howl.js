@@ -1,6 +1,7 @@
 import { EVENT_TYPES } from "@howlpack/howlpack-shared/constants.js";
 import { SendMessageCommand } from "@aws-sdk/client-sqs";
 import { sqsClient } from "@howlpack/howlpack-shared/sqs.js";
+import { withClient } from "@howlpack/howlpack-shared/cosmwasm.js";
 import { composeFollowerEmail, composeReplyEmail } from "./email.js";
 
 export async function handler(event) {
@@ -9,6 +10,18 @@ export async function handler(event) {
     let parsedBody = JSON.parse(body);
 
     if (!parsedBody.event) {
+      continue;
+    }
+
+    const notifications = await withClient((client) => {
+      return client.queryContractSmart(process.env.NOTIFICATIONS_CONTRACT, {
+        get_notifications: {
+          token_id: parsedBody.receiver,
+        },
+      });
+    }, 3);
+
+    if (notifications.length === 0) {
       continue;
     }
 
