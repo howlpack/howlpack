@@ -1,26 +1,48 @@
 /* eslint-disable no-constant-condition */
-import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { createHash } from "crypto";
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { GetItemCommand } from "@aws-sdk/client-dynamodb";
 import { ddbClient, ddbDocClient } from "@howlpack/howlpack-shared/dynamo.js";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
+import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx.js";
+import { fromUtf8 } from "@cosmjs/encoding";
+import { decodeTxRaw } from "@cosmjs/proto-signing";
+import { withClient } from "./lib.js";
+import { decode } from "./decoder/index.js";
+
+export function processTx(tx) {
+  const txData = decodeTxRaw(tx);
+  const txMessages = txData.body.messages
+    .filter(({ typeUrl }) => typeUrl === "/cosmwasm.wasm.v1.MsgExecuteContract")
+    .map(({ value }) => {
+      const msgExecuteContract = MsgExecuteContract.decode(value);
+      const decodedMsg = JSON.parse(fromUtf8(msgExecuteContract.msg));
+
+      return {
+        ...msgExecuteContract,
+        msg: decodedMsg,
+        hex: createHash("sha256").update(tx).digest("hex").toUpperCase(),
+      };
+    });
+
+  return Promise.allSettled(txMessages.map((m) => decode(m)));
+}
 
 /**
  *
  * @param {import("@cosmjs/stargate").Block} block
  */
-async function processBlock(block) {}
+export function processBlock(block) {
+  for (const tx of block.txs) {
+    return processTx(tx);
+  }
+}
 
 export async function handler() {
-  const rpcEndpoints = process.env.RPC_ENDPOINTS?.split(",") || [];
-  let currentRpcIx = 0;
+  let finished = false;
 
-  while (true) {
-    try {
-      const client = await SigningCosmWasmClient.connect(
-        rpcEndpoints[currentRpcIx]
-      );
-
+  while (!finished) {
+    finished = await withClient(async (client) => {
       const _data = await ddbClient.send(
         new GetItemCommand({
           TableName: process.env.DYNAMO_LAST_PROCESSED_TABLE,
@@ -54,17 +76,15 @@ export async function handler() {
           );
         } catch (e) {
           if (e.message.includes(":-32603")) {
-            break;
+            return true;
           } else {
+            console.error("Error processing block", lastProcessedHeight);
             throw e;
           }
         }
       }
-
-      return {};
-    } catch (e) {
-      currentRpcIx = (currentRpcIx + 1) % rpcEndpoints.length;
-      continue;
-    }
+    });
   }
+
+  return {};
 }
