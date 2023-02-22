@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "env": "dotenv -e ../../.env -- node"
   },
   "author": "",
   "type": "module",

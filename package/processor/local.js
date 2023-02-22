@@ -6,11 +6,11 @@ handler({
     {
       body: JSON.stringify({
         receiver: "howlpack",
-        event: EVENT_TYPES.NEW_REPLY,
+        event: "new-like",
         attrs: {
-          postId: "d310ea1e-f176-4c45-bf56-a24f1e042ae8",
-          replyId: "d310ea1e-f176-4c45-bf56-a24f1e042ae8",
-          replyAuthor: "howlpack",
+          postId: "ab0f1449-0f21-4a76-b001-439e80051161",
+          amount: "10",
+          staker: "howlpack",
         },
       }),
     },

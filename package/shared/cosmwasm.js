@@ -1,6 +1,8 @@
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 
 export const HOWL_POSTS_ADDR = process.env.HOWL_POSTS_ADDR;
+export const HOWL_TOKEN = process.env.HOWL_TOKEN;
+export const HOWL_STAKING = process.env.HOWL_STAKING;
 
 let currentCachedClient = null;
 let currentRpcIx = 0;
@@ -34,4 +36,8 @@ export async function withClient(
       }
     }
   }
+}
+
+export function toBaseToken(n, decimals = 6) {
+  return BigInt(n) / BigInt(Math.pow(10, decimals));
 }

@@ -25,3 +25,13 @@ export type HowlReplyQueueMsg = {
     replyAuthor: string;
   };
 };
+
+export type HowlLikeQueueMsg = {
+  receiver: string;
+  event: "new-like";
+  attrs: {
+    postId: string;
+    amount: string;
+    staker: string;
+  };
+};

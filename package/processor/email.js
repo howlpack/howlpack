@@ -54,7 +54,7 @@ Need help or have questions? Just reach out to us. Thanks for being a part of Ho
 
 Best,
 The Howlpack Team
-
+${new URL("howlpack", HOWL_URL)}
 `,
   };
 }
@@ -72,6 +72,30 @@ If you have any questions or concerns, please don't hesitate to reach out to us.
 Best regards,
 
 The Howlpack Team
+${new URL("howlpack", HOWL_URL)}
+`,
+  };
+}
+
+export function composeLikesEmail(receiver, postId, amountStaked, staker) {
+  return {
+    subject: `Woohoo! You've received likes through staking ${amountStaked} Howl tokens!`,
+    body: `Hi ${receiver},
+    
+We wanted to congratulate you on receiving likes for your amazing Howl ${new URL(
+      receiver + "/" + postId,
+      HOWL_URL
+    )} ! These likes were received through staking ${amountStaked} Howl tokens from ${staker} (${new URL(
+      staker,
+      HOWL_URL
+    )}). Keep up the great work!
+
+If you have any questions about staking Howl tokens or anything else, please don't hesitate to reach out to us. Thanks for being a part of Howlpack!
+
+Best regards,
+
+The Howlpack Team
+${new URL("howlpack", HOWL_URL)}
 `,
   };
 }

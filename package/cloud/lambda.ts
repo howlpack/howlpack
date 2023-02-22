@@ -248,6 +248,8 @@ export const watcher = new aws.lambda.Function(lambdaPackageName + "-watcher", {
       RPC_ENDPOINTS: (JSON.parse(junoConfig.require("rpcs")) || []).join(","),
       NOTIFICATIONS_CONTRACT: junoConfig.get("notifications_contract"),
       HOWL_POSTS_ADDR: junoConfig.get("howl_posts"),
+      HOWL_TOKEN: junoConfig.get("howl_token"),
+      HOWL_STAKING: junoConfig.get("howl_staking"),
       DYNAMO_LAST_PROCESSED_TABLE: lastProcessedBlockTable.name,
     },
   },

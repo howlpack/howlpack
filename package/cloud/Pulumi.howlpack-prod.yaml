@@ -33,6 +33,8 @@ config:
     ]
   juno:notifications_contract: juno1j47lt52rfc79hv4k8k4mde3puf7r6td9n5x863gayleue652ccss8g2hfn
   juno:howl_posts: juno10vsrvy5k5kkesmfd4ez2k6rm4l72ufuk463hnwdugtyx7j4t7v4qnhhwms
+  juno:howl_token: juno1g0wuyu2f49ncf94r65278puxzclf5arse9f3kvffxyv4se4vgdmsk4dvqz
+  juno:howl_staking: juno17vmursuyymh2n9ye9ex22v9j09drasknak3dxac3l5yyget3v38q6989ju
   backend:API_DOMAIN: api.howlpack.social
   backend:ROUTE53_ZONE_NAME: howlpack.social
   landing:API_DOMAIN: howlpack.social

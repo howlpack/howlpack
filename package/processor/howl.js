@@ -7,7 +7,11 @@ import { sqsClient } from "@howlpack/howlpack-shared/sqs.js";
 import { withClient } from "@howlpack/howlpack-shared/cosmwasm.js";
 import { hasPreference } from "@howlpack/howlpack-shared/notification.js";
 import { decrypt } from "@howlpack/howlpack-shared/crypto.js";
-import { composeFollowerEmail, composeReplyEmail } from "./email.js";
+import {
+  composeFollowerEmail,
+  composeLikesEmail,
+  composeReplyEmail,
+} from "./email.js";
 
 export async function handler(event) {
   for (const record of event.Records) {
@@ -83,6 +87,36 @@ export async function handler(event) {
         //     replyMsg.receiver,
         //     replyMsg.attrs.replyAuthor,
         //     replyMsg.attrs.replyId
+        //   ),
+        //   to: decrypt(webhook.encoded_url),
+        //   type: HOWL_QUEUE_TYPES.WEBHOOK,
+        // });
+      }
+    } else if (parsedBody.event === EVENT_TYPES.NEW_LIKE) {
+      /** @type {(import("@howlpack/howlpack-shared/types").HowlLikeQueueMsg)} */
+      const replyMsg = parsedBody;
+
+      if (hasPreference(email?.preferences, EVENT_TYPES.NEW_LIKE)) {
+        sqsSendCommands.push({
+          ...composeLikesEmail(
+            replyMsg.receiver,
+            replyMsg.attrs.postId,
+            replyMsg.attrs.amount,
+            replyMsg.attrs.staker
+          ),
+          to: decrypt(email.encoded_addr),
+          type: HOWL_QUEUE_TYPES.EMAIL,
+        });
+      }
+
+      if (hasPreference(webhook?.preferences, EVENT_TYPES.NEW_LIKE)) {
+        // TODO
+        // sqsSendCommands.push({
+        //   ...composeLikeWebhook(
+        //     replyMsg.receiver,
+        //     replyMsg.attrs.postId,
+        //     replyMsg.attrs.amount,
+        //     replyMsg.attrs.staker
         //   ),
         //   to: decrypt(webhook.encoded_url),
         //   type: HOWL_QUEUE_TYPES.WEBHOOK,

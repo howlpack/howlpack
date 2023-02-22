@@ -54,3 +54,5 @@ package/**/package-lock.json
 
 package/ui/dist
 package/landing/dist
+
+.env

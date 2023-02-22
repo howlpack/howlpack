@@ -1,4 +1,5 @@
 import newFollower from "./new-follower.js";
+import newLike from "./new-like.js";
 import newReply from "./new-reply.js";
 
 /**
@@ -13,6 +14,10 @@ export async function decode(txMessage) {
   }
 
   if ((result = await newReply(txMessage))) {
+    return result;
+  }
+
+  if ((result = await newLike(txMessage))) {
     return result;
   }
 
