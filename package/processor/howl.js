@@ -4,7 +4,7 @@ import {
 } from "@howlpack/howlpack-shared/constants.js";
 import { SendMessageCommand } from "@aws-sdk/client-sqs";
 import { sqsClient } from "@howlpack/howlpack-shared/sqs.js";
-// import { withClient } from "@howlpack/howlpack-shared/cosmwasm.js";
+import { withClient } from "@howlpack/howlpack-shared/cosmwasm.js";
 import { hasPreference } from "@howlpack/howlpack-shared/notification.js";
 import { decrypt } from "@howlpack/howlpack-shared/crypto.js";
 import {
@@ -22,15 +22,13 @@ export async function handler(event) {
       continue;
     }
 
-    // const notifications = await withClient((client) => {
-    //   return client.queryContractSmart(process.env.NOTIFICATIONS_CONTRACT, {
-    //     get_notifications: {
-    //       token_id: parsedBody.receiver,
-    //     },
-    //   });
-    // }, 3);
-
-    const notifications = [];
+    const notifications = await withClient((client) => {
+      return client.queryContractSmart(process.env.NOTIFICATIONS_CONTRACT, {
+        get_notifications: {
+          token_id: parsedBody.receiver,
+        },
+      });
+    }, 3);
 
     if (notifications.length === 0) {
       continue;

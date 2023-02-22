@@ -171,10 +171,10 @@ export const howlProcessor = new aws.lambda.Function(
   lambdaPackageName + "-howlProcessor",
   {
     code: buildCodeAsset(
-      require.resolve("@howlpack/howlpack-processor/index.js"),
+      require.resolve("@howlpack/howlpack-processor/howl.js"),
       true
     ),
-    handler: "index.howl.handler",
+    handler: "index.handler",
     runtime: "nodejs18.x",
     role: lambdaRole.arn,
     timeout: 60,
@@ -199,9 +199,9 @@ export const emailProcessor = new aws.lambda.Function(
   lambdaPackageName + "-emailProcessor",
   {
     code: buildCodeAsset(
-      require.resolve("@howlpack/howlpack-processor/index.js")
+      require.resolve("@howlpack/howlpack-processor/email.js")
     ),
-    handler: "index.email.handler",
+    handler: "index.handler",
     runtime: "nodejs18.x",
     role: lambdaRole.arn,
     timeout: 10,
