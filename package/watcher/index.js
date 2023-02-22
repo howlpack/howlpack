@@ -66,14 +66,15 @@ export async function handler() {
         sqsHowlMsgs = sqsHowlMsgs
           .filter((s) => s.status === "fulfilled")
           .map((s) => s.value);
-        for (const sqsHowlMsg of sqsHowlMsgs) {
-          await sqsClient.send(
-            new SendMessageCommand({
-              MessageBody: JSON.stringify(sqsHowlMsg),
-              QueueUrl: process.env.HOWL_QUEUE_URL,
-            })
-          );
-        }
+        console.log({ sqsHowlMsgs });
+        // for (const sqsHowlMsg of sqsHowlMsgs) {
+        //   await sqsClient.send(
+        //     new SendMessageCommand({
+        //       MessageBody: JSON.stringify(sqsHowlMsg),
+        //       QueueUrl: process.env.HOWL_QUEUE_URL,
+        //     })
+        //   );
+        // }
 
         console.log("Processed block", lastProcessedHeight);
 
