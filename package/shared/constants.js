@@ -4,4 +4,9 @@ export const EVENT_TYPES = {
   NEW_LIKE: "new-like",
 };
 
+export const HOWL_QUEUE_TYPES = {
+  EMAIL: "email",
+  WEBHOOK: "webhook",
+};
+
 export const HOWL_URL = "https://beta.howl.social/";
