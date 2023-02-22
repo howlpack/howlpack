@@ -251,6 +251,7 @@ export const watcher = new aws.lambda.Function(lambdaPackageName + "-watcher", {
       HOWL_TOKEN: junoConfig.get("howl_token"),
       HOWL_STAKING: junoConfig.get("howl_staking"),
       DYNAMO_LAST_PROCESSED_TABLE: lastProcessedBlockTable.name,
+      HOWL_QUEUE_URL: howl_queue.url,
     },
   },
 });
