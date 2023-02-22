@@ -40,7 +40,10 @@ export async function processBlock(block) {
     result = result.concat(await processTx(tx));
   }
 
-  return result;
+  return result
+    .filter((s) => s.status === "fulfilled")
+    .map((s) => s.value)
+    .filter(Boolean);
 }
 
 export async function handler() {
@@ -63,18 +66,17 @@ export async function handler() {
         const block = await client.getBlock(++lastProcessedHeight);
 
         let sqsHowlMsgs = await processBlock(block);
-        sqsHowlMsgs = sqsHowlMsgs
-          .filter((s) => s.status === "fulfilled")
-          .map((s) => s.value);
+
         console.log({ sqsHowlMsgs });
-        // for (const sqsHowlMsg of sqsHowlMsgs) {
-        //   await sqsClient.send(
-        //     new SendMessageCommand({
-        //       MessageBody: JSON.stringify(sqsHowlMsg),
-        //       QueueUrl: process.env.HOWL_QUEUE_URL,
-        //     })
-        //   );
-        // }
+
+        for (const sqsHowlMsg of sqsHowlMsgs) {
+          await sqsClient.send(
+            new SendMessageCommand({
+              MessageBody: JSON.stringify(sqsHowlMsg),
+              QueueUrl: process.env.HOWL_QUEUE_URL,
+            })
+          );
+        }
 
         console.log("Processed block", lastProcessedHeight);
 
