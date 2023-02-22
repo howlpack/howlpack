@@ -13,7 +13,6 @@ import { EVENT_TYPES } from "@howlpack/howlpack-shared/constants.js";
  * @param {import("@howlpack/howlpack-shared/types").DecodedMsgExecuteContract} txMessage
  */
 export default async function newLike(txMessage) {
-  console.log(txMessage);
   if (txMessage.contract !== HOWL_TOKEN) {
     return null;
   }
@@ -45,7 +44,7 @@ export default async function newLike(txMessage) {
     event: EVENT_TYPES.NEW_LIKE,
     attrs: {
       postId: res.post.uuid,
-      amount: toBaseToken(BigInt(txMessage.msg.send.amount)),
+      amount: toBaseToken(BigInt(txMessage.msg.send.amount)).toString(),
       staker: cw20msg.stake.alias,
     },
   };

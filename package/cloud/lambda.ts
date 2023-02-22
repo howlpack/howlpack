@@ -171,7 +171,8 @@ export const howlProcessor = new aws.lambda.Function(
   lambdaPackageName + "-howlProcessor",
   {
     code: buildCodeAsset(
-      require.resolve("@howlpack/howlpack-processor/index.js")
+      require.resolve("@howlpack/howlpack-processor/index.js"),
+      true
     ),
     handler: "index.howl.handler",
     runtime: "nodejs18.x",
