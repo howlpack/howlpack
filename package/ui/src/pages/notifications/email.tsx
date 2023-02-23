@@ -1,10 +1,33 @@
 import { Box, Button, Typography } from "@mui/material";
 import { Fragment } from "react";
+import { useMutation } from "react-query";
 import useFormData from "../../hooks/use-form-data";
 import Email from "./components/email";
+import { url, fetchThrowHttpError } from "@howlpack/howlpack-shared";
 
 export function EmailNotifications() {
-  const [formData, setFormData, onChange] = useFormData({ email: "" });
+  const { formState, onChange } = useFormData({ email: "" });
+
+  const { data: encryptedEmail, mutate } = useMutation(
+    ["/api/crypto/encrypt"],
+    () =>
+      fetch(
+        url.backendUrl("/api/crypto/encrypt", import.meta.env.VITE_BACKEND_URL),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: formState.get("email"),
+          }),
+          method: "post",
+        }
+      )
+        .then(fetchThrowHttpError)
+        .then((res) => res.text())
+  );
+
+  console.log(encryptedEmail);
 
   return (
     <Fragment>
@@ -20,13 +43,16 @@ export function EmailNotifications() {
           Enter the email address where you want to receive Howl notifications:
         </Typography>
         <Box sx={{ maxWidth: "450px" }}>
-          <Email formData={formData} onChange={onChange as any} />
+          <Email formData={formState} onChange={onChange as any} />
 
           <Button
             color="secondary"
             variant="contained"
             sx={{ mt: 2 }}
-            onClick={() => console.log(import.meta.env.VITE_BACKEND_URL)}
+            onClick={() => {
+              console.log(import.meta.env.VITE_BACKEND_URL);
+              mutate();
+            }}
             disableElevation
           >
             Encrypt the email

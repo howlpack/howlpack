@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "react-query";
 import {
   createBrowserRouter,
   Navigate,
@@ -34,11 +35,15 @@ const router = createBrowserRouter([
   },
 ]);
 
+const queryClient = new QueryClient();
+
 function App() {
   return (
     <RecoilRoot>
-      <KeplrWatcher />
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <KeplrWatcher />
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </RecoilRoot>
   );
 }

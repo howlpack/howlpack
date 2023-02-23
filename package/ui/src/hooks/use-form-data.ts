@@ -4,7 +4,7 @@ import { Map } from "immutable";
 const identity = (v: any) => v;
 
 export default function useFormData(initial: object, parsers: any = {}) {
-  const [formState, setFormState] = useState(Map(initial));
+  const [formState, setFormState] = useState<Map<any, any>>(Map(initial));
 
   const onChange = useCallback(
     (
@@ -30,5 +30,5 @@ export default function useFormData(initial: object, parsers: any = {}) {
     [setFormState, initial]
   );
 
-  return [formState, setFormState, onChange, parsedFormState, reset];
+  return { formState, setFormState, onChange, parsedFormState, reset };
 }
