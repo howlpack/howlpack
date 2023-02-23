@@ -1,22 +1,22 @@
 import Joi from "joi";
+import { encrypt } from "@howlpack/howlpack-shared/crypto.js";
 import { validate } from "../../middleware/joi-validate.js";
-import { decryptProductId } from "../../lib/decrypt.js";
 
-const decryptValidation = validate({
+const encryptValidation = validate({
   body: {
-    encrypted: Joi.string().required(),
+    content: Joi.string().required(),
   },
 });
 
 export default (router) => {
   router.post(
-    "/decrypt",
-    decryptValidation,
+    "/encrypt",
+    encryptValidation,
     /**
      * @param {import("koa").Context} ctx
      */
     async (ctx) => {
-      ctx.body = decryptProductId(ctx.request.body.encrypted);
+      ctx.body = encrypt(ctx.request.body.content);
     }
   );
 };

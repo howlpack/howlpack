@@ -2,8 +2,8 @@ import Router from "@koa/router";
 
 const router = new Router();
 
-import decrypt from "./decrypt.js";
+import encrypt from "./encrypt.js";
 
-decrypt(router);
+encrypt(router);
 
 export default router;

@@ -5,8 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "dotenv -e ../../env/.env.local.test -e ../../env/.env.test -- node --no-warnings --experimental-vm-modules ../../node_modules/.bin/jest --runInBand",
-    "start": "dotenv -e ../../env/.env.local.development -e ../../env/.env.development -- node server.js",
-    "start:nodemon": "dotenv -e ../../env/.env.local.development -e ../../env/.env.development -- nodemon -e js,mjs,cjs server.js"
+    "dev": "dotenv -e ../../.env -- nodemon -e js,mjs,cjs server.js"
   },
   "type": "module",
   "devDependencies": {},
