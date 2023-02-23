@@ -189,6 +189,9 @@ export const howlProcessor = new aws.lambda.Function(
         RPC_ENDPOINTS: (JSON.parse(junoConfig.require("rpcs")) || []).join(","),
         NOTIFICATIONS_CONTRACT: junoConfig.get("notifications_contract"),
         NOTIFICATION_QUEUE_URL: notification_queue.url,
+        ENCRYPTION_SECRET_KEY: howlpackConfig.getSecret(
+          "ENCRYPTION_SECRET_KEY"
+        ),
       },
     },
   }
@@ -257,7 +260,6 @@ export const watcher = new aws.lambda.Function(lambdaPackageName + "-watcher", {
       HOWL_STAKING: junoConfig.get("howl_staking"),
       DYNAMO_LAST_PROCESSED_TABLE: lastProcessedBlockTable.name,
       HOWL_QUEUE_URL: howl_queue.url,
-      ENCRYPTION_SECRET_KEY: howlpackConfig.getSecret("ENCRYPTION_SECRET_KEY"),
     },
   },
 });
