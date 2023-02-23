@@ -9,6 +9,7 @@ import { howl_queue, notification_queue } from "./queue";
 import { lastProcessedBlockTable } from "./dynamo";
 
 const projectConfig = new pulumi.Config("pulumi");
+const howlpackConfig = new pulumi.Config("howlpack");
 const junoConfig = new pulumi.Config("juno");
 
 const names = JSON.parse(projectConfig.require("env_files")) || [];
@@ -162,6 +163,9 @@ export const apiBackend = new aws.lambda.Function(
         ...environment,
         FRONTEND_URL: webappUrl,
         BACKEND_URL: backendUrl,
+        ENCRYPTION_SECRET_KEY: howlpackConfig.getSecret(
+          "ENCRYPTION_SECRET_KEY"
+        ),
       },
     },
   }
@@ -253,6 +257,7 @@ export const watcher = new aws.lambda.Function(lambdaPackageName + "-watcher", {
       HOWL_STAKING: junoConfig.get("howl_staking"),
       DYNAMO_LAST_PROCESSED_TABLE: lastProcessedBlockTable.name,
       HOWL_QUEUE_URL: howl_queue.url,
+      ENCRYPTION_SECRET_KEY: howlpackConfig.getSecret("ENCRYPTION_SECRET_KEY"),
     },
   },
 });
