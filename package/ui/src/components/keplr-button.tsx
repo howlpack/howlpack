@@ -3,6 +3,7 @@ import { Button } from "@mui/material";
 import { useRecoilValue } from "recoil";
 import { chainState, keplrState } from "../state/cosmos";
 import { useCallback } from "react";
+import { SigningStargateClient } from "@cosmjs/stargate";
 
 function InstallButton() {
   return (
@@ -64,15 +65,22 @@ export default function KeplrButton() {
 
     const offlineSigner = window.getOfflineSigner(chainId);
 
-    // Initialize the gaia api with the offline signer that is injected by Keplr extension.
-    // const client = await SigningStargateClient.connectWithSigner(
-    //   "https://rpc-juno.itastakers.com/",
-    //   offlineSigner
-    // );
+    const client = await SigningStargateClient.connectWithSigner(
+      "https://rpc-juno.itastakers.com/",
+      offlineSigner
+    );
+
+    console.log(await offlineSigner.getAccounts());
   };
 
   return (
-    <Button color="bluegreen" variant="outlined" onClick={click}>
+    <Button
+      color="bluegreen"
+      variant="contained"
+      disableElevation
+      onClick={click}
+      sx={{ color: "white" }}
+    >
       Connect Wallet
     </Button>
   );

@@ -1,10 +1,36 @@
-import { Divider, Typography } from "@mui/material";
+import { Card, Divider, Link, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { Fragment } from "react";
+import { constants } from "@howlpack/howlpack-shared";
 
 export default function FAQ() {
+  const howlpage = new URL("howlpack", constants.HOWL_URL).toString();
   return (
     <Fragment>
+      <Card variant="outlined" sx={{ mb: 2, p: 2 }}>
+        <Box>
+          <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+            Links
+          </Typography>
+          <Divider sx={{ mt: 1, mb: 2 }} />
+          <ul>
+            <li>
+              <Link
+                href="https://github.com/howlpack/"
+                color={"secondary"}
+                target="_blank"
+              >
+                https://github.com/howlpack/
+              </Link>
+            </li>
+            <li>
+              <Link href={howlpage} color={"secondary"} target="_blank">
+                {howlpage}
+              </Link>
+            </li>
+          </ul>
+        </Box>
+      </Card>
       <Box py={2}>
         <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
           🐺 Why is this service provided by a third party and not the core
