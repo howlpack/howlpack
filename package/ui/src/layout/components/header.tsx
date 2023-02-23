@@ -1,6 +1,8 @@
 import { Box, Grid, Typography } from "@mui/material";
+import { lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
-import KeplrButton from "../../components/keplr-button";
+
+const KeplrButton = lazy(() => import("../../components/keplr-button"));
 
 export default function Header() {
   return (
@@ -34,7 +36,9 @@ export default function Header() {
         sm={"auto"}
         sx={{ textAlign: { xs: "center", sm: "left" } }}
       >
-        <KeplrButton />
+        <Suspense fallback={<div>Loading...</div>}>
+          <KeplrButton />
+        </Suspense>
       </Grid>
     </Grid>
   );

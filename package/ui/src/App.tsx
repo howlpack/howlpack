@@ -8,7 +8,7 @@ import KeplrWatcher from "./components/keplr-watcher";
 import AppLayout from "./layout/app";
 
 import FAQ from "./pages/faq";
-import { EmailNotifications } from "./pages/notifications";
+import { EmailNotifications } from "./pages/notifications/email";
 
 const router = createBrowserRouter([
   {

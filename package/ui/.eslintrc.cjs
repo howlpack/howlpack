@@ -22,6 +22,7 @@ module.exports = {
   rules: {
     "react/react-in-jsx-scope": 0,
     "react-hooks/rules-of-hooks": "error",
+    "@typescript-eslint/ban-ts-comment": "off",
     "react-hooks/exhaustive-deps": [
       "warn",
       {
