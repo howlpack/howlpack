@@ -1,4 +1,5 @@
 import { atom } from "recoil";
+import { localStorageEffect } from "./effects";
 
 export const chainState = atom({
   key: "chainState",
@@ -7,7 +8,21 @@ export const chainState = atom({
   },
 });
 
-export const keplrState = atom({
+const LOCAL_STORAGE_PREFIX = "howlpack:";
+const LOCAL_STORAGE_KEPLR_INTERACTED =
+  LOCAL_STORAGE_PREFIX + "keplr-interacted:";
+
+export const keplrInteractedState = atom({
+  key: "keplrInteractedState",
+  default: false,
+  effects: [localStorageEffect(LOCAL_STORAGE_KEPLR_INTERACTED)],
+});
+
+export const keplrState = atom<{
+  initialized: boolean;
+  isInstalled: boolean;
+  account: string | null;
+}>({
   key: "keplrState",
   default: {
     initialized: false,
