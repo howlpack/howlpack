@@ -5,7 +5,7 @@ const client = new SESClient({
   region: "eu-west-1",
 });
 
-const source = "notification@howlpack.social";
+const source = '"Howlpack Notifications" <notification@howlpack.social>';
 
 export async function handler(event) {
   for (const record of event.Records) {
