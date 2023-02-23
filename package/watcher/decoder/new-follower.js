@@ -18,7 +18,7 @@ export default function newFollower(txMessage) {
     receiver: txMessage.msg?.follow.following,
     event: EVENT_TYPES.NEW_FOLLOWER,
     attrs: {
-      follower: txMessage.msg?.follow.following,
+      follower: txMessage.msg?.follow.follower,
       hex: txMessage.hex,
     },
   };

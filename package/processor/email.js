@@ -64,7 +64,7 @@ export function composeFollowerEmail(receiver, follower) {
     subject: `Congrats! You have a new follower!`,
     body: `Hi ${receiver},
     
-We're excited to let you know that you have a new follower on Howl! ${follower} is interested in the awesome content you create and can't wait to see more from you. Keep up the great work and continue to inspire our community.
+We're excited to let you know that you have a new follower on Howl ${follower} is interested in the content you create.
 Follow this link to check howls of ${follower}: ${new URL(follower, HOWL_URL)}
 
 If you have any questions or concerns, please don't hesitate to reach out to us. Thanks for being a part of Howlpack!
@@ -82,7 +82,7 @@ export function composeLikesEmail(receiver, postId, amountStaked, staker) {
     subject: `Woohoo! You've received likes through staking ${amountStaked} Howl tokens!`,
     body: `Hi ${receiver},
     
-We wanted to congratulate you on receiving likes for your amazing Howl ${new URL(
+We wanted to congratulate you on receiving likes for your Howl ${new URL(
       receiver + "/" + postId,
       HOWL_URL
     )} ! These likes were received through staking ${amountStaked} Howl tokens from ${staker} (${new URL(
