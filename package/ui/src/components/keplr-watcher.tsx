@@ -4,12 +4,6 @@ import useKeplrConnect from "../hooks/use-keplr-connect";
 import { chainState, keplrInteractedState, keplrState } from "../state/cosmos";
 
 export default function KeplrWatcher() {
-  // Initialize the gaia api with the offline signer that is injected by Keplr extension.
-  // const client = await SigningStargateClient.connectWithSigner(
-  //   "https://rpc-juno.itastakers.com/",
-  //   offlineSigner
-  // );
-
   const chain = useRecoilValue(chainState);
   const keplrInteracted = useRecoilValue(keplrInteractedState);
   const [, setKeplr] = useRecoilState(keplrState);

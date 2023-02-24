@@ -12,12 +12,14 @@ import Header from "./components/header";
 import Footer from "./components/footer";
 import { Fragment } from "react";
 import Menu from "./components/menu";
+import Snackbar from "../components/snackbar";
 
 export default function App() {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
   return (
     <ThemeProvider theme={prefersDarkMode ? darkTheme : lightTheme}>
+      <Snackbar />
       <CssBaseline />
 
       <Container maxWidth="lg">

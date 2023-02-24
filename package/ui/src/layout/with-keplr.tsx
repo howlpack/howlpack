@@ -7,6 +7,10 @@ import { keplrState } from "../state/cosmos";
 export default function WithKeplr({ children }: { children?: any }) {
   const keplr = useRecoilValue(keplrState);
 
+  if (!keplr.initialized) {
+    return null;
+  }
+
   if (!keplr.account) {
     return (
       <Fragment>

@@ -1,12 +1,29 @@
 import { Box, Button, Typography } from "@mui/material";
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 import { useMutation } from "react-query";
 import useFormData from "../../hooks/use-form-data";
-import Email from "./components/email";
-import { url, fetchThrowHttpError } from "@howlpack/howlpack-shared";
+import Email, { emailValidator } from "./components/email";
+import { url, fetchThrowHttpError, constants } from "@howlpack/howlpack-shared";
+import SelectEventType from "./components/select-event-type";
+import Joi from "joi";
+import { snackbarState } from "../../state/snackbar";
+import { useRecoilState } from "recoil";
+
+const initialEventTypes = Object.values(
+  constants.EVENT_TYPES as { [x: string]: string }
+).reduce((acc, k) => ({ ...acc, [k]: true }), {});
+
+const subscribeValidator = Joi.object({
+  email: emailValidator,
+  event_types: Joi.object().unknown(true),
+}).unknown(true);
 
 export default function EmailNotifications() {
-  const { formState, onChange } = useFormData({ email: "" });
+  const [, setSnackbar] = useRecoilState(snackbarState);
+  const { formState, onChange } = useFormData({
+    email: "",
+    event_types: initialEventTypes,
+  });
 
   const { data: encryptedEmail, mutate } = useMutation(
     ["/api/crypto/encrypt"],
@@ -27,6 +44,10 @@ export default function EmailNotifications() {
         .then((res) => res.text())
   );
 
+  const subscribeEnabled = useMemo<boolean>(() => {
+    return subscribeValidator.validate(formState.toJSON()).error == null;
+  }, [formState]);
+
   return (
     <Fragment>
       <Box
@@ -42,17 +63,25 @@ export default function EmailNotifications() {
         </Typography>
         <Box sx={{ maxWidth: "450px" }}>
           <Email formData={formState} onChange={onChange as any} />
+        </Box>
 
+        <Box>
+          <SelectEventType formData={formState} onChange={onChange} />
+        </Box>
+
+        <Box>
           <Button
             color="secondary"
             variant="contained"
             sx={{ mt: 2 }}
             onClick={() => {
+              setSnackbar({ message: "WOOOHOOO" });
               mutate();
             }}
             disableElevation
+            disabled={!subscribeEnabled}
           >
-            Encrypt the email
+            Subscribe
           </Button>
         </Box>
       </Box>
