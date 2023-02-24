@@ -1,15 +1,19 @@
+import { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import {
   createBrowserRouter,
   Navigate,
   RouterProvider,
 } from "react-router-dom";
+import { Provider as RollbarProvider, ErrorBoundary } from "@rollbar/react";
 import { RecoilRoot } from "recoil";
 import KeplrWatcher from "./components/keplr-watcher";
+import Loading from "./components/loading";
 import AppLayout from "./layout/app";
+import rollbar from "./lib/rollbar";
 
-import FAQ from "./pages/faq";
-import { EmailNotifications } from "./pages/notifications/email";
+const FAQ = lazy(() => import("./pages/faq"));
+const EmailNotifications = lazy(() => import("./pages/notifications/email"));
 
 const router = createBrowserRouter([
   {
@@ -19,7 +23,11 @@ const router = createBrowserRouter([
       { index: true, element: <Navigate to="/notifications" replace /> },
       {
         path: "faq",
-        element: <FAQ />,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <FAQ />
+          </Suspense>
+        ),
       },
       {
         path: "notifications",
@@ -28,23 +36,36 @@ const router = createBrowserRouter([
             index: true,
             element: <Navigate to="email" replace />,
           },
-          { path: "email", element: <EmailNotifications /> },
+          {
+            path: "email",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <EmailNotifications />
+              </Suspense>
+            ),
+          },
         ],
       },
     ],
   },
 ]);
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {},
+});
 
 function App() {
   return (
-    <RecoilRoot>
-      <QueryClientProvider client={queryClient}>
-        <KeplrWatcher />
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    </RecoilRoot>
+    <RollbarProvider instance={rollbar}>
+      <RecoilRoot>
+        <QueryClientProvider client={queryClient}>
+          <ErrorBoundary>
+            <KeplrWatcher />
+            <RouterProvider router={router} />
+          </ErrorBoundary>
+        </QueryClientProvider>
+      </RecoilRoot>
+    </RollbarProvider>
   );
 }
 

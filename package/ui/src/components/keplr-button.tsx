@@ -3,6 +3,7 @@ import { useRecoilValue } from "recoil";
 import { keplrState } from "../state/cosmos";
 import Loading from "./loading";
 import useKeplrConnect from "../hooks/use-keplr-connect";
+import useStargateClient from "../hooks/use-stargate-client";
 
 function InstallButton() {
   return (
@@ -35,6 +36,7 @@ function ConnectButton() {
 
 export default function KeplrButton() {
   const keplr = useRecoilValue(keplrState);
+  const stargateClient = useStargateClient();
 
   if (!keplr.initialized) {
     return <Loading />;

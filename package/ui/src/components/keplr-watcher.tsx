@@ -25,10 +25,6 @@ export default function KeplrWatcher() {
   }, [setKeplr]);
 
   useEffect(() => {
-    if (!window.getOfflineSigner) {
-      return;
-    }
-
     if (!keplrInteracted) {
       return;
     }

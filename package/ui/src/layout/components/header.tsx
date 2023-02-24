@@ -1,6 +1,7 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
+import DENSSelect from "../../components/dens-select";
 import Loading from "../../components/loading";
 
 const KeplrButton = lazy(() => import("../../components/keplr-button"));
@@ -39,6 +40,7 @@ export default function Header() {
       >
         <Suspense fallback={<Loading />}>
           <KeplrButton />
+          <DENSSelect />
         </Suspense>
       </Grid>
     </Grid>

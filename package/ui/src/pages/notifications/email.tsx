@@ -5,7 +5,7 @@ import useFormData from "../../hooks/use-form-data";
 import Email from "./components/email";
 import { url, fetchThrowHttpError } from "@howlpack/howlpack-shared";
 
-export function EmailNotifications() {
+export default function EmailNotifications() {
   const { formState, onChange } = useFormData({ email: "" });
 
   const { data: encryptedEmail, mutate } = useMutation(
@@ -26,8 +26,6 @@ export function EmailNotifications() {
         .then(fetchThrowHttpError)
         .then((res) => res.text())
   );
-
-  console.log(encryptedEmail);
 
   return (
     <Fragment>
@@ -50,7 +48,6 @@ export function EmailNotifications() {
             variant="contained"
             sx={{ mt: 2 }}
             onClick={() => {
-              console.log(import.meta.env.VITE_BACKEND_URL);
               mutate();
             }}
             disableElevation

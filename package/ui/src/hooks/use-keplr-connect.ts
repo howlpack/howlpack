@@ -20,12 +20,14 @@ export default function useKeplrConnect() {
 
     const offlineSigner = window.getOfflineSigner(chain.chainId);
     const accounts = await offlineSigner.getAccounts();
+    const key = await window.keplr.getKey(chain.chainId);
 
     setKeplrInteracted(true);
 
     setKeplr((s) => ({
       ...s,
       account: accounts[0].address,
+      name: key.name,
     }));
   }, [chain.chainId, setKeplrInteracted, setKeplr]);
 }

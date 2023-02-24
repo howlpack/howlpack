@@ -12,19 +12,21 @@
     "test": "exit 0"
   },
   "dependencies": {
-    "@cosmjs/stargate": "0.29.5",
+    "@cosmjs/cosmwasm-stargate": "0.29.5",
     "@emotion/react": "11.10.6",
     "@emotion/styled": "11.10.6",
     "@keplr-wallet/types": "0.11.44",
     "@mui/icons-material": "5.11.9",
     "@mui/material": "5.11.10",
+    "@rollbar/react": "0.11.1",
     "immutable": "4.2.4",
     "joi": "17.8.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-query": "3.39.3",
     "react-router-dom": "6.8.1",
-    "recoil": "0.7.6"
+    "recoil": "0.7.6",
+    "rollbar": "2.26.1"
   },
   "devDependencies": {
     "@types/react": "18.0.28",

@@ -1,3 +1,9 @@
+export const LOCAL_STORAGE_PREFIX = "howlpack:";
+export const LOCAL_STORAGE_KEPLR_INTERACTED =
+  LOCAL_STORAGE_PREFIX + "keplr-interacted:";
+export const LOCAL_STORAGE_SELECTED_DENS =
+  LOCAL_STORAGE_PREFIX + "selected-dens:";
+
 export function localStorageEffect(_key: string, prefix = "") {
   return ({ setSelf, onSet }: { setSelf: any; onSet: any }) => {
     if (!_key) {
