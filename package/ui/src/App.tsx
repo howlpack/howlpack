@@ -11,6 +11,8 @@ import KeplrWatcher from "./components/keplr-watcher";
 import Loading from "./components/loading";
 import AppLayout from "./layout/app";
 import rollbar from "./lib/rollbar";
+import WithKeplr from "./layout/with-keplr";
+import WithDENS from "./layout/with-dens";
 
 const FAQ = lazy(() => import("./pages/faq"));
 const EmailNotifications = lazy(() => import("./pages/notifications/email"));
@@ -31,6 +33,11 @@ const router = createBrowserRouter([
       },
       {
         path: "notifications",
+        element: (
+          <WithKeplr>
+            <WithDENS />
+          </WithKeplr>
+        ),
         children: [
           {
             index: true,

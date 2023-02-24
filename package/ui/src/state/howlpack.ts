@@ -1,5 +1,10 @@
-import { atomFamily } from "recoil";
+import { atom, atomFamily } from "recoil";
 import { localStorageEffect, LOCAL_STORAGE_SELECTED_DENS } from "./effects";
+
+export const densInitializedState = atom({
+  key: "densInitializedState",
+  default: false,
+});
 
 export const selectedDensState = atomFamily<string | null, string | null>({
   key: "selectedDensState",

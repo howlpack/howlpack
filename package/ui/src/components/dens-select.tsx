@@ -13,7 +13,7 @@ import { useQuery } from "react-query";
 import { useRecoilState, useRecoilValue } from "recoil";
 import useStargateClient from "../hooks/use-stargate-client";
 import { keplrState } from "../state/cosmos";
-import { selectedDensState } from "../state/howlpack";
+import { densInitializedState, selectedDensState } from "../state/howlpack";
 import Loading from "./loading";
 
 export default function DENSSelect() {
@@ -23,6 +23,7 @@ export default function DENSSelect() {
   const [selectedDens, setSelectedDens] = useRecoilState(
     selectedDensState(keplr.account)
   );
+  const [, setDensInitialized] = useRecoilState(densInitializedState);
 
   const handleChange = (event: SelectChangeEvent) => {
     setSelectedDens(event.target.value);
@@ -60,6 +61,7 @@ export default function DENSSelect() {
     {
       enabled: Boolean(client),
       onError: tryNextClient,
+      onSuccess: () => setDensInitialized(true),
     }
   );
 
