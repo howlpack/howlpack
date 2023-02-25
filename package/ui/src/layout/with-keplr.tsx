@@ -2,16 +2,17 @@ import { Card, Divider, Typography } from "@mui/material";
 import { Fragment } from "react";
 import { Outlet } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { keplrState } from "../state/cosmos";
+import { keplrInteractedState, keplrState } from "../state/cosmos";
 
 export default function WithKeplr({ children }: { children?: any }) {
   const keplr = useRecoilValue(keplrState);
+  const keplrInteracted = useRecoilValue(keplrInteractedState);
 
   if (!keplr.initialized) {
     return null;
   }
 
-  if (!keplr.account) {
+  if (!keplrInteracted && !keplr.account) {
     return (
       <Fragment>
         <Card variant="outlined" sx={{ mb: 2, p: 4 }}>
