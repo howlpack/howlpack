@@ -16,6 +16,9 @@ import WithDENS from "./layout/with-dens";
 
 const FAQ = lazy(() => import("./pages/faq"));
 const EmailNotifications = lazy(() => import("./pages/notifications/email"));
+const EmailForm = lazy(
+  () => import("./pages/notifications/components/email-form")
+);
 
 const router = createBrowserRouter([
   {
@@ -45,11 +48,24 @@ const router = createBrowserRouter([
           },
           {
             path: "email",
-            element: (
-              <Suspense fallback={<Loading />}>
-                <EmailNotifications />
-              </Suspense>
-            ),
+            children: [
+              {
+                index: true,
+                element: (
+                  <Suspense fallback={<Loading />}>
+                    <EmailNotifications />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "update",
+                element: (
+                  <Suspense fallback={<Loading />}>
+                    <EmailForm />
+                  </Suspense>
+                ),
+              },
+            ],
           },
         ],
       },

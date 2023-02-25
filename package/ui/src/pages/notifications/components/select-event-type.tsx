@@ -1,5 +1,6 @@
 import {
   Checkbox,
+  fabClasses,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -17,19 +18,28 @@ const labels: { [x: string]: string } = {
 export default function SelectEventType({
   formData,
   onChange,
+  label,
+  disabled = false,
 }: {
   formData: any;
   onChange: any;
+  label?: string;
+  disabled?: boolean;
 }) {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     onChange(event, (target: any) => target.checked);
   };
 
   return (
-    <FormControl sx={{ my: 3 }} component="fieldset" variant="standard">
+    <FormControl
+      sx={{ my: 3 }}
+      component="fieldset"
+      variant="standard"
+      disabled={disabled}
+    >
       <legend>
         <Typography variant="caption">
-          Select events you want to receive
+          {label || "Select events you want to receive"}
         </Typography>
       </legend>
       <FormGroup>
@@ -38,7 +48,7 @@ export default function SelectEventType({
             key={ix}
             control={
               <Checkbox
-                checked={formData.getIn(["event_types", e])}
+                checked={formData.getIn(["event_types", e]) || false}
                 onChange={handleChange}
                 name={"event_types." + e}
               />

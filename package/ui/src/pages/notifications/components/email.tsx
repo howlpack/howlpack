@@ -10,10 +10,12 @@ export default function Email({
   formData,
   onChange,
   allowEmpty,
+  disabled = false,
 }: {
   formData: any;
   onChange: any;
   allowEmpty: any;
+  disabled?: boolean;
 }) {
   let validator = emailValidator;
 
@@ -42,8 +44,9 @@ export default function Email({
         onChange={onChange}
         required={!allowEmpty}
         type="text"
-        value={value}
+        value={value || ""}
         variant="outlined"
+        disabled={disabled}
       />
     </Fragment>
   );

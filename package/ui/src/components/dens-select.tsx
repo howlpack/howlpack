@@ -96,7 +96,7 @@ export default function DENSSelect() {
   return (
     <div>
       <FormControl
-        sx={{ m: 1, minWidth: 120 }}
+        sx={{ minWidth: 120 }}
         size="small"
         disabled={isFetching || isIdle}
       >
