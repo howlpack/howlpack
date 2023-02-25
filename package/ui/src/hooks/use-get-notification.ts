@@ -1,17 +1,18 @@
 import { useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
 
-import useStargateClient from "./use-stargate-client";
-import { keplrState } from "../state/cosmos";
+import { clientState, keplrState } from "../state/cosmos";
 import { selectedDensState } from "../state/howlpack";
+import useTryNextClient from "./use-try-next-client";
 
 export default function useGetNotification() {
   const keplr = useRecoilValue(keplrState);
-  const { client, tryNextClient } = useStargateClient();
+  const client = useRecoilValue(clientState);
+  const tryNextClient = useTryNextClient();
   const selectedDens = useRecoilValue(selectedDensState(keplr.account));
 
   return useQuery<any>(
-    ["get_notifications", keplr.account, client],
+    ["get_notifications", keplr.account],
     async () => {
       if (!client) {
         return [];
@@ -28,6 +29,7 @@ export default function useGetNotification() {
     },
     {
       enabled: Boolean(client),
+      staleTime: 3000000,
       onError: tryNextClient,
       suspense: true,
     }

@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import {
   createBrowserRouter,
   Navigate,
+  Outlet,
   RouterProvider,
 } from "react-router-dom";
 import { Provider as RollbarProvider, ErrorBoundary } from "@rollbar/react";
@@ -16,9 +17,10 @@ import WithDENS from "./layout/with-dens";
 
 const FAQ = lazy(() => import("./pages/faq"));
 const EmailNotifications = lazy(() => import("./pages/notifications/email"));
-const EmailForm = lazy(
-  () => import("./pages/notifications/components/email-form")
+const EmailCreateForm = lazy(
+  () => import("./pages/notifications/email/create")
 );
+const EmailEditForm = lazy(() => import("./pages/notifications/email/edit"));
 
 const router = createBrowserRouter([
   {
@@ -48,22 +50,23 @@ const router = createBrowserRouter([
           },
           {
             path: "email",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <Outlet />
+              </Suspense>
+            ),
             children: [
               {
                 index: true,
-                element: (
-                  <Suspense fallback={<Loading />}>
-                    <EmailNotifications />
-                  </Suspense>
-                ),
+                element: <EmailNotifications />,
+              },
+              {
+                path: "create",
+                element: <EmailCreateForm />,
               },
               {
                 path: "update",
-                element: (
-                  <Suspense fallback={<Loading />}>
-                    <EmailForm />
-                  </Suspense>
-                ),
+                element: <EmailEditForm />,
               },
             ],
           },

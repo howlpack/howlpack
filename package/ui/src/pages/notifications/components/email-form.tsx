@@ -6,16 +6,12 @@ import Email, { emailValidator } from "./email";
 import { url, fetchThrowHttpError, constants } from "@howlpack/howlpack-shared";
 import SelectEventType from "./select-event-type";
 import Joi from "joi";
-import { snackbarState } from "../../../state/snackbar";
-import { useRecoilState, useRecoilValue } from "recoil";
-import useStargateClient from "../../../hooks/use-stargate-client";
-import { keplrState } from "../../../state/cosmos";
+import { useRecoilValue } from "recoil";
+import { clientState, keplrState } from "../../../state/cosmos";
 import { DeliverTxResponse } from "@cosmjs/stargate";
 import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx.js";
 import { toUtf8 } from "@cosmjs/encoding";
 import { selectedDensState } from "../../../state/howlpack";
-import useGetNotification from "../../../hooks/use-get-notification";
-import { useLocation, useNavigate } from "react-router-dom";
 
 const initialEventTypes = Object.values(
   constants.EVENT_TYPES as { [x: string]: string }
@@ -27,9 +23,6 @@ const subscribeValidator = Joi.object({
 }).unknown(true);
 
 export default function EmailForm() {
-  const navigate = useNavigate();
-  const [, setSnackbar] = useRecoilState(snackbarState);
-
   const { formState, onChange } = useFormData({
     email: "",
     event_types: initialEventTypes,
@@ -37,20 +30,7 @@ export default function EmailForm() {
 
   const keplr = useRecoilValue(keplrState);
   const selectedDens = useRecoilValue(selectedDensState(keplr.account));
-  const { client, tryNextClient } = useStargateClient();
-
-  const { data: notifications } = useGetNotification();
-  const emailNotification = useMemo(() => {
-    return notifications?.find((n: any) => n.email)?.email;
-  }, [notifications]);
-
-  // if (emailNotification) {
-  //   setSnackbar({
-  //     message:
-  //       "There is already an existing email notification for " + selectedDens,
-  //   });
-  //   navigate("/notifications/email");
-  // }
+  const client = useRecoilValue(clientState);
 
   const { data: encryptedEmail, mutate } = useMutation(
     ["/api/crypto/encrypt", formState.get("email")],

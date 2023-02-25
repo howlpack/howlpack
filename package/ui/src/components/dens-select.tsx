@@ -11,14 +11,15 @@ import { Box } from "@mui/system";
 import { Fragment, useEffect } from "react";
 import { useQuery } from "react-query";
 import { useRecoilState, useRecoilValue } from "recoil";
-import useStargateClient from "../hooks/use-stargate-client";
-import { keplrState } from "../state/cosmos";
+import useTryNextClient from "../hooks/use-try-next-client";
+import { clientState, keplrState } from "../state/cosmos";
 import { densInitializedState, selectedDensState } from "../state/howlpack";
 import Loading from "./loading";
 
 export default function DENSSelect() {
   const keplr = useRecoilValue(keplrState);
-  const { client, tryNextClient } = useStargateClient();
+  const client = useRecoilValue(clientState);
+  const tryNextClient = useTryNextClient();
 
   const [selectedDens, setSelectedDens] = useRecoilState(
     selectedDensState(keplr.account)
@@ -35,7 +36,7 @@ export default function DENSSelect() {
     isFetching,
     isIdle,
   } = useQuery<string[]>(
-    ["base_tokens", keplr.account, client],
+    ["base_tokens", keplr.account],
     async () => {
       if (!client) {
         return [];
@@ -61,6 +62,7 @@ export default function DENSSelect() {
     {
       enabled: Boolean(client),
       onError: tryNextClient,
+      staleTime: 300000,
       onSuccess: () => setDensInitialized(true),
     }
   );

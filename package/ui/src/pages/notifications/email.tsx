@@ -3,7 +3,6 @@ import { Fragment, useCallback, useEffect, useMemo } from "react";
 import { useRecoilValue } from "recoil";
 import Loading from "../../components/loading";
 import useFormData from "../../hooks/use-form-data";
-import useStargateClient from "../../hooks/use-stargate-client";
 import { keplrState } from "../../state/cosmos";
 import { selectedDensState } from "../../state/howlpack";
 import Email from "./components/email";
@@ -14,12 +13,12 @@ import useGetNotification from "../../hooks/use-get-notification";
 
 export default function EmailNotifications() {
   const keplr = useRecoilValue(keplrState);
-  const { client } = useStargateClient();
   const selectedDens = useRecoilValue(selectedDensState(keplr.account));
   const { formState, setFormState } = useFormData({});
   const navigate = useNavigate();
 
   const { data: notifications } = useGetNotification();
+
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const fn_void = useCallback(() => {}, []);
 
@@ -46,7 +45,7 @@ export default function EmailNotifications() {
     setFormState((s) => s.set("email", emailNotification.masked_addr));
   }, [emailNotification, setFormState]);
 
-  if (!client || notifications == null) {
+  if (notifications == null) {
     return <Loading></Loading>;
   }
 
@@ -76,10 +75,8 @@ export default function EmailNotifications() {
             color="secondary"
             variant="contained"
             sx={{ mt: 2 }}
-            onClick={async () => {
-              navigate("./update", {
-                state: formState.toJSON(),
-              });
+            onClick={() => {
+              navigate(emailNotification ? "./update" : "./create");
             }}
             disableElevation
           >

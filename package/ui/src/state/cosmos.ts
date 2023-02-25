@@ -1,4 +1,5 @@
-import { atom } from "recoil";
+import { atom, selector } from "recoil";
+import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { localStorageEffect, LOCAL_STORAGE_KEPLR_INTERACTED } from "./effects";
 
 export const chainState = atom({
@@ -27,4 +28,44 @@ export const keplrState = atom<{
     account: null,
     name: null,
   },
+});
+
+export const JUNO_RPCS = JSON.parse(import.meta.env.VITE_JUNO_RPCS) as string[];
+
+export const clientState = selector<SigningCosmWasmClient | null>({
+  key: "clientState",
+  get: async ({ get }) => {
+    const keplr = get(keplrState);
+
+    if (!keplr.account) {
+      return null;
+    }
+
+    if (!window.getOfflineSigner) {
+      return null;
+    }
+
+    const clientIx = get(clientIxState);
+    const chain = get(chainState);
+    const offlineSigner = window.getOfflineSigner(chain.chainId);
+    for (let i = 0; i < JUNO_RPCS.length; i++) {
+      try {
+        const client = await SigningCosmWasmClient.connectWithSigner(
+          JUNO_RPCS[(clientIx + i) % JUNO_RPCS.length],
+          offlineSigner
+        );
+
+        return client;
+      } catch (e) {
+        // connect error, try next client
+      }
+    }
+
+    return null;
+  },
+});
+
+export const clientIxState = atom<number>({
+  key: "clientIxState",
+  default: 0,
 });
