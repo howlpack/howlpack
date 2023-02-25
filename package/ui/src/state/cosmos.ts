@@ -1,5 +1,5 @@
 import { atom, selector } from "recoil";
-import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+// import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { localStorageEffect, LOCAL_STORAGE_KEPLR_INTERACTED } from "./effects";
 
 export const chainState = atom({
@@ -32,9 +32,10 @@ export const keplrState = atom<{
 
 export const JUNO_RPCS = JSON.parse(import.meta.env.VITE_JUNO_RPCS) as string[];
 
-export const clientState = selector<SigningCosmWasmClient | null>({
+export const clientState = selector<any | null>({
   key: "clientState",
   get: async ({ get }) => {
+    const { SigningCosmWasmClient } = await import("@cosmjs/cosmwasm-stargate");
     const keplr = get(keplrState);
 
     if (!keplr.account) {
