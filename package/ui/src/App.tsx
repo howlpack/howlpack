@@ -14,6 +14,7 @@ import AppLayout from "./layout/app";
 import rollbar from "./lib/rollbar";
 import WithKeplr from "./layout/with-keplr";
 import WithDENS from "./layout/with-dens";
+import Error from "./pages/error";
 
 const FAQ = lazy(() => import("./pages/faq"));
 const EmailNotifications = lazy(
@@ -45,6 +46,7 @@ const router = createBrowserRouter([
             <WithDENS />
           </WithKeplr>
         ),
+        errorElement: <Error />,
         children: [
           {
             index: true,
