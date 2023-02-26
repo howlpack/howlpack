@@ -1,13 +1,6 @@
-import {
-  Box,
-  Button,
-  Card,
-  Divider,
-  InputAdornment,
-  Typography,
-} from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
-import { useMutation } from "react-query";
+import { Box, Button, Card, Divider, Typography } from "@mui/material";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { DeliverTxResponse } from "@cosmjs/stargate";
 import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx.js";
@@ -43,6 +36,7 @@ const updateEmailValidator = Joi.object({
 
 export default function EmailEdit() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data: notifications } = useGetNotification();
   const emailNotification = useMemo(() => {
     return notifications?.find((n: any) => n.email)?.email;
@@ -59,6 +53,12 @@ export default function EmailEdit() {
     event_types: initialEventTypes,
   });
   const [emailChanged, setEmailChanged] = useState(false);
+
+  useEffect(() => {
+    if (emailChanged) {
+      setFormState((m) => m.set("email", ""));
+    }
+  }, [emailChanged, setFormState]);
 
   useEffect(() => {
     if (!emailNotification) {
@@ -105,8 +105,8 @@ export default function EmailEdit() {
   const { mutateAsync: updateNotifications } = useMutation<
     DeliverTxResponse | null,
     unknown,
-    string
-  >(["notifications"], async (encryptedEmail) => {
+    string[]
+  >(["notifications"], async ([masked_addr, encryptedEmail]) => {
     if (!client) {
       return null;
     }
@@ -115,12 +115,25 @@ export default function EmailEdit() {
       return null;
     }
 
-    const masked_addr: string = notification.maskAddr(formState.get("email"));
     const preferences = notification.encodePreference(
       Object.entries(formState.get("event_types"))
         .filter(([, selected]) => selected)
         .map(([p]) => p)
     );
+
+    const newNotification = {
+      email: {
+        masked_addr: masked_addr,
+        encoded_addr: encryptedEmail,
+        preferences: preferences,
+      },
+    };
+
+    const updatedNotifications = notifications
+      .filter(
+        (n: any) => n?.email?.encoded_addr !== emailNotification.encoded_addr
+      )
+      .concat(newNotification);
 
     const updateMsg = {
       typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
@@ -131,15 +144,7 @@ export default function EmailEdit() {
           JSON.stringify({
             update_notifications: {
               token_id: selectedDens,
-              notifications: [
-                {
-                  email: {
-                    masked_addr: masked_addr,
-                    encoded_addr: encryptedEmail,
-                    preferences: preferences,
-                  },
-                },
-              ],
+              notifications: updatedNotifications,
             },
           })
         ),
@@ -148,17 +153,25 @@ export default function EmailEdit() {
       }),
     };
 
-    return await client.signAndBroadcast(keplr.account, [updateMsg], {
-      amount: [{ amount: "0.025", denom: "ujuno" }],
-      gas: "400000",
-    });
+    queryClient.setQueryData(
+      ["get_notifications", keplr.account],
+      updatedNotifications
+    );
+
+    return null;
+    // return await client.signAndBroadcast(keplr.account, [updateMsg], {
+    //   amount: [{ amount: "0.025", denom: "ujuno" }],
+    //   gas: "400000",
+    // });
   });
 
   const subscribeEnabled = useMemo<boolean>(() => {
-    return updateValidator.validate(formState.toJSON()).error == null;
-  }, [formState]);
+    const validator = emailChanged ? updateEmailValidator : updateValidator;
+    return validator.validate(formState.toJSON()).error == null;
+  }, [formState, emailChanged]);
 
   const [, setSnackbar] = useRecoilState(snackbarState);
+  const emailInputRef = useRef<any>();
 
   return (
     <Card variant="outlined" sx={{ mb: 2, p: 4 }}>
@@ -171,14 +184,29 @@ export default function EmailEdit() {
         sx={{
           maxWidth: "450px",
           mt: 1,
+          display: "flex",
         }}
       >
         <Email
           formData={formState}
           onChange={onChange}
           disabled={!emailChanged}
-          onClick={() => setEmailChanged(true)}
+          inputRef={emailInputRef}
         />
+        <Button
+          variant="outlined"
+          sx={{ minWidth: "100px", ml: 1 }}
+          onClick={() => {
+            setEmailChanged(true);
+
+            setTimeout(() => {
+              emailInputRef.current?.focus();
+            }, 100);
+          }}
+          disabled={emailChanged}
+        >
+          Change
+        </Button>
       </Box>
 
       <Box>
@@ -191,12 +219,24 @@ export default function EmailEdit() {
           variant="contained"
           sx={{ mt: 2 }}
           onClick={async () => {
-            const encryptedEmail = await encryptEmail();
+            let masked_addr: string = emailNotification.masked_addr;
+            let encryptedEmail: string = emailNotification.encoded_addr;
+
+            if (emailChanged) {
+              masked_addr = notification.maskAddr(formState.get("email"));
+              encryptedEmail = await encryptEmail();
+            }
+
             if (!encryptedEmail) {
               setSnackbar({ message: "Encrypting email failed" });
               return;
             }
-            await updateNotifications(encryptedEmail);
+            await updateNotifications([masked_addr, encryptedEmail]);
+
+            setSnackbar({
+              message: `Email notification for ${selectedDens} successfully updated`,
+            });
+            navigate("../");
           }}
           disableElevation
           disabled={!subscribeEnabled}

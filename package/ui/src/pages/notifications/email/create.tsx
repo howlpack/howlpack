@@ -1,6 +1,6 @@
 import { Box, Button, Card, Divider, Typography } from "@mui/material";
 import { useEffect, useMemo } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { DeliverTxResponse } from "@cosmjs/stargate";
 import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx.js";
@@ -33,6 +33,7 @@ const subscribeValidator = Joi.object({
 export default function EmailCreate() {
   const navigate = useNavigate();
   const { data: notifications } = useGetNotification();
+  const queryClient = useQueryClient();
   const emailNotification = useMemo(() => {
     return notifications?.find((n: any) => n.email)?.email;
   }, [notifications]);
@@ -91,6 +92,16 @@ export default function EmailCreate() {
         .map(([p]) => p)
     );
 
+    const newNotification = {
+      email: {
+        masked_addr: masked_addr,
+        encoded_addr: encryptedEmail,
+        preferences: preferences,
+      },
+    };
+
+    const updatedNotifications = notifications.concat(newNotification);
+
     const updateMsg = {
       typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
       value: MsgExecuteContract.fromPartial({
@@ -100,15 +111,7 @@ export default function EmailCreate() {
           JSON.stringify({
             update_notifications: {
               token_id: selectedDens,
-              notifications: [
-                {
-                  email: {
-                    masked_addr: masked_addr,
-                    encoded_addr: encryptedEmail,
-                    preferences: preferences,
-                  },
-                },
-              ],
+              notifications: updatedNotifications,
             },
           })
         ),
@@ -117,10 +120,17 @@ export default function EmailCreate() {
       }),
     };
 
-    return await client.signAndBroadcast(keplr.account, [updateMsg], {
-      amount: [{ amount: "0.025", denom: "ujuno" }],
-      gas: "400000",
-    });
+    queryClient.setQueryData(
+      ["get_notifications", keplr.account],
+      updatedNotifications
+    );
+
+    return null;
+
+    // return await client.signAndBroadcast(keplr.account, [updateMsg], {
+    //   amount: [{ amount: "0.025", denom: "ujuno" }],
+    //   gas: "400000",
+    // });
   });
 
   const subscribeEnabled = useMemo<boolean>(() => {
@@ -150,6 +160,11 @@ export default function EmailCreate() {
               return;
             }
             await updateNotifications(encryptedEmail);
+
+            setSnackbar({
+              message: `Email notification for ${selectedDens} successfully created`,
+            });
+            navigate("../");
           }}
           disableElevation
           disabled={!subscribeEnabled}

@@ -18,6 +18,7 @@ export default function Email({
   onClick?: any;
   allowEmpty: any;
   disabled?: boolean;
+  inputRef?: any;
 }) {
   let validator = emailValidator;
 
