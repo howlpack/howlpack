@@ -68,6 +68,10 @@ export default function DENSSelect() {
   );
 
   useEffect(() => {
+    setDensInitialized(true);
+  }, [dens, setDensInitialized]);
+
+  useEffect(() => {
     if (dens?.[0] && !selectedDens) {
       setSelectedDens(dens[0]);
     }
