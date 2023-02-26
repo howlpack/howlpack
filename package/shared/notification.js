@@ -31,3 +31,8 @@ export function encodePreference(prefs) {
 
   return n.toString();
 }
+
+export function maskAddr(addr) {
+  const at = addr.indexOf("@");
+  return `${addr[0]}*****@${addr[at + 1]}*****`;
+}

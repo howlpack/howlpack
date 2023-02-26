@@ -11,9 +11,11 @@ export default function Email({
   onChange,
   allowEmpty,
   disabled = false,
+  ...rest
 }: {
   formData: any;
   onChange: any;
+  onClick?: any;
   allowEmpty: any;
   disabled?: boolean;
 }) {
@@ -47,6 +49,7 @@ export default function Email({
         value={value || ""}
         variant="outlined"
         disabled={disabled}
+        {...rest}
       />
     </Fragment>
   );

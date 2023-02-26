@@ -16,7 +16,9 @@ import WithKeplr from "./layout/with-keplr";
 import WithDENS from "./layout/with-dens";
 
 const FAQ = lazy(() => import("./pages/faq"));
-const EmailNotifications = lazy(() => import("./pages/notifications/email"));
+const EmailNotifications = lazy(
+  () => import("./pages/notifications/email/get")
+);
 const EmailCreateForm = lazy(
   () => import("./pages/notifications/email/create")
 );

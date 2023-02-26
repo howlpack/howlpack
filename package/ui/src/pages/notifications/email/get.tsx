@@ -1,15 +1,14 @@
 import { Box, Button, Card, Divider, Typography } from "@mui/material";
 import { Fragment, useCallback, useEffect, useMemo } from "react";
 import { useRecoilValue } from "recoil";
-import Loading from "../../components/loading";
-import useFormData from "../../hooks/use-form-data";
-import { keplrState } from "../../state/cosmos";
-import { selectedDensState } from "../../state/howlpack";
-import Email from "./components/email";
-import SelectEventType from "./components/select-event-type";
+import Loading from "../../../components/loading";
+import useFormData from "../../../hooks/use-form-data";
+import { keplrState } from "../../../state/cosmos";
+import { selectedDensState } from "../../../state/howlpack";
 import { notification, constants } from "@howlpack/howlpack-shared";
 import { useNavigate } from "react-router-dom";
-import useGetNotification from "../../hooks/use-get-notification";
+import useGetNotification from "../../../hooks/use-get-notification";
+import EmailForm from "../components/email-form";
 
 export default function EmailNotifications() {
   const keplr = useRecoilValue(keplrState);
@@ -57,18 +56,8 @@ export default function EmailNotifications() {
         </Typography>
 
         <Divider sx={{ mt: 1, mb: 4 }} />
-        <Box sx={{ maxWidth: "450px" }}>
-          <Email formData={formState} onChange={fn_void} disabled />
-        </Box>
 
-        <Box>
-          <SelectEventType
-            formData={formState}
-            onChange={fn_void}
-            label={"Currently subscribed to these events"}
-            disabled
-          />
-        </Box>
+        <EmailForm formState={formState} onChange={fn_void} disabled />
 
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Button

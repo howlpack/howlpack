@@ -34,6 +34,7 @@ export const JUNO_RPCS = JSON.parse(import.meta.env.VITE_JUNO_RPCS) as string[];
 
 export const clientState = selector<any | null>({
   key: "clientState",
+  dangerouslyAllowMutability: true,
   get: async ({ get }) => {
     const { SigningCosmWasmClient } = await import("@cosmjs/cosmwasm-stargate");
     const keplr = get(keplrState);
