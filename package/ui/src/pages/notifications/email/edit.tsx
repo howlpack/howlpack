@@ -249,16 +249,16 @@ export default function EmailEdit() {
             setSnackbar({ message: "Please confirm the transaction" });
             try {
               await updateNotifications([masked_addr, encryptedEmail]);
+
+              setSnackbar({
+                message: `Email notification for ${selectedDens} successfully updated`,
+              });
+              navigate("../");
             } catch (e: any) {
               setSnackbar({
                 message: "Error updating notifications: " + e.message,
               });
             }
-
-            setSnackbar({
-              message: `Email notification for ${selectedDens} successfully updated`,
-            });
-            navigate("../");
           }}
           disableElevation
           disabled={!subscribeEnabled || inProgress}

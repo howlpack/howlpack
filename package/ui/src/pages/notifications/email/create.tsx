@@ -175,16 +175,16 @@ export default function EmailCreate() {
             setSnackbar({ message: "Please confirm the transaction" });
             try {
               await updateNotifications(encryptedEmail);
+
+              setSnackbar({
+                message: `Email notification for ${selectedDens} successfully created`,
+              });
+              navigate("../");
             } catch (e: any) {
               setSnackbar({
                 message: "Error creating notifications: " + e.message,
               });
             }
-
-            setSnackbar({
-              message: `Email notification for ${selectedDens} successfully created`,
-            });
-            navigate("../");
           }}
           disableElevation
           disabled={!subscribeEnabled || inProgress}
