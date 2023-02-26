@@ -60,6 +60,20 @@ export default function FAQ() {
       </Box>
       <Box py={2}>
         <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+          🐺 Is my email publicly visible on the blockchain?
+        </Typography>
+        <Divider sx={{ mt: 1, mb: 2 }} />
+        <Typography variant="body2">
+          The email addresses stored on the blockchain are actually encrypted,
+          so they're not publicly visible. The publicly visible version of the
+          email is just a masked version. However, please keep in mind that in
+          order to send notification emails, Howlpack needs to see your email
+          address in our private cloud system. Rest assured that we take privacy
+          and security very seriously.
+        </Typography>
+      </Box>
+      <Box py={2}>
+        <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
           🐺 Can I trust that your smart contract and dapp are safe?
         </Typography>
         <Divider sx={{ mt: 1, mb: 2 }} />
@@ -71,20 +85,6 @@ export default function FAQ() {
           chat. We believe that you should always question the security of any
           platform you use, and we encourage you to do so. In short, don't
           trust, verify!
-        </Typography>
-      </Box>
-      <Box py={2}>
-        <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
-          🐺 Is my email publicly visible on the blockchain?
-        </Typography>
-        <Divider sx={{ mt: 1, mb: 2 }} />
-        <Typography variant="body2">
-          The email addresses stored on the blockchain are actually encrypted,
-          so they're not publicly visible. The publicly visible version of the
-          email is just a masked version. However, please keep in mind that in
-          order to send notification emails, Howlpack needs to see your email
-          address in our private cloud system. Rest assured that we take privacy
-          and security very seriously.
         </Typography>
       </Box>
     </Fragment>

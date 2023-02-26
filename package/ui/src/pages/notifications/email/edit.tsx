@@ -1,5 +1,12 @@
-import { Box, Button, Card, Divider, Typography } from "@mui/material";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Box,
+  Button,
+  Card,
+  CircularProgress,
+  Divider,
+  Typography,
+} from "@mui/material";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { DeliverTxResponse } from "@cosmjs/stargate";
@@ -102,68 +109,74 @@ export default function EmailEdit() {
         .then((res) => res.text())
   );
 
-  const { mutateAsync: updateNotifications } = useMutation<
-    DeliverTxResponse | null,
-    unknown,
-    string[]
-  >(["notifications"], async ([masked_addr, encryptedEmail]) => {
-    if (!client) {
-      return null;
-    }
+  const { mutateAsync: updateNotifications, isLoading: isUpdateLoading } =
+    useMutation<DeliverTxResponse | null, unknown, string[]>(
+      ["notifications"],
+      async ([masked_addr, encryptedEmail]) => {
+        if (!client) {
+          return null;
+        }
 
-    if (!keplr.account) {
-      return null;
-    }
+        if (!keplr.account) {
+          return null;
+        }
 
-    const preferences = notification.encodePreference(
-      Object.entries(formState.get("event_types"))
-        .filter(([, selected]) => selected)
-        .map(([p]) => p)
+        const preferences = notification.encodePreference(
+          Object.entries(formState.get("event_types"))
+            .filter(([, selected]) => selected)
+            .map(([p]) => p)
+        );
+
+        const newNotification = {
+          email: {
+            masked_addr: masked_addr,
+            encoded_addr: encryptedEmail,
+            preferences: preferences,
+          },
+        };
+
+        const updatedNotifications = notifications
+          .filter(
+            (n: any) =>
+              n?.email?.encoded_addr !== emailNotification.encoded_addr
+          )
+          .concat(newNotification);
+
+        const updateMsg = {
+          typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+          value: MsgExecuteContract.fromPartial({
+            sender: keplr.account,
+            contract: import.meta.env.VITE_NOTIFICATIONS_CONTRACT,
+            msg: toUtf8(
+              JSON.stringify({
+                update_notifications: {
+                  token_id: selectedDens,
+                  notifications: updatedNotifications,
+                },
+              })
+            ),
+
+            funds: [],
+          }),
+        };
+
+        const result = await client.signAndBroadcast(
+          keplr.account,
+          [updateMsg],
+          {
+            amount: [{ amount: "0.025", denom: "ujuno" }],
+            gas: "400000",
+          }
+        );
+
+        queryClient.setQueryData(
+          ["get_notifications", keplr.account],
+          updatedNotifications
+        );
+
+        return result;
+      }
     );
-
-    const newNotification = {
-      email: {
-        masked_addr: masked_addr,
-        encoded_addr: encryptedEmail,
-        preferences: preferences,
-      },
-    };
-
-    const updatedNotifications = notifications
-      .filter(
-        (n: any) => n?.email?.encoded_addr !== emailNotification.encoded_addr
-      )
-      .concat(newNotification);
-
-    const updateMsg = {
-      typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
-      value: MsgExecuteContract.fromPartial({
-        sender: keplr.account,
-        contract: import.meta.env.VITE_NOTIFICATIONS_CONTRACT,
-        msg: toUtf8(
-          JSON.stringify({
-            update_notifications: {
-              token_id: selectedDens,
-              notifications: updatedNotifications,
-            },
-          })
-        ),
-
-        funds: [],
-      }),
-    };
-
-    queryClient.setQueryData(
-      ["get_notifications", keplr.account],
-      updatedNotifications
-    );
-
-    return null;
-    // return await client.signAndBroadcast(keplr.account, [updateMsg], {
-    //   amount: [{ amount: "0.025", denom: "ujuno" }],
-    //   gas: "400000",
-    // });
-  });
 
   const subscribeEnabled = useMemo<boolean>(() => {
     const validator = emailChanged ? updateEmailValidator : updateValidator;
@@ -172,6 +185,8 @@ export default function EmailEdit() {
 
   const [, setSnackbar] = useRecoilState(snackbarState);
   const emailInputRef = useRef<any>();
+
+  const inProgress = !subscribeEnabled || isUpdateLoading;
 
   return (
     <Card variant="outlined" sx={{ mb: 2, p: 4 }}>
@@ -231,7 +246,14 @@ export default function EmailEdit() {
               setSnackbar({ message: "Encrypting email failed" });
               return;
             }
-            await updateNotifications([masked_addr, encryptedEmail]);
+            setSnackbar({ message: "Please confirm the transaction" });
+            try {
+              await updateNotifications([masked_addr, encryptedEmail]);
+            } catch (e: any) {
+              setSnackbar({
+                message: "Error updating notifications: " + e.message,
+              });
+            }
 
             setSnackbar({
               message: `Email notification for ${selectedDens} successfully updated`,
@@ -239,9 +261,15 @@ export default function EmailEdit() {
             navigate("../");
           }}
           disableElevation
-          disabled={!subscribeEnabled}
+          disabled={inProgress}
         >
-          Update subscription
+          {inProgress ? (
+            <Fragment>
+              <CircularProgress size={15} sx={{ mr: 1 }} /> Loading
+            </Fragment>
+          ) : (
+            "Update subscription"
+          )}
         </Button>
         <Button
           color="secondary"
@@ -251,6 +279,7 @@ export default function EmailEdit() {
             navigate("../");
           }}
           disableElevation
+          disabled={inProgress}
         >
           Cancel
         </Button>

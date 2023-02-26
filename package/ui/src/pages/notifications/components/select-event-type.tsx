@@ -1,6 +1,5 @@
 import {
   Checkbox,
-  fabClasses,
   FormControl,
   FormControlLabel,
   FormGroup,

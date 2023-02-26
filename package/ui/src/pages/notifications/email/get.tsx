@@ -1,18 +1,32 @@
-import { Box, Button, Card, Divider, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CircularProgress,
+  Divider,
+  Typography,
+} from "@mui/material";
 import { Fragment, useCallback, useEffect, useMemo } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import Loading from "../../../components/loading";
 import useFormData from "../../../hooks/use-form-data";
-import { keplrState } from "../../../state/cosmos";
+import { clientState, keplrState } from "../../../state/cosmos";
 import { selectedDensState } from "../../../state/howlpack";
 import { notification, constants } from "@howlpack/howlpack-shared";
 import { useNavigate } from "react-router-dom";
 import useGetNotification from "../../../hooks/use-get-notification";
 import EmailForm from "../components/email-form";
+import { useMutation, useQueryClient } from "react-query";
+import { DeliverTxResponse } from "@cosmjs/stargate";
+import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx.js";
+import { toUtf8 } from "@cosmjs/encoding";
+import { snackbarState } from "../../../state/snackbar";
 
 export default function EmailNotifications() {
   const keplr = useRecoilValue(keplrState);
   const selectedDens = useRecoilValue(selectedDensState(keplr.account));
+  const client = useRecoilValue(clientState);
+  const queryClient = useQueryClient();
   const { formState, setFormState } = useFormData({});
   const navigate = useNavigate();
 
@@ -44,6 +58,65 @@ export default function EmailNotifications() {
     setFormState((s) => s.set("email", emailNotification.masked_addr));
   }, [emailNotification, setFormState]);
 
+  const {
+    mutateAsync: clearEmailNotification,
+    isLoading: isClearEmailLoading,
+  } = useMutation<DeliverTxResponse | null, unknown>(
+    ["notifications"],
+    async () => {
+      if (!client) {
+        return null;
+      }
+
+      if (!keplr.account) {
+        return null;
+      }
+
+      const updatedNotifications = notifications.filter(
+        (n: any) => n?.email?.encoded_addr !== emailNotification.encoded_addr
+      );
+
+      const updateMsg = {
+        typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+        value: MsgExecuteContract.fromPartial({
+          sender: keplr.account,
+          contract: import.meta.env.VITE_NOTIFICATIONS_CONTRACT,
+          msg: toUtf8(
+            JSON.stringify({
+              update_notifications: {
+                token_id: selectedDens,
+                notifications: updatedNotifications,
+              },
+            })
+          ),
+
+          funds: [],
+        }),
+      };
+
+      const result = await client.signAndBroadcast(keplr.account, [updateMsg], {
+        amount: [{ amount: "0.025", denom: "ujuno" }],
+        gas: "400000",
+      });
+
+      queryClient.setQueryData(
+        ["get_notifications", keplr.account],
+        updatedNotifications
+      );
+
+      setFormState((s) =>
+        s.merge({
+          email: "",
+          event_types: {},
+        })
+      );
+
+      return result;
+    }
+  );
+
+  const [, setSnackbar] = useRecoilState(snackbarState);
+
   if (notifications == null) {
     return <Loading></Loading>;
   }
@@ -68,18 +141,42 @@ export default function EmailNotifications() {
               navigate(emailNotification ? "./update" : "./create");
             }}
             disableElevation
+            disabled={isClearEmailLoading}
           >
             Change settings
           </Button>
-          <Button
-            color="secondary"
-            variant="text"
-            sx={{ mt: 2 }}
-            onClick={async () => {}}
-            disableElevation
-          >
-            Unsubscribe from all
-          </Button>
+          {emailNotification && (
+            <Button
+              color="secondary"
+              variant="text"
+              sx={{ mt: 2 }}
+              onClick={async () => {
+                setSnackbar({ message: "Please confirm the transaction" });
+
+                try {
+                  await clearEmailNotification();
+                } catch (e: any) {
+                  setSnackbar({
+                    message: "Error clearing notification: " + e.message,
+                  });
+                }
+
+                setSnackbar({
+                  message: `Email notification for ${selectedDens} successfully cleared`,
+                });
+              }}
+              disabled={isClearEmailLoading}
+              disableElevation
+            >
+              {isClearEmailLoading ? (
+                <Fragment>
+                  <CircularProgress size={15} sx={{ mr: 1 }} /> Loading
+                </Fragment>
+              ) : (
+                "Unsubscribe from all"
+              )}
+            </Button>
+          )}
         </Box>
       </Card>
     </Fragment>

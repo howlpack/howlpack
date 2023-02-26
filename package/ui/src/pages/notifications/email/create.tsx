@@ -1,5 +1,12 @@
-import { Box, Button, Card, Divider, Typography } from "@mui/material";
-import { useEffect, useMemo } from "react";
+import {
+  Box,
+  Button,
+  Card,
+  CircularProgress,
+  Divider,
+  Typography,
+} from "@mui/material";
+import { Fragment, useEffect, useMemo } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { DeliverTxResponse } from "@cosmjs/stargate";
@@ -45,7 +52,7 @@ export default function EmailCreate() {
   }, [emailNotification, navigate]);
 
   const { formState, onChange } = useFormData({
-    email: "a@a.com",
+    email: "",
     event_types: initialEventTypes,
   });
 
@@ -53,9 +60,8 @@ export default function EmailCreate() {
   const selectedDens = useRecoilValue(selectedDensState(keplr.account));
   const client = useRecoilValue(clientState);
 
-  const { mutateAsync: encryptEmail } = useMutation(
-    ["/api/crypto/encrypt", formState.get("email")],
-    async () =>
+  const { mutateAsync: encryptEmail, isLoading: isEncryptLoading } =
+    useMutation(["/api/crypto/encrypt", formState.get("email")], async () =>
       fetch(
         url.backendUrl("/api/crypto/encrypt", import.meta.env.VITE_BACKEND_URL),
         {
@@ -70,68 +76,74 @@ export default function EmailCreate() {
       )
         .then(fetchThrowHttpError)
         .then((res) => res.text())
-  );
-
-  const { mutateAsync: updateNotifications } = useMutation<
-    DeliverTxResponse | null,
-    unknown,
-    string
-  >(["notifications"], async (encryptedEmail) => {
-    if (!client) {
-      return null;
-    }
-
-    if (!keplr.account) {
-      return null;
-    }
-
-    const masked_addr: string = notification.maskAddr(formState.get("email"));
-    const preferences = notification.encodePreference(
-      Object.entries(formState.get("event_types"))
-        .filter(([, selected]) => selected)
-        .map(([p]) => p)
     );
 
-    const newNotification = {
-      email: {
-        masked_addr: masked_addr,
-        encoded_addr: encryptedEmail,
-        preferences: preferences,
-      },
-    };
+  const { mutateAsync: updateNotifications, isLoading: isUpdateLoading } =
+    useMutation<DeliverTxResponse | null, unknown, string>(
+      ["notifications"],
+      async (encryptedEmail) => {
+        if (!client) {
+          return null;
+        }
 
-    const updatedNotifications = notifications.concat(newNotification);
+        if (!keplr.account) {
+          return null;
+        }
 
-    const updateMsg = {
-      typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
-      value: MsgExecuteContract.fromPartial({
-        sender: keplr.account,
-        contract: import.meta.env.VITE_NOTIFICATIONS_CONTRACT,
-        msg: toUtf8(
-          JSON.stringify({
-            update_notifications: {
-              token_id: selectedDens,
-              notifications: updatedNotifications,
-            },
-          })
-        ),
+        const masked_addr: string = notification.maskAddr(
+          formState.get("email")
+        );
+        const preferences = notification.encodePreference(
+          Object.entries(formState.get("event_types"))
+            .filter(([, selected]) => selected)
+            .map(([p]) => p)
+        );
 
-        funds: [],
-      }),
-    };
+        const newNotification = {
+          email: {
+            masked_addr: masked_addr,
+            encoded_addr: encryptedEmail,
+            preferences: preferences,
+          },
+        };
 
-    queryClient.setQueryData(
-      ["get_notifications", keplr.account],
-      updatedNotifications
+        const updatedNotifications = notifications.concat(newNotification);
+
+        const updateMsg = {
+          typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+          value: MsgExecuteContract.fromPartial({
+            sender: keplr.account,
+            contract: import.meta.env.VITE_NOTIFICATIONS_CONTRACT,
+            msg: toUtf8(
+              JSON.stringify({
+                update_notifications: {
+                  token_id: selectedDens,
+                  notifications: updatedNotifications,
+                },
+              })
+            ),
+
+            funds: [],
+          }),
+        };
+
+        const result = await client.signAndBroadcast(
+          keplr.account,
+          [updateMsg],
+          {
+            amount: [{ amount: "0.025", denom: "ujuno" }],
+            gas: "400000",
+          }
+        );
+
+        queryClient.setQueryData(
+          ["get_notifications", keplr.account],
+          updatedNotifications
+        );
+
+        return result;
+      }
     );
-
-    return null;
-
-    // return await client.signAndBroadcast(keplr.account, [updateMsg], {
-    //   amount: [{ amount: "0.025", denom: "ujuno" }],
-    //   gas: "400000",
-    // });
-  });
 
   const subscribeEnabled = useMemo<boolean>(() => {
     return subscribeValidator.validate(formState.toJSON()).error == null;
@@ -139,6 +151,7 @@ export default function EmailCreate() {
 
   const [, setSnackbar] = useRecoilState(snackbarState);
 
+  const inProgress = !subscribeEnabled || isEncryptLoading || isUpdateLoading;
   return (
     <Card variant="outlined" sx={{ mb: 2, p: 4 }}>
       <Typography variant="h6">
@@ -159,7 +172,14 @@ export default function EmailCreate() {
               setSnackbar({ message: "Encrypting email failed" });
               return;
             }
-            await updateNotifications(encryptedEmail);
+            setSnackbar({ message: "Please confirm the transaction" });
+            try {
+              await updateNotifications(encryptedEmail);
+            } catch (e: any) {
+              setSnackbar({
+                message: "Error creating notifications: " + e.message,
+              });
+            }
 
             setSnackbar({
               message: `Email notification for ${selectedDens} successfully created`,
@@ -167,9 +187,15 @@ export default function EmailCreate() {
             navigate("../");
           }}
           disableElevation
-          disabled={!subscribeEnabled}
+          disabled={inProgress}
         >
-          Subscribe
+          {inProgress ? (
+            <Fragment>
+              <CircularProgress size={15} sx={{ mr: 1 }} /> Loading
+            </Fragment>
+          ) : (
+            "Subscribe"
+          )}
         </Button>
 
         <Button
@@ -180,6 +206,7 @@ export default function EmailCreate() {
             navigate("../");
           }}
           disableElevation
+          disabled={inProgress}
         >
           Cancel
         </Button>
