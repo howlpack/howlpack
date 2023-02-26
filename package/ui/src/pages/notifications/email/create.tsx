@@ -151,7 +151,7 @@ export default function EmailCreate() {
 
   const [, setSnackbar] = useRecoilState(snackbarState);
 
-  const inProgress = !subscribeEnabled || isEncryptLoading || isUpdateLoading;
+  const inProgress = isEncryptLoading || isUpdateLoading;
   return (
     <Card variant="outlined" sx={{ mb: 2, p: 4 }}>
       <Typography variant="h6">
@@ -187,7 +187,7 @@ export default function EmailCreate() {
             navigate("../");
           }}
           disableElevation
-          disabled={inProgress}
+          disabled={!subscribeEnabled || inProgress}
         >
           {inProgress ? (
             <Fragment>

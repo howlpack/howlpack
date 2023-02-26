@@ -186,7 +186,7 @@ export default function EmailEdit() {
   const [, setSnackbar] = useRecoilState(snackbarState);
   const emailInputRef = useRef<any>();
 
-  const inProgress = !subscribeEnabled || isUpdateLoading;
+  const inProgress = isUpdateLoading;
 
   return (
     <Card variant="outlined" sx={{ mb: 2, p: 4 }}>
@@ -261,7 +261,7 @@ export default function EmailEdit() {
             navigate("../");
           }}
           disableElevation
-          disabled={inProgress}
+          disabled={!subscribeEnabled || inProgress}
         >
           {inProgress ? (
             <Fragment>
