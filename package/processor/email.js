@@ -64,8 +64,8 @@ export function composeFollowerEmail(receiver, follower) {
     subject: `Congrats! You have a new follower!`,
     body: `Hi ${receiver},
     
-We're excited to let you know that you have a new follower on Howl ${follower} is interested in the content you create.
-Follow this link to check howls of ${follower}: ${new URL(follower, HOWL_URL)}
+We're excited to let you know that you have a new follower on Howl! ${follower} is interested in the content you create.
+Follow this link to check howls from ${follower}: ${new URL(follower, HOWL_URL)}
 
 If you have any questions or concerns, please don't hesitate to reach out to us. Thanks for being a part of Howlpack!
 
