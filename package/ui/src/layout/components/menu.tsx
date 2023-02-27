@@ -4,7 +4,6 @@ import {
   ListItemIcon,
   ListItemText,
   ListSubheader,
-  Tooltip,
 } from "@mui/material";
 import { Fragment } from "react";
 import WebhookIcon from "@mui/icons-material/Webhook";
@@ -40,20 +39,18 @@ export default function Menu() {
             </ListItemIcon>
             <ListItemText primary="Email" />
           </ListItemButton>
-          <Tooltip title="Coming soon..." placement="left">
-            <span>
-              <ListItemButton
-                disabled
-                component={Link}
-                to={"/notifications/webhook"}
-              >
-                <ListItemIcon>
-                  <WebhookIcon />
-                </ListItemIcon>
-                <ListItemText primary="Webhook" />
-              </ListItemButton>
-            </span>
-          </Tooltip>
+          <span>
+            <ListItemButton
+              component={Link}
+              to={"/notifications/webhooks"}
+              selected={currentPathname === "/notifications/webhooks"}
+            >
+              <ListItemIcon>
+                <WebhookIcon />
+              </ListItemIcon>
+              <ListItemText primary="Webhooks" />
+            </ListItemButton>
+          </span>
         </List>
       </List>
       <List

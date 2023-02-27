@@ -16,6 +16,16 @@ import WithKeplr from "./layout/with-keplr";
 import WithDENS from "./layout/with-dens";
 import Error from "./pages/error";
 
+const WebhookListNotifications = lazy(
+  () => import("./pages/notifications/webhook/list")
+);
+const WebhookGetNotifications = lazy(
+  () => import("./pages/notifications/webhook/get")
+);
+const WebhookCreateNotifications = lazy(
+  () => import("./pages/notifications/webhook/create")
+);
+
 const FAQ = lazy(() => import("./pages/faq"));
 const Roadmap = lazy(() => import("./pages/roadmap"));
 const EmailNotifications = lazy(
@@ -30,6 +40,11 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <AppLayout />,
+    errorElement: (
+      <div style={{ width: "50%", margin: "50px auto" }}>
+        <Error />
+      </div>
+    ),
     children: [
       { index: true, element: <Navigate to="/notifications" replace /> },
       {
@@ -80,6 +95,28 @@ const router = createBrowserRouter([
               {
                 path: "update",
                 element: <EmailEditForm />,
+              },
+            ],
+          },
+          {
+            path: "webhooks",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <Outlet />
+              </Suspense>
+            ),
+            children: [
+              {
+                index: true,
+                element: <WebhookListNotifications />,
+              },
+              {
+                path: ":ix",
+                element: <WebhookGetNotifications />,
+              },
+              {
+                path: "create",
+                element: <WebhookCreateNotifications />,
               },
             ],
           },

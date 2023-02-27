@@ -12,9 +12,11 @@ export default function Error() {
         <Typography variant="body1">
           Sorry, an unexpected error has occurred.
         </Typography>
-        <Typography variant="body1" sx={{ my: 2 }}>
-          <pre>{error.statusText || error.message}</pre>
-        </Typography>
+        <pre>
+          <Typography variant="body1" sx={{ my: 2 }}>
+            {error.statusText || error.message}
+          </Typography>
+        </pre>
         <Typography variant="body1">You can try to reload the page</Typography>
         <Button
           color="secondary"

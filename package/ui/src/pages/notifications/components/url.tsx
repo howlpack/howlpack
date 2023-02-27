@@ -3,9 +3,9 @@ import { MemoTextField } from "../../../components/memo-textfield";
 import useFormValidation from "../../../hooks/use-form-validation";
 import Joi from "joi";
 
-export const emailValidator = Joi.string().email({ tlds: { allow: false } });
+export const urlValidator = Joi.string().uri();
 
-export default function Email({
+export default function UrlInput({
   formData,
   onChange,
   allowEmpty,
@@ -19,18 +19,18 @@ export default function Email({
   disabled?: boolean;
   inputRef?: any;
 }) {
-  let validator = emailValidator;
+  let validator = urlValidator;
 
   if (allowEmpty) {
     validator = validator.allow("");
   }
 
   const [invalidEmail, setEmailBlurred] = useFormValidation(
-    formData.get("email"),
+    formData.get("url"),
     validator.messages({})
   );
 
-  const value = formData.get("email");
+  const value = formData.get("url");
 
   return (
     <Fragment>
@@ -38,9 +38,9 @@ export default function Email({
         error={Boolean(invalidEmail)}
         fullWidth
         helperText={invalidEmail as string}
-        id="email"
-        label={"Email"}
-        name="email"
+        id="url"
+        label={"URL"}
+        name="url"
         //@ts-ignore
         onBlur={setEmailBlurred}
         onChange={onChange}
