@@ -9,7 +9,14 @@ function build(entrypoint: string, minify: boolean) {
     platform: "node",
     target: "node18",
     mainFields: ["module", "main"],
-    external: ["aws-sdk"],
+    external: [
+      "aws-sdk",
+      "@aws-sdk/client-ses",
+      "@aws-sdk/client-sqs",
+      "@aws-sdk/client-dynamodb",
+      "@aws-sdk/util-dynamodb",
+      "@aws-sdk/lib-dynamodb",
+    ],
     entryPoints: [entrypoint],
     write: false,
   });
