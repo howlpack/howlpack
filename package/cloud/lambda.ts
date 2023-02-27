@@ -237,6 +237,41 @@ new aws.lambda.EventSourceMapping(lambdaPackageName + "-notificationEmail", {
   },
 });
 
+export const webhookProcessor = new aws.lambda.Function(
+  lambdaPackageName + "-webhookProcessor",
+  {
+    code: buildCodeAsset(
+      require.resolve("@howlpack/howlpack-processor/webhook.js")
+    ),
+    handler: "index.handler",
+    runtime: "nodejs18.x",
+    role: lambdaRole.arn,
+    timeout: 10,
+    memorySize: 128,
+    environment: {
+      variables: {
+        ...environment,
+      },
+    },
+  }
+);
+
+new aws.lambda.EventSourceMapping(lambdaPackageName + "-notificationWebhook", {
+  eventSourceArn: notification_queue.arn,
+  functionName: webhookProcessor.arn,
+  filterCriteria: {
+    filters: [
+      {
+        pattern: JSON.stringify({
+          body: {
+            type: ["webhook"],
+          },
+        }),
+      },
+    ],
+  },
+});
+
 const cronRule = new aws.cloudwatch.EventRule(lambdaPackageName + "-cron", {
   scheduleExpression: "rate(1 minute)",
 });

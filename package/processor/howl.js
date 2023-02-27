@@ -13,6 +13,12 @@ import {
   composeMentionedEmail,
   composeReplyEmail,
 } from "./email.js";
+import {
+  composeFollowerWebhook,
+  composeLikesWebhook,
+  composeMentionedWebhook,
+  composeReplyWebhook,
+} from "./webhook.js";
 
 export async function handler(event) {
   for (const record of event.Records) {
@@ -55,15 +61,15 @@ export async function handler(event) {
         });
       }
       if (hasPreference(webhook?.preferences, EVENT_TYPES.NEW_FOLLOWER)) {
-        // TODO
-        // sqsSendCommands.push({
-        //   ...composeFollowerWebhook(
-        //     followerMsg.receiver,
-        //     followerMsg.attrs.follower
-        //   ),
-        //   to: decrypt(webhook.encoded_url),
-        //   type: HOWL_QUEUE_TYPES.WEBHOOK,
-        // });
+        sqsSendCommands.push({
+          ...composeFollowerWebhook(
+            followerMsg.receiver,
+            followerMsg.attrs.follower
+          ),
+          to: decrypt(webhook.encoded_url),
+          event_type: EVENT_TYPES.NEW_FOLLOWER,
+          type: HOWL_QUEUE_TYPES.WEBHOOK,
+        });
       }
     } else if (parsedBody.event === EVENT_TYPES.NEW_REPLY) {
       /** @type {(import("@howlpack/howlpack-shared/types").HowlReplyQueueMsg)} */
@@ -82,16 +88,16 @@ export async function handler(event) {
       }
 
       if (hasPreference(webhook?.preferences, EVENT_TYPES.NEW_REPLY)) {
-        // TODO
-        // sqsSendCommands.push({
-        //   ...composeReplyWebhook(
-        //     replyMsg.receiver,
-        //     replyMsg.attrs.replyAuthor,
-        //     replyMsg.attrs.replyId
-        //   ),
-        //   to: decrypt(webhook.encoded_url),
-        //   type: HOWL_QUEUE_TYPES.WEBHOOK,
-        // });
+        sqsSendCommands.push({
+          ...composeReplyWebhook(
+            replyMsg.receiver,
+            replyMsg.attrs.replyAuthor,
+            replyMsg.attrs.replyId
+          ),
+          to: decrypt(webhook.encoded_url),
+          event_type: EVENT_TYPES.NEW_REPLY,
+          type: HOWL_QUEUE_TYPES.WEBHOOK,
+        });
       }
     } else if (parsedBody.event === EVENT_TYPES.NEW_LIKE) {
       /** @type {(import("@howlpack/howlpack-shared/types").HowlLikeQueueMsg)} */
@@ -111,17 +117,17 @@ export async function handler(event) {
       }
 
       if (hasPreference(webhook?.preferences, EVENT_TYPES.NEW_LIKE)) {
-        // TODO
-        // sqsSendCommands.push({
-        //   ...composeLikeWebhook(
-        //     replyMsg.receiver,
-        //     replyMsg.attrs.postId,
-        //     replyMsg.attrs.amount,
-        //     replyMsg.attrs.staker
-        //   ),
-        //   to: decrypt(webhook.encoded_url),
-        //   type: HOWL_QUEUE_TYPES.WEBHOOK,
-        // });
+        sqsSendCommands.push({
+          ...composeLikesWebhook(
+            likeMsg.receiver,
+            likeMsg.attrs.postId,
+            likeMsg.attrs.amount,
+            likeMsg.attrs.staker
+          ),
+          to: decrypt(webhook.encoded_url),
+          event_type: EVENT_TYPES.NEW_LIKE,
+          type: HOWL_QUEUE_TYPES.WEBHOOK,
+        });
       }
     } else if (parsedBody.event === EVENT_TYPES.NEW_MENTION) {
       /** @type {(import("@howlpack/howlpack-shared/types").HowlMentionedQueueMsg)} */
@@ -140,16 +146,16 @@ export async function handler(event) {
       }
 
       if (hasPreference(webhook?.preferences, EVENT_TYPES.NEW_MENTION)) {
-        // TODO
-        // sqsSendCommands.push({
-        //   ...composeMentionedWebhook(
-        //     mentionedMsg.receiver,
-        //     mentionedMsg.attrs.author,
-        //     mentionedMsg.attrs.postId
-        //   ),
-        //   to: decrypt(webhook.encoded_url),
-        //   type: HOWL_QUEUE_TYPES.WEBHOOK,
-        // });
+        sqsSendCommands.push({
+          ...composeMentionedWebhook(
+            mentionedMsg.receiver,
+            mentionedMsg.attrs.author,
+            mentionedMsg.attrs.postId
+          ),
+          to: decrypt(webhook.encoded_url),
+          event_type: EVENT_TYPES.NEW_MENTION,
+          type: HOWL_QUEUE_TYPES.WEBHOOK,
+        });
       }
     }
 
