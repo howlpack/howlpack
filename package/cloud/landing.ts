@@ -143,6 +143,7 @@ const distributionArgs = {
     minTtl: 0,
     defaultTtl: tenMinutes,
     maxTtl: tenMinutes,
+    compress: true,
   },
 
   // "All" is the most broad distribution, and also the most expensive.
