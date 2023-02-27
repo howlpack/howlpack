@@ -1,5 +1,6 @@
 import { Box, Grid, Typography } from "@mui/material";
 import { lazy, Suspense } from "react";
+import { Link as MuiLink } from "@mui/material";
 import { Link } from "react-router-dom";
 import Loading from "../../components/loading";
 
@@ -20,7 +21,12 @@ export default function Header() {
         sm={"auto"}
         sx={{ textAlign: { xs: "center" }, mb: { xs: 3, sm: 0 } }}
       >
-        <Link to="/" style={{ textDecoration: "none" }}>
+        <MuiLink
+          to="/"
+          color={"secondary"}
+          style={{ textDecoration: "none" }}
+          component={Link}
+        >
           <Typography variant="h1">
             🐺
             <Box sx={{ mx: 2, display: "inline-block" }} component={"span"}>
@@ -29,7 +35,7 @@ export default function Header() {
             🎒
           </Typography>
           <Typography variant="caption">[unofficial extension]</Typography>
-        </Link>
+        </MuiLink>
       </Grid>
 
       <Grid
