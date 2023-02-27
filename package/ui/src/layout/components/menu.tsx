@@ -9,6 +9,7 @@ import {
 import { Fragment } from "react";
 import WebhookIcon from "@mui/icons-material/Webhook";
 import MarkEmailUnreadIcon from "@mui/icons-material/MarkEmailUnread";
+import RouteIcon from "@mui/icons-material/Route";
 import LiveHelpIcon from "@mui/icons-material/LiveHelp";
 
 import { Link, useLocation } from "react-router-dom";
@@ -71,6 +72,16 @@ export default function Menu() {
               <LiveHelpIcon />
             </ListItemIcon>
             <ListItemText primary="FAQ" />
+          </ListItemButton>
+          <ListItemButton
+            component={Link}
+            to={"/roadmap"}
+            selected={currentPathname === "/roadmap"}
+          >
+            <ListItemIcon>
+              <RouteIcon />
+            </ListItemIcon>
+            <ListItemText primary="Roadmap" />
           </ListItemButton>
         </List>
       </List>

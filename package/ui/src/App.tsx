@@ -17,6 +17,7 @@ import WithDENS from "./layout/with-dens";
 import Error from "./pages/error";
 
 const FAQ = lazy(() => import("./pages/faq"));
+const Roadmap = lazy(() => import("./pages/roadmap"));
 const EmailNotifications = lazy(
   () => import("./pages/notifications/email/get")
 );
@@ -36,6 +37,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<Loading />}>
             <FAQ />
+          </Suspense>
+        ),
+      },
+      {
+        path: "roadmap",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Roadmap />
           </Suspense>
         ),
       },
