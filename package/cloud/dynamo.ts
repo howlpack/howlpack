@@ -10,7 +10,8 @@ export const lastProcessedBlockTable = new aws.dynamodb.Table(
         type: "S",
       },
     ],
-    billingMode: "PAY_PER_REQUEST",
+    readCapacity: 1,
+    writeCapacity: 1,
     hashKey: "id",
     tags: {
       Environment: pulumi.getStack(),
