@@ -28,6 +28,12 @@ export default function FAQ() {
                 {howlpage}
               </Link>
             </li>
+            <li>
+              <Typography variant="body1">Contract address:</Typography>
+              <Typography variant="caption">
+                <code>{import.meta.env.VITE_NOTIFICATIONS_CONTRACT}</code>
+              </Typography>
+            </li>
           </ul>
         </Box>
       </Card>
