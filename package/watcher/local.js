@@ -1,7 +1,7 @@
 import { withClient } from "@howlpack/howlpack-shared/cosmwasm.js";
 import { handler, processTx } from "./index.js";
 
-handler();
+// handler();
 
 async function tryProcess(txhash) {
   await withClient(async (client) => {
@@ -22,4 +22,7 @@ const NEW_REPLY_TX =
 const NEW_LIKE_TX =
   "0C2E1A457B5E6C2F96438A4B26C4D8D170A8024001E55E6E6C66693650B200DC";
 
-// tryProcess(NEW_LIKE_TX).catch((e) => console.error(e));
+const NEW_MENTION_TX =
+  "85DC79EC9DC82DF161427E0066B2C55746881B6F9A2FC225A28A3220D0D98350";
+
+tryProcess(NEW_MENTION_TX).catch((e) => console.error(e));

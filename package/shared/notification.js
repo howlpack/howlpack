@@ -4,6 +4,7 @@ const positions = [
   EVENT_TYPES.NEW_FOLLOWER,
   EVENT_TYPES.NEW_REPLY,
   EVENT_TYPES.NEW_LIKE,
+  EVENT_TYPES.NEW_MENTION,
 ];
 
 function setBit(n, i) {

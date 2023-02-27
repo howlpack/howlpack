@@ -12,6 +12,7 @@ const labels: { [x: string]: string } = {
   [constants.EVENT_TYPES.NEW_FOLLOWER]: "New Follower",
   [constants.EVENT_TYPES.NEW_REPLY]: "New Reply",
   [constants.EVENT_TYPES.NEW_LIKE]: "New Like(s)",
+  [constants.EVENT_TYPES.NEW_MENTION]: "New mention",
 };
 
 export default function SelectEventType({

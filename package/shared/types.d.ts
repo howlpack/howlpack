@@ -35,3 +35,12 @@ export type HowlLikeQueueMsg = {
     staker: string;
   };
 };
+
+export type HowlMentionedQueueMsg = {
+  receiver: string;
+  event: "new-mention";
+  attrs: {
+    postId: string;
+    author: string;
+  };
+};

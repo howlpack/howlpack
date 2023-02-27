@@ -43,6 +43,7 @@ export async function processBlock(block) {
   return result
     .filter((s) => s.status === "fulfilled")
     .map((s) => s.value)
+    .flat()
     .filter(Boolean);
 }
 

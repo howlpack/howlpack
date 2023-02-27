@@ -10,6 +10,7 @@ import { decrypt } from "@howlpack/howlpack-shared/crypto.js";
 import {
   composeFollowerEmail,
   composeLikesEmail,
+  composeMentionedEmail,
   composeReplyEmail,
 } from "./email.js";
 
@@ -94,15 +95,15 @@ export async function handler(event) {
       }
     } else if (parsedBody.event === EVENT_TYPES.NEW_LIKE) {
       /** @type {(import("@howlpack/howlpack-shared/types").HowlLikeQueueMsg)} */
-      const replyMsg = parsedBody;
+      const likeMsg = parsedBody;
 
       if (hasPreference(email?.preferences, EVENT_TYPES.NEW_LIKE)) {
         sqsSendCommands.push({
           ...composeLikesEmail(
-            replyMsg.receiver,
-            replyMsg.attrs.postId,
-            replyMsg.attrs.amount,
-            replyMsg.attrs.staker
+            likeMsg.receiver,
+            likeMsg.attrs.postId,
+            likeMsg.attrs.amount,
+            likeMsg.attrs.staker
           ),
           to: decrypt(email.encoded_addr),
           type: HOWL_QUEUE_TYPES.EMAIL,
@@ -117,6 +118,34 @@ export async function handler(event) {
         //     replyMsg.attrs.postId,
         //     replyMsg.attrs.amount,
         //     replyMsg.attrs.staker
+        //   ),
+        //   to: decrypt(webhook.encoded_url),
+        //   type: HOWL_QUEUE_TYPES.WEBHOOK,
+        // });
+      }
+    } else if (parsedBody.event === EVENT_TYPES.NEW_MENTION) {
+      /** @type {(import("@howlpack/howlpack-shared/types").HowlMentionedQueueMsg)} */
+      const mentionedMsg = parsedBody;
+
+      if (hasPreference(email?.preferences, EVENT_TYPES.NEW_MENTION)) {
+        sqsSendCommands.push({
+          ...composeMentionedEmail(
+            mentionedMsg.receiver,
+            mentionedMsg.attrs.author,
+            mentionedMsg.attrs.postId
+          ),
+          to: decrypt(email.encoded_addr),
+          type: HOWL_QUEUE_TYPES.EMAIL,
+        });
+      }
+
+      if (hasPreference(webhook?.preferences, EVENT_TYPES.NEW_MENTION)) {
+        // TODO
+        // sqsSendCommands.push({
+        //   ...composeMentionedWebhook(
+        //     mentionedMsg.receiver,
+        //     mentionedMsg.attrs.author,
+        //     mentionedMsg.attrs.postId
         //   ),
         //   to: decrypt(webhook.encoded_url),
         //   type: HOWL_QUEUE_TYPES.WEBHOOK,

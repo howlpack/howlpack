@@ -99,3 +99,22 @@ ${new URL("howlpack", HOWL_URL)}
 `,
   };
 }
+
+export function composeMentionedEmail(receiver, mentionedBy, postId) {
+  return {
+    subject: `You've been mentioned in a Howl!`,
+    body: `Hi ${receiver},
+
+We wanted to let you know that you were mentioned in a Howl! ${mentionedBy} has mentioned you in their post.
+
+You can check out the Howl by clicking the link below:
+${new URL(mentionedBy + "/" + postId, HOWL_URL)}
+    
+We hope you enjoy the mention and have a great day!
+    
+Best,
+The Howlpack Team
+${new URL("howlpack", HOWL_URL)}
+`,
+  };
+}
