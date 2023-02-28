@@ -202,11 +202,11 @@ new aws.lambda.EventSourceMapping(lambdaPackageName + "-howl", {
   functionName: howlProcessor.arn,
 });
 
-export const emailProcessor = new aws.lambda.Function(
-  lambdaPackageName + "-emailProcessor",
+export const notificationsProcessor = new aws.lambda.Function(
+  lambdaPackageName + "-notificationsProcessor",
   {
     code: buildCodeAsset(
-      require.resolve("@howlpack/howlpack-processor/email.js")
+      require.resolve("@howlpack/howlpack-processor/notifications.js")
     ),
     handler: "index.handler",
     runtime: "nodejs18.x",
@@ -221,55 +221,9 @@ export const emailProcessor = new aws.lambda.Function(
   }
 );
 
-new aws.lambda.EventSourceMapping(lambdaPackageName + "-notificationEmail", {
+new aws.lambda.EventSourceMapping(lambdaPackageName + "-notifications", {
   eventSourceArn: notification_queue.arn,
-  functionName: emailProcessor.arn,
-  filterCriteria: {
-    filters: [
-      {
-        pattern: JSON.stringify({
-          body: {
-            type: ["email"],
-          },
-        }),
-      },
-    ],
-  },
-});
-
-export const webhookProcessor = new aws.lambda.Function(
-  lambdaPackageName + "-webhookProcessor",
-  {
-    code: buildCodeAsset(
-      require.resolve("@howlpack/howlpack-processor/webhook.js")
-    ),
-    handler: "index.handler",
-    runtime: "nodejs18.x",
-    role: lambdaRole.arn,
-    timeout: 10,
-    memorySize: 128,
-    environment: {
-      variables: {
-        ...environment,
-      },
-    },
-  }
-);
-
-new aws.lambda.EventSourceMapping(lambdaPackageName + "-notificationWebhook", {
-  eventSourceArn: notification_queue.arn,
-  functionName: webhookProcessor.arn,
-  filterCriteria: {
-    filters: [
-      {
-        pattern: JSON.stringify({
-          body: {
-            type: ["webhook"],
-          },
-        }),
-      },
-    ],
-  },
+  functionName: notificationsProcessor.arn,
 });
 
 const cronRule = new aws.cloudwatch.EventRule(lambdaPackageName + "-cron", {
