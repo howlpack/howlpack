@@ -138,8 +138,9 @@ export default function WebhookListNotifications() {
                   variant="outlined"
                   sx={{ mr: 2 }}
                   onClick={() => {
-                    navigate(ix);
+                    navigate("./" + ix);
                   }}
+                  disabled={isClearEmailLoading}
                 >
                   <EditIcon />
                 </Button>
@@ -161,6 +162,7 @@ export default function WebhookListNotifications() {
                       message: `Webhook successfully deleted`,
                     });
                   }}
+                  disabled={isClearEmailLoading}
                 >
                   <DeleteIcon />
                 </Button>

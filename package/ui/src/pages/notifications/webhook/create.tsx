@@ -96,7 +96,9 @@ export default function WebhookCreate() {
           },
         };
 
-        const updatedNotifications = notifications.concat(newNotification);
+        const updatedNotifications = notifications
+          .filter((n: any) => n?.webhook?.encoded_url !== encryptedUrl)
+          .concat(newNotification);
 
         const updateMsg = {
           typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",

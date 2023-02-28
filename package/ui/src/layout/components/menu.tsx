@@ -44,7 +44,6 @@ export default function Menu() {
               component={Link}
               to={"/notifications/webhooks"}
               selected={currentPathname === "/notifications/webhooks"}
-              disabled
             >
               <ListItemIcon>
                 <WebhookIcon />

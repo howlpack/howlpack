@@ -19,11 +19,11 @@ import Error from "./pages/error";
 const WebhookListNotifications = lazy(
   () => import("./pages/notifications/webhook/list")
 );
-const WebhookGetNotifications = lazy(
-  () => import("./pages/notifications/webhook/get")
-);
 const WebhookCreateNotifications = lazy(
   () => import("./pages/notifications/webhook/create")
+);
+const WebhookEditNotifications = lazy(
+  () => import("./pages/notifications/webhook/edit")
 );
 
 const FAQ = lazy(() => import("./pages/faq"));
@@ -112,7 +112,7 @@ const router = createBrowserRouter([
               },
               {
                 path: ":ix",
-                element: <WebhookGetNotifications />,
+                element: <WebhookEditNotifications />,
               },
               {
                 path: "create",

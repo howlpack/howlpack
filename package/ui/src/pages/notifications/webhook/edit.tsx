@@ -4,11 +4,12 @@ import {
   Card,
   CircularProgress,
   Divider,
+  Grid,
   Typography,
 } from "@mui/material";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { DeliverTxResponse } from "@cosmjs/stargate";
 import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx.js";
 import { toUtf8 } from "@cosmjs/encoding";
@@ -24,9 +25,10 @@ import useGetNotification from "../../../hooks/use-get-notification";
 import { clientState, keplrState } from "../../../state/cosmos";
 import { selectedDensState } from "../../../state/howlpack";
 import Joi from "joi";
-import Email, { emailValidator } from "../components/email";
 import { snackbarState } from "../../../state/snackbar";
 import SelectEventType from "../components/select-event-type";
+import UrlInput, { urlValidator } from "../components/url";
+import WebhookExample from "../components/webhook-example";
 
 const initialEventTypes = Object.values(
   constants.EVENT_TYPES as { [x: string]: string }
@@ -36,8 +38,8 @@ const updateValidator = Joi.object({
   event_types: Joi.object().unknown(true),
 }).unknown(true);
 
-const updateEmailValidator = Joi.object({
-  email: emailValidator,
+const updateUrlValidator = Joi.object({
+  url: urlValidator,
   event_types: Joi.object().unknown(true),
 }).unknown(true);
 
@@ -45,30 +47,53 @@ export default function EmailEdit() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: notifications } = useGetNotification();
-  const emailNotification = useMemo(() => {
-    return notifications?.find((n: any) => n.email)?.email;
+  const params = useParams();
+  const [, setSnackbar] = useRecoilState(snackbarState);
+
+  const webhookId = useMemo(() => {
+    if (!params.ix) {
+      return null;
+    }
+
+    return parseInt(params.ix);
+  }, [params]);
+
+  const webhookNotifications = useMemo(() => {
+    return notifications?.filter((n: any) => n.webhook);
   }, [notifications]);
 
-  useEffect(() => {
-    if (!emailNotification) {
-      navigate("/notifications/email/create");
+  const webhookNotification = useMemo(() => {
+    if (webhookId == null) {
+      return null;
     }
-  }, [emailNotification, navigate]);
+
+    return webhookNotifications[webhookId]?.webhook;
+  }, [webhookNotifications, webhookId]);
+
+  useEffect(() => {
+    if (!webhookNotification) {
+      setSnackbar({
+        message: "Webhook preferences not found",
+      });
+      navigate("../");
+    }
+  }, [webhookNotification, navigate, setSnackbar]);
 
   const { formState, onChange, setFormState } = useFormData({
-    email: "",
+    url: "",
     event_types: initialEventTypes,
   });
-  const [emailChanged, setEmailChanged] = useState(false);
+
+  const [urlChanged, setUrlChanged] = useState(false);
 
   useEffect(() => {
-    if (emailChanged) {
-      setFormState((m) => m.set("email", ""));
+    if (urlChanged) {
+      setFormState((m) => m.set("url", ""));
     }
-  }, [emailChanged, setFormState]);
+  }, [urlChanged, setFormState]);
 
   useEffect(() => {
-    if (!emailNotification) {
+    if (!webhookNotification) {
       return;
     }
 
@@ -77,21 +102,21 @@ export default function EmailEdit() {
     ).reduce(
       (acc, k) => ({
         ...acc,
-        [k]: notification.hasPreference(emailNotification.preferences, k),
+        [k]: notification.hasPreference(webhookNotification.preferences, k),
       }),
       {}
     );
 
     setFormState((s) => s.set("event_types", event_types));
-    setFormState((s) => s.set("email", emailNotification.masked_addr));
-  }, [emailNotification, setFormState]);
+    setFormState((s) => s.set("url", webhookNotification.masked_url));
+  }, [webhookNotification, setFormState]);
 
   const keplr = useRecoilValue(keplrState);
   const selectedDens = useRecoilValue(selectedDensState(keplr.account));
   const client = useRecoilValue(clientState);
 
-  const { mutateAsync: encryptEmail } = useMutation(
-    ["/api/crypto/encrypt", formState.get("email")],
+  const { mutateAsync: encryptUrl } = useMutation(
+    ["/api/crypto/encrypt", formState.get("url")],
     () =>
       fetch(
         url.backendUrl("/api/crypto/encrypt", import.meta.env.VITE_BACKEND_URL),
@@ -100,7 +125,7 @@ export default function EmailEdit() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            content: formState.get("email"),
+            content: formState.get("url"),
           }),
           method: "post",
         }
@@ -112,7 +137,7 @@ export default function EmailEdit() {
   const { mutateAsync: updateNotifications, isLoading: isUpdateLoading } =
     useMutation<DeliverTxResponse | null, unknown, string[]>(
       ["notifications"],
-      async ([masked_addr, encryptedEmail]) => {
+      async ([masked_url, encryptedUrl]) => {
         if (!client) {
           return null;
         }
@@ -127,10 +152,10 @@ export default function EmailEdit() {
             .map(([p]) => p)
         );
 
-        const newNotification = {
-          email: {
-            masked_addr: masked_addr,
-            encoded_addr: encryptedEmail,
+        const newNotification: any = {
+          webhook: {
+            masked_url: masked_url,
+            encoded_url: encryptedUrl,
             preferences: preferences,
           },
         };
@@ -138,7 +163,7 @@ export default function EmailEdit() {
         const updatedNotifications = notifications
           .filter(
             (n: any) =>
-              n?.email?.encoded_addr !== emailNotification.encoded_addr
+              n?.webhook?.encoded_url !== webhookNotification.encoded_url
           )
           .concat(newNotification);
 
@@ -179,12 +204,11 @@ export default function EmailEdit() {
     );
 
   const subscribeEnabled = useMemo<boolean>(() => {
-    const validator = emailChanged ? updateEmailValidator : updateValidator;
+    const validator = urlChanged ? updateUrlValidator : updateValidator;
     return validator.validate(formState.toJSON()).error == null;
-  }, [formState, emailChanged]);
+  }, [formState, urlChanged]);
 
-  const [, setSnackbar] = useRecoilState(snackbarState);
-  const emailInputRef = useRef<any>();
+  const urlInputRef = useRef<any>();
 
   const inProgress = isUpdateLoading;
 
@@ -202,31 +226,38 @@ export default function EmailEdit() {
           display: "flex",
         }}
       >
-        <Email
+        <UrlInput
           formData={formState}
           onChange={onChange}
-          disabled={!emailChanged}
-          inputRef={emailInputRef}
+          disabled={!urlChanged}
+          inputRef={urlInputRef}
         />
         <Button
           variant="outlined"
           sx={{ minWidth: "100px", ml: 1 }}
           onClick={() => {
-            setEmailChanged(true);
+            setUrlChanged(true);
 
             setTimeout(() => {
-              emailInputRef.current?.focus();
+              urlInputRef.current?.focus();
             }, 100);
           }}
-          disabled={emailChanged}
+          disabled={urlChanged}
         >
           Change
         </Button>
       </Box>
 
-      <Box>
-        <SelectEventType formData={formState} onChange={onChange} />
-      </Box>
+      <Grid container>
+        <Grid xs={12} sm={4} item>
+          <SelectEventType formData={formState} onChange={onChange} />
+        </Grid>
+        <Grid xs={12} sm={8} item>
+          <Box sx={{ mt: 3 }}>
+            <WebhookExample />
+          </Box>
+        </Grid>
+      </Grid>
 
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Button
@@ -234,24 +265,25 @@ export default function EmailEdit() {
           variant="contained"
           sx={{ mt: 2 }}
           onClick={async () => {
-            let masked_addr: string = emailNotification.masked_addr;
-            let encryptedEmail: string = emailNotification.encoded_addr;
+            let masked_url: string = webhookNotification.masked_url;
+            let encryptedUrl: string = webhookNotification.encoded_url;
 
-            if (emailChanged) {
-              masked_addr = notification.maskAddr(formState.get("email"));
-              encryptedEmail = await encryptEmail();
+            if (urlChanged) {
+              masked_url = notification.maskUrl(formState.get("url"));
+              encryptedUrl = await encryptUrl();
             }
 
-            if (!encryptedEmail) {
-              setSnackbar({ message: "Encrypting email failed" });
+            if (!encryptedUrl) {
+              setSnackbar({ message: "Encrypting URL failed" });
               return;
             }
+
             setSnackbar({ message: "Please confirm the transaction" });
             try {
-              await updateNotifications([masked_addr, encryptedEmail]);
+              await updateNotifications([masked_url, encryptedUrl]);
 
               setSnackbar({
-                message: `Email notification for ${selectedDens} successfully updated`,
+                message: `URL notification for ${selectedDens} successfully updated`,
               });
               navigate("../");
             } catch (e: any) {
