@@ -8,9 +8,9 @@ export async function handler(event) {
     const parsedBody = JSON.parse(body);
 
     if (parsedBody.type === HOWL_QUEUE_TYPES.EMAIL) {
-      return await emailHandler(event);
+      await emailHandler(event);
     } else if (parsedBody.type === HOWL_QUEUE_TYPES.WEBHOOK) {
-      return await webhookHandler(event);
+      await webhookHandler(event);
     }
   }
 
