@@ -42,7 +42,9 @@ export async function handler(event) {
     }
 
     const email = notifications.find((n) => n["email"])?.email;
-    const webhook = notifications.find((n) => n["webhook"])?.webhook;
+    const webhooks = notifications
+      .filter((n) => n["webhook"])
+      .map((n) => n.webhook);
 
     const sqsSendCommands = [];
 
@@ -60,17 +62,19 @@ export async function handler(event) {
           type: HOWL_QUEUE_TYPES.EMAIL,
         });
       }
-      if (hasPreference(webhook?.preferences, EVENT_TYPES.NEW_FOLLOWER)) {
-        sqsSendCommands.push({
-          ...composeFollowerWebhook(
-            followerMsg.receiver,
-            followerMsg.attrs.follower
-          ),
-          to: decrypt(webhook.encoded_url),
-          event_type: EVENT_TYPES.NEW_FOLLOWER,
-          type: HOWL_QUEUE_TYPES.WEBHOOK,
-        });
-      }
+      webhooks.forEach((webhook) => {
+        if (hasPreference(webhook?.preferences, EVENT_TYPES.NEW_FOLLOWER)) {
+          sqsSendCommands.push({
+            ...composeFollowerWebhook(
+              followerMsg.receiver,
+              followerMsg.attrs.follower
+            ),
+            to: decrypt(webhook.encoded_url),
+            event_type: EVENT_TYPES.NEW_FOLLOWER,
+            type: HOWL_QUEUE_TYPES.WEBHOOK,
+          });
+        }
+      });
     } else if (parsedBody.event === EVENT_TYPES.NEW_REPLY) {
       /** @type {(import("@howlpack/howlpack-shared/types").HowlReplyQueueMsg)} */
       const replyMsg = parsedBody;
@@ -87,19 +91,21 @@ export async function handler(event) {
         });
       }
 
-      if (hasPreference(webhook?.preferences, EVENT_TYPES.NEW_REPLY)) {
-        sqsSendCommands.push({
-          ...composeReplyWebhook(
-            replyMsg.receiver,
-            replyMsg.attrs.replyAuthor,
-            replyMsg.attrs.postId,
-            replyMsg.attrs.replyId
-          ),
-          to: decrypt(webhook.encoded_url),
-          event_type: EVENT_TYPES.NEW_REPLY,
-          type: HOWL_QUEUE_TYPES.WEBHOOK,
-        });
-      }
+      webhooks.forEach((webhook) => {
+        if (hasPreference(webhook?.preferences, EVENT_TYPES.NEW_REPLY)) {
+          sqsSendCommands.push({
+            ...composeReplyWebhook(
+              replyMsg.receiver,
+              replyMsg.attrs.replyAuthor,
+              replyMsg.attrs.postId,
+              replyMsg.attrs.replyId
+            ),
+            to: decrypt(webhook.encoded_url),
+            event_type: EVENT_TYPES.NEW_REPLY,
+            type: HOWL_QUEUE_TYPES.WEBHOOK,
+          });
+        }
+      });
     } else if (parsedBody.event === EVENT_TYPES.NEW_LIKE) {
       /** @type {(import("@howlpack/howlpack-shared/types").HowlLikeQueueMsg)} */
       const likeMsg = parsedBody;
@@ -117,19 +123,21 @@ export async function handler(event) {
         });
       }
 
-      if (hasPreference(webhook?.preferences, EVENT_TYPES.NEW_LIKE)) {
-        sqsSendCommands.push({
-          ...composeLikesWebhook(
-            likeMsg.receiver,
-            likeMsg.attrs.postId,
-            likeMsg.attrs.amount,
-            likeMsg.attrs.staker
-          ),
-          to: decrypt(webhook.encoded_url),
-          event_type: EVENT_TYPES.NEW_LIKE,
-          type: HOWL_QUEUE_TYPES.WEBHOOK,
-        });
-      }
+      webhooks.forEach((webhook) => {
+        if (hasPreference(webhook?.preferences, EVENT_TYPES.NEW_LIKE)) {
+          sqsSendCommands.push({
+            ...composeLikesWebhook(
+              likeMsg.receiver,
+              likeMsg.attrs.postId,
+              likeMsg.attrs.amount,
+              likeMsg.attrs.staker
+            ),
+            to: decrypt(webhook.encoded_url),
+            event_type: EVENT_TYPES.NEW_LIKE,
+            type: HOWL_QUEUE_TYPES.WEBHOOK,
+          });
+        }
+      });
     } else if (parsedBody.event === EVENT_TYPES.NEW_MENTION) {
       /** @type {(import("@howlpack/howlpack-shared/types").HowlMentionedQueueMsg)} */
       const mentionedMsg = parsedBody;
@@ -146,18 +154,20 @@ export async function handler(event) {
         });
       }
 
-      if (hasPreference(webhook?.preferences, EVENT_TYPES.NEW_MENTION)) {
-        sqsSendCommands.push({
-          ...composeMentionedWebhook(
-            mentionedMsg.receiver,
-            mentionedMsg.attrs.author,
-            mentionedMsg.attrs.postId
-          ),
-          to: decrypt(webhook.encoded_url),
-          event_type: EVENT_TYPES.NEW_MENTION,
-          type: HOWL_QUEUE_TYPES.WEBHOOK,
-        });
-      }
+      webhooks.forEach((webhook) => {
+        if (hasPreference(webhook?.preferences, EVENT_TYPES.NEW_MENTION)) {
+          sqsSendCommands.push({
+            ...composeMentionedWebhook(
+              mentionedMsg.receiver,
+              mentionedMsg.attrs.author,
+              mentionedMsg.attrs.postId
+            ),
+            to: decrypt(webhook.encoded_url),
+            event_type: EVENT_TYPES.NEW_MENTION,
+            type: HOWL_QUEUE_TYPES.WEBHOOK,
+          });
+        }
+      });
     }
 
     for (const sqsSendCommand of sqsSendCommands) {
