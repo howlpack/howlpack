@@ -92,6 +92,7 @@ export async function handler(event) {
           ...composeReplyWebhook(
             replyMsg.receiver,
             replyMsg.attrs.replyAuthor,
+            replyMsg.attrs.postId,
             replyMsg.attrs.replyId
           ),
           to: decrypt(webhook.encoded_url),

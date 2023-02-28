@@ -24,16 +24,16 @@ import useGetNotification from "../../../hooks/use-get-notification";
 import { clientState, keplrState } from "../../../state/cosmos";
 import { selectedDensState } from "../../../state/howlpack";
 import Joi from "joi";
-import { emailValidator } from "../components/email";
 import { snackbarState } from "../../../state/snackbar";
 import WebhookForm from "../components/webhook-form";
+import { urlValidator } from "../components/url";
 
 const initialEventTypes = Object.values(
   constants.EVENT_TYPES as { [x: string]: string }
 ).reduce((acc, k) => ({ ...acc, [k]: true }), {});
 
 const subscribeValidator = Joi.object({
-  email: emailValidator,
+  url: urlValidator,
   event_types: Joi.object().unknown(true),
 }).unknown(true);
 
@@ -41,12 +41,9 @@ export default function WebhookCreate() {
   const navigate = useNavigate();
   const { data: notifications } = useGetNotification();
   const queryClient = useQueryClient();
-  const emailNotification = useMemo(() => {
-    return notifications?.find((n: any) => n.email)?.email;
-  }, [notifications]);
 
   const { formState, onChange } = useFormData({
-    email: "",
+    url: "",
     event_types: initialEventTypes,
   });
 
@@ -55,7 +52,7 @@ export default function WebhookCreate() {
   const client = useRecoilValue(clientState);
 
   const { mutateAsync: encryptEmail, isLoading: isEncryptLoading } =
-    useMutation(["/api/crypto/encrypt", formState.get("email")], async () =>
+    useMutation(["/api/crypto/encrypt", formState.get("url")], async () =>
       fetch(
         url.backendUrl("/api/crypto/encrypt", import.meta.env.VITE_BACKEND_URL),
         {
@@ -63,7 +60,7 @@ export default function WebhookCreate() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            content: formState.get("email"),
+            content: formState.get("url"),
           }),
           method: "post",
         }
@@ -75,7 +72,7 @@ export default function WebhookCreate() {
   const { mutateAsync: updateNotifications, isLoading: isUpdateLoading } =
     useMutation<DeliverTxResponse | null, unknown, string>(
       ["notifications"],
-      async (encryptedEmail) => {
+      async (encryptedUrl) => {
         if (!client) {
           return null;
         }
@@ -84,9 +81,7 @@ export default function WebhookCreate() {
           return null;
         }
 
-        const masked_addr: string = notification.maskAddr(
-          formState.get("email")
-        );
+        const masked_url: string = notification.maskUrl(formState.get("url"));
         const preferences = notification.encodePreference(
           Object.entries(formState.get("event_types"))
             .filter(([, selected]) => selected)
@@ -94,9 +89,9 @@ export default function WebhookCreate() {
         );
 
         const newNotification = {
-          email: {
-            masked_addr: masked_addr,
-            encoded_addr: encryptedEmail,
+          webhook: {
+            masked_url: masked_url,
+            encoded_url: encryptedUrl,
             preferences: preferences,
           },
         };

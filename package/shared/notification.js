@@ -37,3 +37,7 @@ export function maskAddr(addr) {
   const at = addr.indexOf("@");
   return `${addr[0]}*****@${addr[at + 1]}*****`;
 }
+
+export function maskUrl(url) {
+  return `${url.slice(0, 12)}*****${url.slice(-5)}`;
+}
