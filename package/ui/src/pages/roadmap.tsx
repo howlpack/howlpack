@@ -7,7 +7,7 @@ export default function FAQ() {
     <Fragment>
       <Box py={2}>
         <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
-          🐺 Webhook notifications [in-progress 🏗️]
+          🧪 Webhook notifications [beta]
         </Typography>
         <Divider sx={{ mt: 1, mb: 2 }} />
         <Typography variant="body2">
@@ -17,6 +17,18 @@ export default function FAQ() {
           this new feature will greatly enhance your experience with Howl and we
           can't wait to see what you'll create with it. Stay tuned for more
           updates!
+        </Typography>
+      </Box>
+      <Box py={2}>
+        <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+          🧪 Email notifications [beta]
+        </Typography>
+        <Divider sx={{ mt: 1, mb: 2 }} />
+        <Typography variant="body2">
+          This feature allows you to connect your Howl activity with your email,
+          receiving alerts when there is a new reply, follower, like or mention
+          on your post. Now you can stay up-to-date with your Howl activity,
+          even when you are away from the platform
         </Typography>
       </Box>
     </Fragment>
