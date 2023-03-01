@@ -11,6 +11,9 @@ export async function handler(event) {
         body: parsedBody.body,
         event_type: parsedBody.event_type,
       }),
+      headers: {
+        "Content-Type": "application/json",
+      },
       method: "post",
     }).then(fetchThrowHttpError);
   }
