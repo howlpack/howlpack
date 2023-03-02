@@ -18,8 +18,12 @@ export default function Menu() {
   const location = useLocation();
   const currentPathname: string = location.pathname;
 
-  const currentPathnameRoot: string | false =
-    currentPathname.match(/^(\/[^/]*)/g)?.[0] || "/";
+  function getPathnameElements(n: number): string {
+    return currentPathname
+      .split("/")
+      .slice(0, 1 + n)
+      .join("/");
+  }
 
   return (
     <Fragment>
@@ -44,7 +48,7 @@ export default function Menu() {
             <ListItemButton
               component={Link}
               to={"/notifications/webhooks"}
-              selected={currentPathname === "/notifications/webhooks"}
+              selected={getPathnameElements(2) === "/notifications/webhooks"}
             >
               <ListItemIcon>
                 <WebhookIcon />
