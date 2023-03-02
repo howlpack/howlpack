@@ -26,6 +26,7 @@ const WebhookEditNotifications = lazy(
   () => import("./pages/notifications/webhook/edit")
 );
 
+const IFTTT = lazy(() => import("./pages/tutorials/ifttt"));
 const FAQ = lazy(() => import("./pages/faq"));
 const Roadmap = lazy(() => import("./pages/roadmap"));
 const EmailNotifications = lazy(
@@ -62,6 +63,18 @@ const router = createBrowserRouter([
             <Roadmap />
           </Suspense>
         ),
+      },
+      {
+        path: "tutorials",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Outlet />
+          </Suspense>
+        ),
+        children: [
+          { index: true, element: <Navigate to="ifttt" replace /> },
+          { path: "ifttt", element: <IFTTT /> },
+        ],
       },
       {
         path: "notifications",

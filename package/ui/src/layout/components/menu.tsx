@@ -10,6 +10,7 @@ import WebhookIcon from "@mui/icons-material/Webhook";
 import MarkEmailUnreadIcon from "@mui/icons-material/MarkEmailUnread";
 import RouteIcon from "@mui/icons-material/Route";
 import LiveHelpIcon from "@mui/icons-material/LiveHelp";
+import LinkIcon from "@mui/icons-material/Link";
 
 import { Link, useLocation } from "react-router-dom";
 
@@ -56,7 +57,7 @@ export default function Menu() {
       <List
         sx={{ width: "100%", maxWidth: 360, mt: 4 }}
         component="nav"
-        aria-labelledby="notification-type"
+        aria-labelledby="other"
         subheader={<ListSubheader component="div">Other</ListSubheader>}
       >
         <List component="div" disablePadding>
@@ -79,6 +80,25 @@ export default function Menu() {
               <RouteIcon />
             </ListItemIcon>
             <ListItemText primary="Roadmap" />
+          </ListItemButton>
+        </List>
+      </List>
+      <List
+        sx={{ width: "100%", maxWidth: 360, mt: 4 }}
+        component="nav"
+        aria-labelledby="tutorials"
+        subheader={<ListSubheader component="div">Tutorials</ListSubheader>}
+      >
+        <List component="div" disablePadding>
+          <ListItemButton
+            component={Link}
+            to={"/tutorials/ifttt"}
+            selected={currentPathname === "/tutorials/ifttt"}
+          >
+            <ListItemIcon>
+              <LinkIcon />
+            </ListItemIcon>
+            <ListItemText primary="IFTTT Twitter" />
           </ListItemButton>
         </List>
       </List>
