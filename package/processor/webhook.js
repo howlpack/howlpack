@@ -73,3 +73,15 @@ export function composeMentionedWebhook(mentioned, mentionedBy, postId) {
     },
   };
 }
+
+export function composeMyHowlWebhook(postAuthor, postId, postBody) {
+  return {
+    body: {
+      postAuthor,
+      postAuthorUrl: new URL(postAuthor, HOWL_URL).toString(),
+      postId,
+      postUrl: new URL(postAuthor + "/" + postId, HOWL_URL).toString(),
+      postBody,
+    },
+  };
+}

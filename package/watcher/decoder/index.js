@@ -1,3 +1,4 @@
+import myHowl from "./my-howl.js";
 import newFollower from "./new-follower.js";
 import newLike from "./new-like.js";
 import newMention from "./new-mention.js";
@@ -24,6 +25,10 @@ export async function decode(txMessage) {
   }
 
   if ((semiResult = await newMention(txMessage))) {
+    result = result.concat(semiResult);
+  }
+
+  if ((semiResult = await myHowl(txMessage))) {
     result = result.concat(semiResult);
   }
 

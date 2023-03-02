@@ -44,3 +44,12 @@ export type HowlMentionedQueueMsg = {
     author: string;
   };
 };
+
+export type HowlMyHowlQueueMsg = {
+  receiver: string;
+  event: "my-howl";
+  attrs: {
+    postId: string;
+    postBody: string;
+  };
+};

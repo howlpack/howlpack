@@ -5,11 +5,10 @@ handler({
     {
       body: JSON.stringify({
         receiver: "howlpack",
-        event: "new-like",
+        event: "my-howl",
         attrs: {
-          postId: "3ab40fb0-c51f-44c2-accb-b8a87aaed9bc",
-          staker: "howlpack-test",
-          amount: "100",
+          postId: "b71444c7-2f57-4dae-b605-8089fdfc8db1",
+          postBody: "tweet",
         },
       }),
     },

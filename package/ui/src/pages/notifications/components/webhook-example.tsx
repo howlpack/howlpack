@@ -6,6 +6,7 @@ import {
   composeFollowerWebhook,
   composeLikesWebhook,
   composeMentionedWebhook,
+  composeMyHowlWebhook,
 } from "@howlpack/howlpack-processor/webhook.js";
 import { useState } from "react";
 import { labels } from "./select-event-type";
@@ -29,6 +30,10 @@ const examples = [
   (dens: string | null) => ({
     event_type: constants.EVENT_TYPES.NEW_MENTION,
     ...composeMentionedWebhook(dens, "howlpack", "post-uuid"),
+  }),
+  (dens: string | null) => ({
+    event_type: constants.EVENT_TYPES.MY_HOWL,
+    ...composeMyHowlWebhook(dens, "post-uuid"),
   }),
 ];
 

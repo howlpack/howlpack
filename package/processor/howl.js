@@ -11,12 +11,14 @@ import {
   composeFollowerEmail,
   composeLikesEmail,
   composeMentionedEmail,
+  composeMyHowlEmail,
   composeReplyEmail,
 } from "./email.js";
 import {
   composeFollowerWebhook,
   composeLikesWebhook,
   composeMentionedWebhook,
+  composeMyHowlWebhook,
   composeReplyWebhook,
 } from "./webhook.js";
 
@@ -164,6 +166,32 @@ export async function handler(event) {
             ),
             to: decrypt(webhook.encoded_url),
             event_type: EVENT_TYPES.NEW_MENTION,
+            type: HOWL_QUEUE_TYPES.WEBHOOK,
+          });
+        }
+      });
+    } else if (parsedBody.event === EVENT_TYPES.MY_HOWL) {
+      /** @type {(import("@howlpack/howlpack-shared/types").HowlMyHowlQueueMsg)} */
+      const myHowlMsg = parsedBody;
+
+      if (hasPreference(email?.preferences, EVENT_TYPES.MY_HOWL)) {
+        sqsSendCommands.push({
+          ...composeMyHowlEmail(myHowlMsg.receiver, myHowlMsg.attrs.postId),
+          to: decrypt(email.encoded_addr),
+          type: HOWL_QUEUE_TYPES.EMAIL,
+        });
+      }
+
+      webhooks.forEach((webhook) => {
+        if (hasPreference(webhook?.preferences, EVENT_TYPES.MY_HOWL)) {
+          sqsSendCommands.push({
+            ...composeMyHowlWebhook(
+              myHowlMsg.receiver,
+              myHowlMsg.attrs.postId,
+              myHowlMsg.attrs.postBody
+            ),
+            to: decrypt(webhook.encoded_url),
+            event_type: EVENT_TYPES.MY_HOWL,
             type: HOWL_QUEUE_TYPES.WEBHOOK,
           });
         }

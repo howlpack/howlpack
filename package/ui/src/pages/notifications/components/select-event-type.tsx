@@ -13,6 +13,7 @@ export const labels: { [x: string]: string } = {
   [constants.EVENT_TYPES.NEW_REPLY]: "New Reply",
   [constants.EVENT_TYPES.NEW_LIKE]: "New Like(s)",
   [constants.EVENT_TYPES.NEW_MENTION]: "New Mention",
+  [constants.EVENT_TYPES.MY_HOWL]: "My published Howl",
 };
 
 export default function SelectEventType({

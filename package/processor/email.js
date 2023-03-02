@@ -118,3 +118,22 @@ ${new URL("howlpack", HOWL_URL)}
 `,
   };
 }
+
+export function composeMyHowlEmail(receiver, postId) {
+  return {
+    subject: `Your Howl has been published!`,
+    body: `Hi ${receiver},
+
+We are delighted to inform you that your latest Howl has just been published on Howl. 
+${new URL(receiver + "/" + postId, HOWL_URL)}
+
+Congratulations! Your thoughts and ideas have been shared with the Howl community.
+
+Thank you for your contribution to the Howl community. 
+
+Best,
+The Howlpack Team
+${new URL("howlpack", HOWL_URL)}
+`,
+  };
+}
