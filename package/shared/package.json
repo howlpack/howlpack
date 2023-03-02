@@ -8,9 +8,9 @@
   },
   "type": "module",
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "3.281.0",
-    "@aws-sdk/client-sqs": "3.281.0",
-    "@aws-sdk/lib-dynamodb": "3.281.0",
+    "@aws-sdk/client-dynamodb": "3.282.0",
+    "@aws-sdk/client-sqs": "3.282.0",
+    "@aws-sdk/lib-dynamodb": "3.282.0",
     "@cosmjs/cosmwasm-stargate": "0.29.5",
     "ramda": "0.28.0"
   }
