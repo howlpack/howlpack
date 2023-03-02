@@ -221,7 +221,6 @@ export default function EmailEdit() {
 
       <Box
         sx={{
-          maxWidth: "450px",
           mt: 1,
           display: "flex",
         }}
