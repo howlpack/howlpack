@@ -105,7 +105,7 @@ if (payload.event_type === MY_HOWL_EVENT_TYPE) {
               >
                 <ContentCopyIcon />
               </IconButton>
-              <pre style={{ overflow: "scroll" }}>{IFTTT_filter_code}</pre>
+              <pre style={{ overflow: "auto" }}>{IFTTT_filter_code}</pre>
             </Card>
           </li>
           <li>
@@ -127,12 +127,12 @@ if (payload.event_type === MY_HOWL_EVENT_TYPE) {
           </li>
           <li>
             Copy the link which has format
-            <pre style={{ overflowX: "scroll" }}>
+            <pre style={{ overflowX: "auto" }}>
               https://maker.ifttt.com/trigger/{"{event}"}
               /json/with/key/n-SknD***
             </pre>
             and replace the "{"{event}"}" with "howl", so it becomes
-            <pre style={{ overflowX: "scroll" }}>
+            <pre style={{ overflowX: "auto" }}>
               https://maker.ifttt.com/trigger/howl/json/with/key/n-SknD***
             </pre>
             <Alert severity="info">
