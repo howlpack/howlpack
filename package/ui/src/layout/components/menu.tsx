@@ -37,7 +37,7 @@ export default function Menu() {
           <ListItemButton
             component={Link}
             to={"/notifications/email"}
-            selected={currentPathname === "/notifications/email"}
+            selected={getPathnameElements(2) === "/notifications/email"}
           >
             <ListItemIcon>
               <MarkEmailUnreadIcon />
