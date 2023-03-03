@@ -12,7 +12,7 @@ export default function useGetNotification() {
   const selectedDens = useRecoilValue(selectedDensState(keplr.account));
 
   return useQuery<any>(
-    ["get_notifications", keplr.account],
+    ["get_notifications", keplr.account, selectedDens],
     async () => {
       if (!client) {
         return [];

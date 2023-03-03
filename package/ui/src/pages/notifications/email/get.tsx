@@ -41,6 +41,8 @@ export default function EmailNotifications() {
 
   useEffect(() => {
     if (!emailNotification) {
+      setFormState((s) => s.clear());
+
       return;
     }
 

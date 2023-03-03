@@ -30,16 +30,11 @@ export default function DENSSelect() {
     setSelectedDens(event.target.value);
   };
 
-  const {
-    data: dens,
-    isSuccess,
-    isFetching,
-    isIdle,
-  } = useQuery<string[]>(
-    ["base_tokens", keplr.account],
+  const { data: dens_addr } = useQuery<string | null>(
+    ["dens_addr"],
     async () => {
       if (!client) {
-        return [];
+        return null;
       }
 
       const config = await client.queryContractSmart(
@@ -49,21 +44,71 @@ export default function DENSSelect() {
         }
       );
 
-      if (!config.dens_addr) {
+      return config.dens_addr;
+    },
+    {
+      enabled: Boolean(client),
+      onError: tryNextClient,
+      staleTime: 300000,
+    }
+  );
+
+  const {
+    data: dens,
+    isSuccess,
+    isFetching,
+    isIdle,
+  } = useQuery<string[]>(
+    ["base_tokens", dens_addr, keplr.account],
+    async () => {
+      if (!client) {
         return [];
       }
 
-      const dens = await client.queryContractSmart(config.dens_addr, {
+      if (!dens_addr) {
+        return [];
+      }
+
+      const dens = await client.queryContractSmart(dens_addr, {
         base_tokens: { owner: keplr.account },
       });
 
       return dens.tokens;
     },
     {
-      enabled: Boolean(client),
+      enabled: Boolean(client) && Boolean(dens_addr),
       onError: tryNextClient,
       staleTime: 300000,
       onSuccess: () => setDensInitialized(true),
+    }
+  );
+
+  const { data: paths } = useQuery<string[]>(
+    ["paths", dens_addr, dens],
+    async () => {
+      if (!client) {
+        return [];
+      }
+
+      if (!dens_addr || !dens) {
+        return [];
+      }
+
+      let paths: string[] = [];
+      for (const d of dens) {
+        const d_paths = await client.queryContractSmart(dens_addr, {
+          paths_for_token: { owner: keplr.account, token_id: d },
+        });
+
+        paths = paths.concat(d_paths.tokens);
+      }
+
+      return paths;
+    },
+    {
+      enabled: Boolean(dens?.length),
+      onError: tryNextClient,
+      staleTime: 300000,
     }
   );
 
@@ -99,6 +144,22 @@ export default function DENSSelect() {
     );
   }
 
+  const renderSelectGroup = (d: any) => {
+    const pathMenuItems = paths
+      ?.filter((p) => p.startsWith(d + "::"))
+      ?.map((p, ix) => (
+        <MenuItem key={ix} value={p} sx={{ ml: 2 }}>
+          {p}
+        </MenuItem>
+      ));
+    return [
+      <MenuItem key={d} value={d}>
+        {d}
+      </MenuItem>,
+      pathMenuItems,
+    ];
+  };
+
   return (
     <div>
       <FormControl
@@ -111,11 +172,7 @@ export default function DENSSelect() {
           value={selectedDens || ""}
           onChange={handleChange}
         >
-          {dens?.map((d, ix) => (
-            <MenuItem key={ix} value={d}>
-              {d}
-            </MenuItem>
-          ))}
+          {dens?.map(renderSelectGroup)}
         </Select>
         <FormHelperText>
           {isFetching || isIdle ? (
