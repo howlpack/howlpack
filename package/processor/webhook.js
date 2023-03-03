@@ -25,13 +25,25 @@ export function composeReplyWebhook(postAuthor, replyAuthor, postId, replyId) {
   return {
     body: {
       postAuthor,
-      postAuthorUrl: new URL(postAuthor, HOWL_URL).toString(),
+      postAuthorUrl: new URL(
+        encodeURIComponent(postAuthor),
+        HOWL_URL
+      ).toString(),
       replyAuthor,
-      replyAuthorUrl: new URL(replyAuthor, HOWL_URL).toString(),
+      replyAuthorUrl: new URL(
+        encodeURIComponent(replyAuthor),
+        HOWL_URL
+      ).toString(),
       postId,
-      postUrl: new URL(postAuthor + "/" + postId, HOWL_URL).toString(),
+      postUrl: new URL(
+        encodeURIComponent(postAuthor) + "/" + postId,
+        HOWL_URL
+      ).toString(),
       replyId,
-      replyUrl: new URL(replyAuthor + "/" + replyId, HOWL_URL).toString(),
+      replyUrl: new URL(
+        encodeURIComponent(replyAuthor) + "/" + replyId,
+        HOWL_URL
+      ).toString(),
     },
   };
 }
@@ -40,9 +52,9 @@ export function composeFollowerWebhook(followed, follower) {
   return {
     body: {
       followed,
-      followedUrl: new URL(followed, HOWL_URL).toString(),
+      followedUrl: new URL(encodeURIComponent(followed), HOWL_URL).toString(),
       follower,
-      followerUrl: new URL(follower, HOWL_URL).toString(),
+      followerUrl: new URL(encodeURIComponent(follower), HOWL_URL).toString(),
     },
   };
 }
@@ -51,12 +63,18 @@ export function composeLikesWebhook(postAuthor, postId, amountStaked, staker) {
   return {
     body: {
       postAuthor,
-      postAuthorUrl: new URL(postAuthor, HOWL_URL).toString(),
+      postAuthorUrl: new URL(
+        encodeURIComponent(postAuthor),
+        HOWL_URL
+      ).toString(),
       postId,
-      postUrl: new URL(postAuthor + "/" + postId, HOWL_URL).toString(),
+      postUrl: new URL(
+        encodeURIComponent(postAuthor) + "/" + postId,
+        HOWL_URL
+      ).toString(),
       amountStaked,
       staker,
-      stakerUrl: new URL(staker, HOWL_URL).toString(),
+      stakerUrl: new URL(encodeURIComponent(staker), HOWL_URL).toString(),
     },
   };
 }
@@ -65,11 +83,17 @@ export function composeMentionedWebhook(mentioned, mentionedBy, postId) {
   return {
     body: {
       mentioned,
-      mentionedUrl: new URL(mentioned, HOWL_URL).toString(),
+      mentionedUrl: new URL(encodeURIComponent(mentioned), HOWL_URL).toString(),
       postId,
-      postUrl: new URL(mentionedBy + "/" + postId, HOWL_URL).toString(),
+      postUrl: new URL(
+        encodeURIComponent(mentionedBy) + "/" + postId,
+        HOWL_URL
+      ).toString(),
       mentionedBy,
-      mentionedByUrl: new URL(mentionedBy, HOWL_URL).toString(),
+      mentionedByUrl: new URL(
+        encodeURIComponent(mentionedBy),
+        HOWL_URL
+      ).toString(),
     },
   };
 }
@@ -78,9 +102,15 @@ export function composeMyHowlWebhook(postAuthor, postId, postBody) {
   return {
     body: {
       postAuthor,
-      postAuthorUrl: new URL(postAuthor, HOWL_URL).toString(),
+      postAuthorUrl: new URL(
+        encodeURIComponent(postAuthor),
+        HOWL_URL
+      ).toString(),
       postId,
-      postUrl: new URL(postAuthor + "/" + postId, HOWL_URL).toString(),
+      postUrl: new URL(
+        encodeURIComponent(postAuthor) + "/" + postId,
+        HOWL_URL
+      ).toString(),
       postBody,
     },
   };
