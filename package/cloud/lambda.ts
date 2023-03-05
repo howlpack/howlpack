@@ -166,6 +166,11 @@ export const apiBackend = new aws.lambda.Function(
         ENCRYPTION_SECRET_KEY: howlpackConfig.getSecret(
           "ENCRYPTION_SECRET_KEY"
         ),
+        WINSTON_WOLFE_KEY: howlpackConfig.getSecret("WINSTON_WOLFE_KEY"),
+        HOWL_POSTS_ADDR: junoConfig.get("howl_posts"),
+        HOWL_STAKING: junoConfig.get("howl_staking"),
+        HOWL_MNEMONIC: howlpackConfig.getSecret("HOWL_MNEMONIC"),
+        RPC_ENDPOINTS: (JSON.parse(junoConfig.require("rpcs")) || []).join(","),
       },
     },
   }

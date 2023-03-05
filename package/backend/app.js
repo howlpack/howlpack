@@ -5,6 +5,7 @@ import bodyParser from "koa-bodyparser";
 import session from "koa-session";
 import HelloRouter from "./api/hello/index.js";
 import CryptoRouter from "./api/crypto/index.js";
+import BotRouter from "./api/bot/index.js";
 import error from "./middleware/error.js";
 
 const app = new Koa();
@@ -38,6 +39,7 @@ publicRouter.redirect("/", "/api/hello");
 const publicRoutes = [
   ["/api/hello", HelloRouter.routes(), HelloRouter.allowedMethods()],
   ["/api/crypto", CryptoRouter.routes(), CryptoRouter.allowedMethods()],
+  ["/api/bot", BotRouter.routes(), BotRouter.allowedMethods()],
 ];
 
 publicRoutes.map((r) => publicRouter.use(...r));
