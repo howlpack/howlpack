@@ -151,7 +151,8 @@ export const apiBackend = new aws.lambda.Function(
   lambdaPackageName + "-apiBackend",
   {
     code: buildCodeAsset(
-      require.resolve("@howlpack/howlpack-backend/serverless.js")
+      require.resolve("@howlpack/howlpack-backend/serverless.js"),
+      true
     ),
     handler: "index.handler",
     runtime: "nodejs18.x",
