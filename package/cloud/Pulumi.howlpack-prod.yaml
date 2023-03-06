@@ -7,6 +7,8 @@ config:
     secure: v1:3a9bxWlsbHMgg1nO:rCPY0fuo1Ibe0aA0aPmgUWNnT3CngetNRIAqCvWA3sotYifTrymJNWSZPJHOma0M
   howlpack:HOWL_MNEMONIC:
     secure: v1:eqTLCcwBYOH4f3pa:WtmfIjyymWgYXZI+Mw2UjA1Y8yjf/c+kP4xA/spRdgt6BakOvf3SoVIHrwqlatbvI9USNIezpGOM89T0cdJWZyh/NrXzKx/t7KUY32QyRnWyRzyGch1FJqGUlnXEEwR0pWcBsw==
+  howlpack:ROLLBAR_ACCESS_TOKEN:
+    secure: v1:2JGbmxfo6ZjrkBwo:qS6grqjez6wEJkENpiDNpYVNEM0NZR6FeHfSrH6Yzzi/Rxlgqe6t09jSa6dZpOZ+
   howlpack:WINSTON_WOLFE_KEY:
     secure: v1:8ys9REA+X+Vqfd11:OHVlRjQVjErL7mZS8uYMRbJdDbaYeii7alXFdsaRWI3o2qcQbPmxRPHzDgGQLx15
   juno:howl_posts: juno10vsrvy5k5kkesmfd4ez2k6rm4l72ufuk463hnwdugtyx7j4t7v4qnhhwms
