@@ -1,5 +1,10 @@
-import { withClient } from "@howlpack/howlpack-shared/cosmwasm.js";
-import { toBase64, toUtf8 } from "@cosmjs/encoding";
+import {
+  withClient,
+  withSigningClient,
+} from "@howlpack/howlpack-shared/cosmwasm.js";
+import { toBase64, toHex, toUtf8 } from "@cosmjs/encoding";
+import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx.js";
+import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx.js";
 import createHttpError from "http-errors";
 import Joi from "joi";
 import { validate } from "../../middleware/joi-validate.js";
@@ -47,13 +52,19 @@ export default (router) => {
       }, 3);
 
       if (!last_post) {
-        throw createHttpError.NotFound("no post found", {
-          data: { staker: body.staker },
-        });
+        ctx.body = {
+          error: "no post found",
+          data: {
+            staker: body.staker,
+          },
+        };
+
+        return;
       }
 
       const { uuid } = last_post;
-      const { amountStaked } = body;
+      let { amountStaked } = body;
+      amountStaked += "000000";
 
       const stakeBody = toBase64(
         toUtf8(
@@ -78,7 +89,60 @@ export default (router) => {
         )
       );
 
-      ctx.body = sendBody;
+      const r = await withSigningClient(
+        async (client, signer) => {
+          const [sender] = await signer.getAccounts();
+          const updateMsg = {
+            typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+            value: MsgExecuteContract.fromPartial({
+              sender: sender.address,
+              contract: process.env.HOWL_TOKEN,
+              msg: sendBody,
+              funds: [],
+            }),
+          };
+
+          const { accountNumber, sequence } = await client.getSequence(
+            sender.address
+          );
+
+          const txRaw = await client.sign(
+            sender.address,
+            [updateMsg],
+            {
+              amount: [
+                {
+                  amount: "1000",
+                  denom: "ujuno",
+                },
+              ],
+              gas: "600000",
+            },
+            "",
+            {
+              accountNumber: accountNumber,
+              sequence: sequence,
+              chainId: "juno-1",
+            }
+          );
+
+          const tmClient = client.getTmClient();
+
+          return await tmClient.broadcastTxSync({
+            tx: TxRaw.encode(txRaw).finish(),
+          });
+        },
+        process.env.HOWL_MNEMONIC,
+        1
+      );
+
+      if (r.code !== 0) {
+        throw createHttpError.InternalServerError("tmclient error", {
+          data: r,
+        });
+      }
+
+      ctx.body = toHex(r.hash).toUpperCase();
     }
   );
 };
