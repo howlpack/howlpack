@@ -68,7 +68,7 @@ export async function handler() {
 
         let sqsHowlMsgs = await processBlock(block);
 
-        console.log({ sqsHowlMsgs });
+        console.log("howls\t%j", { sqsHowlMsgs });
 
         for (const sqsHowlMsg of sqsHowlMsgs) {
           await sqsClient.send(
