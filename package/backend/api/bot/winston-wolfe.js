@@ -7,9 +7,11 @@ import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx.js";
 import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx.js";
 import createHttpError from "http-errors";
 import Joi from "joi";
+import { Decimal } from "decimal.js";
 import { validate } from "../../middleware/joi-validate.js";
 
 const codeKey = process.env.WINSTON_WOLFE_KEY;
+const WINSTON_WOLFE_ALIAS = "howlpack::winston_wolfe";
 
 const winstonWolfeValidation = validate({
   query: {
@@ -62,15 +64,33 @@ export default (router) => {
         return;
       }
 
+      /** @type {{balance: import("decimal.js").Decimal}} */
+      let { balance } = await withSigningClient(
+        async (client, signer) => {
+          return client.queryContractSmart(process.env.HOWL_TOKEN, {
+            balance: {
+              address: (await signer.getAccounts())[0].address,
+            },
+          });
+        },
+        process.env.HOWL_MNEMONIC,
+        3
+      );
+      balance = new Decimal(balance);
+
       const { uuid } = last_post;
+      /** @type {{amountStaked: import("decimal.js").Decimal}} */
       let { amountStaked } = body;
-      amountStaked += "000000";
+      amountStaked = new Decimal(amountStaked).mul(1e6);
+      const toStakeBack = Decimal.min(balance, amountStaked);
+
+      const balanceAfterStake = balance.minus(toStakeBack).div(1e6).floor();
 
       const stakeBody = toBase64(
         toUtf8(
           JSON.stringify({
             stake: {
-              alias: "howlpack::winston_wolfe",
+              alias: WINSTON_WOLFE_ALIAS,
               post_id: uuid,
             },
           })
@@ -82,17 +102,26 @@ export default (router) => {
           JSON.stringify({
             send: {
               contract: process.env.HOWL_STAKING,
-              amount: amountStaked,
+              amount: toStakeBack.toFixed(),
               msg: stakeBody,
             },
           })
         )
       );
 
+      const { is_following } = await withClient((client) => {
+        return client.queryContractSmart(process.env.HOWL_POSTS_ADDR, {
+          is_following: {
+            follower_alias: WINSTON_WOLFE_ALIAS,
+            following_alias: body.staker,
+          },
+        });
+      }, 3);
+
       const r = await withSigningClient(
         async (client, signer) => {
           const [sender] = await signer.getAccounts();
-          const updateMsg = {
+          const stakeMsg = {
             typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
             value: MsgExecuteContract.fromPartial({
               sender: sender.address,
@@ -102,21 +131,92 @@ export default (router) => {
             }),
           };
 
+          /** @type {import("decimal.js").Decimal} */
+          let junoBalance = await client.getBalance(sender.address, "ujuno");
+          junoBalance = new Decimal(junoBalance.amount);
+
+          const updateMetadataMsg = {
+            typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+            value: MsgExecuteContract.fromPartial({
+              sender: sender.address,
+              contract:
+                "juno1mf309nyvr4k4zv0m7m40am9n7nqjf6gupa0wukamwmhgntqj0gxs9hqlrr",
+              msg: toBase64(
+                toUtf8(
+                  JSON.stringify({
+                    update_metadata: {
+                      token_id: "howlpack::winston_wolfe",
+                      metadata: {
+                        image: "https://howlpack.social/winston_wolfe.png",
+                        image_data: null,
+                        email: null,
+                        external_url:
+                          "https://get.howlpack.social/bot/winston-wolfe",
+                        public_name: "Winston Wolfe ᴮᴼᵀ",
+                        public_bio: `${
+                          junoBalance.greaterThan(2000) &&
+                          balanceAfterStake.greaterThan(0)
+                            ? "✅ Systems operational"
+                            : "❌ Systems out of service"
+                        }, available balance: ${balanceAfterStake
+                          .toNumber()
+                          .toLocaleString(
+                            "en-US"
+                          )}HOWL. I'm Winston Wolfe, and I solve problems. I stake back too. Normally it'd take you 30 blocks to stake back, but I do it in under 10. And that, my friend, is what I call efficiency.`,
+                        twitter_id: "howlpack",
+                        discord_id: null,
+                        telegram_id: null,
+                        keybase_id: null,
+                        validator_operator_address: null,
+                      },
+                    },
+                  })
+                )
+              ),
+              funds: [],
+            }),
+          };
+
+          const msgs = [stakeMsg, updateMetadataMsg];
+
+          if (!is_following) {
+            const followMsg = {
+              typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+              value: MsgExecuteContract.fromPartial({
+                sender: sender.address,
+                contract: process.env.HOWL_POSTS_ADDR,
+                msg: toBase64(
+                  toUtf8(
+                    JSON.stringify({
+                      follow: {
+                        follower: WINSTON_WOLFE_ALIAS,
+                        following: body.staker,
+                      },
+                    })
+                  )
+                ),
+                funds: [],
+              }),
+            };
+
+            msgs.push(followMsg);
+          }
+
           const { accountNumber, sequence } = await client.getSequence(
             sender.address
           );
 
           const txRaw = await client.sign(
             sender.address,
-            [updateMsg],
+            msgs,
             {
               amount: [
                 {
-                  amount: "1000",
+                  amount: is_following ? "1000" : "1500",
                   denom: "ujuno",
                 },
               ],
-              gas: "600000",
+              gas: is_following ? "700000" : "900000",
             },
             "",
             {
@@ -136,7 +236,7 @@ export default (router) => {
         1
       );
 
-      if (r.code !== 0) {
+      if (r?.code !== 0) {
         throw createHttpError.InternalServerError("tmclient error", {
           data: r,
         });

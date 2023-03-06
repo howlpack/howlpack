@@ -14,6 +14,7 @@
     "@koa/router": "12.0.0",
     "cosmjs-types": "0.6.1",
     "csv": "6.2.8",
+    "decimal.js": "10.4.3",
     "dotenv-cli": "7.0.0",
     "http-errors": "2.0.0",
     "joi": "17.8.3",
