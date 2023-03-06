@@ -158,7 +158,7 @@ export const apiBackend = new aws.lambda.Function(
     runtime: "nodejs18.x",
     role: lambdaRole.arn,
     timeout: 30,
-    memorySize: 128,
+    memorySize: 512,
     environment: {
       variables: {
         ...environment,
