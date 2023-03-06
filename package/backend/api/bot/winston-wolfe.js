@@ -228,7 +228,7 @@ export default (router) => {
 
           const tmClient = client.getTmClient();
 
-          return await tmClient.broadcastTxSync({
+          return await tmClient.broadcastTxAsync({
             tx: TxRaw.encode(txRaw).finish(),
           });
         },
