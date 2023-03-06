@@ -44,7 +44,7 @@ export function composeReplyEmail(receiver, replyAuthor, replyId) {
 
 Exciting news - you've got a new reply to your Howl post!  
 Follow this link to check the reply: ${new URL(
-      replyAuthor + "/" + replyId,
+      encodeURIComponent(replyAuthor) + "/" + replyId,
       HOWL_URL
     )}
 
@@ -65,7 +65,10 @@ export function composeFollowerEmail(receiver, follower) {
     body: `Hi ${receiver},
     
 We're excited to let you know that you have a new follower on Howl! ${follower} is interested in the content you create.
-Follow this link to check howls from ${follower}: ${new URL(follower, HOWL_URL)}
+Follow this link to check howls from ${follower}: ${new URL(
+      encodeURIComponent(follower),
+      HOWL_URL
+    )}
 
 If you have any questions or concerns, please don't hesitate to reach out to us. Thanks for being a part of Howlpack!
 
@@ -83,10 +86,10 @@ export function composeLikesEmail(receiver, postId, amountStaked, staker) {
     body: `Hi ${receiver},
     
 We wanted to congratulate you on receiving likes for your Howl ${new URL(
-      receiver + "/" + postId,
+      encodeURIComponent(receiver) + "/" + postId,
       HOWL_URL
     )} ! These likes were received through staking ${amountStaked} Howl tokens from ${staker} (${new URL(
-      staker,
+      encodeURIComponent(staker),
       HOWL_URL
     )}). Keep up the great work!
 
@@ -108,7 +111,7 @@ export function composeMentionedEmail(receiver, mentionedBy, postId) {
 We wanted to let you know that you were mentioned in a Howl! ${mentionedBy} has mentioned you in their post.
 
 You can check out the Howl by clicking the link below:
-${new URL(mentionedBy + "/" + postId, HOWL_URL)}
+${new URL(encodeURIComponent(mentionedBy) + "/" + postId, HOWL_URL)}
     
 We hope you enjoy the mention and have a great day!
     
@@ -125,7 +128,7 @@ export function composeMyHowlEmail(receiver, postId) {
     body: `Hi ${receiver},
 
 We are delighted to inform you that your latest Howl has just been published on Howl. 
-${new URL(receiver + "/" + postId, HOWL_URL)}
+${new URL(encodeURIComponent(receiver) + "/" + postId, HOWL_URL)}
 
 Congratulations! Your thoughts and ideas have been shared with the Howl community.
 
