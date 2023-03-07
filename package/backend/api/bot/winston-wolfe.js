@@ -212,7 +212,7 @@ export default (router) => {
             {
               amount: [
                 {
-                  amount: is_following ? "1000" : "1500",
+                  amount: is_following ? "1750" : "3000",
                   denom: "ujuno",
                 },
               ],
@@ -237,6 +237,7 @@ export default (router) => {
       );
 
       if (r?.code !== 0) {
+        console.error(r);
         throw createHttpError.InternalServerError("tmclient error", {
           data: r,
         });
