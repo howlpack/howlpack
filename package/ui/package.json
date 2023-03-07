@@ -20,7 +20,7 @@
     "@mui/icons-material": "5.11.11",
     "@mui/material": "5.11.12",
     "@rollbar/react": "0.11.1",
-    "cosmjs-types": "0.6.1",
+    "cosmjs-types": "0.7.1",
     "immutable": "4.2.4",
     "joi": "17.8.3",
     "react": "18.2.0",
