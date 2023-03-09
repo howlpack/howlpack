@@ -37,20 +37,29 @@ export default function WinstonWolfe() {
           its efficiency and quick response time. It is also highly reliable,
           ensuring that users receive their staked tokens promptly.
         </Typography>
-        <Card variant="outlined" sx={{ mt: 3, mb: 6, p: 2 }}>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Card variant="outlined" sx={{ mt: 3, mb: 6, p: 3 }}>
+          <Box sx={{ textAlign: "center" }}>
+            <Typography variant="overline" sx={{ fontSize: "1em" }}>
+              I'm Winston Wolfe, and I solve problems. I stake back too.
+              Normally it'd take you 30 blocks to stake back, but I do it in
+              under 10. And that, my friend, is what I call efficiency.
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              mt: 2,
+              mb: 3,
+              textAlign: "center",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <Avatar
               alt="Winston Wolfe"
               src="https://howlpack.social/winston_wolfe.png"
               sx={{ mr: 2 }}
             />
-            <Typography variant="overline">
-              "I'm Winston Wolfe, and I solve problems. I stake back too.
-              Normally it'd take you 30 blocks to stake back, but I do it in
-              under 10. And that, my friend, is what I call efficiency."
-            </Typography>
-          </Box>
-          <Box sx={{ mb: 2, textAlign: "center" }}>
             <Button
               variant="contained"
               disableElevation
