@@ -4,6 +4,7 @@ import {
   ListItemIcon,
   ListItemText,
   ListSubheader,
+  Typography,
 } from "@mui/material";
 import { Fragment } from "react";
 import WebhookIcon from "@mui/icons-material/Webhook";
@@ -11,6 +12,7 @@ import MarkEmailUnreadIcon from "@mui/icons-material/MarkEmailUnread";
 import RouteIcon from "@mui/icons-material/Route";
 import LiveHelpIcon from "@mui/icons-material/LiveHelp";
 import LinkIcon from "@mui/icons-material/Link";
+import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 
 import { Link, useLocation } from "react-router-dom";
 
@@ -65,6 +67,19 @@ export default function Menu() {
         subheader={<ListSubheader component="div">Other</ListSubheader>}
       >
         <List component="div" disablePadding>
+          <ListItemButton
+            component={Link}
+            to={"/bots/winston-wolfe"}
+            selected={currentPathname === "/bots/winston-wolfe"}
+          >
+            <ListItemIcon>
+              <CurrencyExchangeIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="Winston Wolfe"
+              sx={{ whiteSpace: "nowrap" }}
+            />
+          </ListItemButton>
           <ListItemButton
             component={Link}
             to={"/faq"}

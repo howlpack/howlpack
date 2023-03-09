@@ -28,6 +28,7 @@ const WebhookEditNotifications = lazy(
 
 const IFTTT = lazy(() => import("./pages/tutorials/ifttt"));
 const FAQ = lazy(() => import("./pages/faq"));
+const WinstonWolfe = lazy(() => import("./pages/bots/winston-wolfe"));
 const Roadmap = lazy(() => import("./pages/roadmap"));
 const EmailNotifications = lazy(
   () => import("./pages/notifications/email/get")
@@ -74,6 +75,18 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <Navigate to="ifttt" replace /> },
           { path: "ifttt", element: <IFTTT /> },
+        ],
+      },
+      {
+        path: "bots",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Outlet />
+          </Suspense>
+        ),
+        children: [
+          { index: true, element: <Navigate to="winston-wolfe" replace /> },
+          { path: "winston-wolfe", element: <WinstonWolfe /> },
         ],
       },
       {
