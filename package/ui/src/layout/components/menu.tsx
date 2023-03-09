@@ -4,7 +4,6 @@ import {
   ListItemIcon,
   ListItemText,
   ListSubheader,
-  Typography,
 } from "@mui/material";
 import { Fragment } from "react";
 import WebhookIcon from "@mui/icons-material/Webhook";
@@ -12,7 +11,7 @@ import MarkEmailUnreadIcon from "@mui/icons-material/MarkEmailUnread";
 import RouteIcon from "@mui/icons-material/Route";
 import LiveHelpIcon from "@mui/icons-material/LiveHelp";
 import LinkIcon from "@mui/icons-material/Link";
-import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
+import LoopIcon from "@mui/icons-material/Loop";
 
 import { Link, useLocation } from "react-router-dom";
 
@@ -61,10 +60,10 @@ export default function Menu() {
         </List>
       </List>
       <List
-        sx={{ width: "100%", maxWidth: 360, mt: 4 }}
+        sx={{ width: "100%", maxWidth: 360, mt: 2 }}
         component="nav"
-        aria-labelledby="other"
-        subheader={<ListSubheader component="div">Other</ListSubheader>}
+        aria-labelledby="bots"
+        subheader={<ListSubheader component="div">BOTS</ListSubheader>}
       >
         <List component="div" disablePadding>
           <ListItemButton
@@ -73,13 +72,22 @@ export default function Menu() {
             selected={currentPathname === "/bots/winston-wolfe"}
           >
             <ListItemIcon>
-              <CurrencyExchangeIcon />
+              <LoopIcon />
             </ListItemIcon>
             <ListItemText
               primary="Winston Wolfe"
               sx={{ whiteSpace: "nowrap" }}
             />
           </ListItemButton>
+        </List>
+      </List>
+      <List
+        sx={{ width: "100%", maxWidth: 360, mt: 2 }}
+        component="nav"
+        aria-labelledby="other"
+        subheader={<ListSubheader component="div">Other</ListSubheader>}
+      >
+        <List component="div" disablePadding>
           <ListItemButton
             component={Link}
             to={"/faq"}
@@ -103,7 +111,7 @@ export default function Menu() {
         </List>
       </List>
       <List
-        sx={{ width: "100%", maxWidth: 360, mt: 4 }}
+        sx={{ width: "100%", maxWidth: 360, mt: 2 }}
         component="nav"
         aria-labelledby="tutorials"
         subheader={<ListSubheader component="div">Tutorials</ListSubheader>}
