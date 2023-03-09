@@ -151,7 +151,7 @@ export default (router) => {
                         image_data: null,
                         email: null,
                         external_url:
-                          "https://get.howlpack.social/bot/winston-wolfe",
+                          "https://get.howlpack.social/bots/winston-wolfe",
                         public_name: "Winston Wolfe ᴮᴼᵀ",
                         public_bio: `${
                           junoBalance.greaterThan(2000) &&
