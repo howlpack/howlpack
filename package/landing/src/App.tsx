@@ -19,15 +19,27 @@ function App() {
     <ThemeProvider theme={prefersDarkMode ? darkTheme : lightTheme}>
       <CssBaseline />
       <Container maxWidth="md">
-        <Box sx={{ my: 5, textAlign: "center" }}>
-          <Typography variant="h1">
-            🐺
-            <Box sx={{ mx: 2, display: "inline-block" }} component={"span"}>
-              Howlpack
-            </Box>
-            🎒
-          </Typography>
-          <Typography variant="caption">[unofficial extension]</Typography>
+        <Box
+          sx={{
+            my: 5,
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+            justifyContent: "center",
+            "& img": {
+              height: "130px",
+            },
+          }}
+        >
+          <img src="/howlpack-new-small.png" />
+          <Box sx={{ textAlign: "center", mt: 2 }}>
+            <Typography variant="h1">
+              <Box sx={{ mx: 2, display: "inline-block" }} component={"span"}>
+                Howlpack
+              </Box>
+            </Typography>
+            <Typography variant="caption">[unofficial extension]</Typography>
+          </Box>
         </Box>
         <Alert severity="info">
           The Howlpack project{" "}

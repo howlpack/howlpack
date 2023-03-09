@@ -24,17 +24,27 @@ export default function Header() {
         <MuiLink
           to="/"
           color={"secondary"}
-          style={{ textDecoration: "none" }}
+          sx={{
+            textDecoration: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: { xs: "center", sm: "normal" },
+            "& img": {
+              xs: { height: "80px" },
+              sm: { height: "130px" },
+            },
+          }}
           component={Link}
         >
-          <Typography variant="h1">
-            🐺
-            <Box sx={{ mx: 2, display: "inline-block" }} component={"span"}>
-              Howlpack
-            </Box>
-            🎒
-          </Typography>
-          <Typography variant="caption">[unofficial extension]</Typography>
+          <img src="https://howlpack.social/howlpack-new-small.png" />
+          <Box sx={{ textAlign: "center" }}>
+            <Typography variant="h1">
+              <Box sx={{ mx: 2, display: "inline-block" }} component={"span"}>
+                Howlpack
+              </Box>
+            </Typography>
+            <Typography variant="caption">[unofficial extension]</Typography>
+          </Box>
         </MuiLink>
       </Grid>
 
