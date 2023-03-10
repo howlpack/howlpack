@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@cosmjs/cosmwasm-stargate": "0.30.0",
-    "@cosmjs/encoding": "0.29.5",
+    "@cosmjs/encoding": "0.30.0",
     "@emotion/react": "11.10.6",
     "@emotion/styled": "11.10.6",
     "@keplr-wallet/types": "0.11.45",
