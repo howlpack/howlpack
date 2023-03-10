@@ -13,7 +13,7 @@
     "@aws-sdk/lib-dynamodb": "3.288.0",
     "@cosmjs/cosmwasm-stargate": "0.30.0",
     "@cosmjs/crypto": "0.30.0",
-    "@cosmjs/proto-signing": "0.29.5",
+    "@cosmjs/proto-signing": "0.30.0",
     "ramda": "0.28.0"
   }
 }
