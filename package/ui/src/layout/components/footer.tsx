@@ -13,11 +13,37 @@ export default function Footer() {
       <Grid item>
         <Typography variant="caption">{new Date().getFullYear()}</Typography>
         <br />
+
         <Typography variant="caption">
-          <Link href={howlpage} color={"secondary"} target="_blank">
-            {howlpage}
+          <Link
+            color={"secondary"}
+            href={howlpage}
+            target={"_blank"}
+            rel="noreferrer"
+          >
+            howl
+          </Link>{" "}
+          |{" "}
+          <Link
+            color={"secondary"}
+            href="https://twitter.com/howlpack"
+            target={"_blank"}
+            rel="noreferrer"
+          >
+            twitter
+          </Link>{" "}
+          |{" "}
+          <Link
+            color={"secondary"}
+            href="https://github.com/howlpack/howlpack/"
+            target={"_blank"}
+            rel="noreferrer"
+          >
+            github
           </Link>
         </Typography>
+        <br />
+        <Typography variant="caption">🐺🎒</Typography>
       </Grid>
     </Grid>
   );

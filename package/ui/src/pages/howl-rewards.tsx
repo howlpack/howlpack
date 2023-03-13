@@ -184,11 +184,11 @@ export default function HowlRewards() {
         <Divider sx={{ mt: 1, mb: 2 }} />
         <Box sx={{ background: "#efefef", p: 2, mb: 3 }}>
           <pre style={{ overflowX: "auto" }}>
-            {`your_staked_amount  = 0.6 * total_staked_by_you + 0.2 * total_staked_to_your_posts
-daily_reward        = daily_inflation * your_staked_amount / total_staked
+            {`your_staked_portion = 0.6 * total_staked_by_you + 0.2 * total_staked_to_your_posts
+daily_reward        = daily_inflation * your_staked_portion / total_staked
 `}
             <Divider sx={{ my: 3 }} />
-            {`your_staked_amount  = 0.6 * ${toBaseToken(
+            {`your_staked_portion = 0.6 * ${toBaseToken(
               user_rewards.data.delegated_by_active
             ).toLocaleString()} + 0.2 * ${toBaseToken(
               user_rewards.data.delegated_to_active
