@@ -19,10 +19,6 @@ config:
     [
       "https://juno-rpc.polkachu.com",
       "https://juno-rpc.reece.sh",
-      "https://juno-rpc.icycro.org/",
-      "https://juno-rpc.stakely.io/",
-      "https://juno.nodejumper.io",
-      "https://juno.rpc.interchain.ivaldilabs.xyz",
       "https://juno.rpc.stakin-nodes.com",
       "https://rpc-juno-ia.cosmosia.notional.ventures/",
       "https://rpc-juno.ecostake.com",
