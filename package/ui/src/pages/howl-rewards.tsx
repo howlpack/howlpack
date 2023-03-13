@@ -6,6 +6,7 @@ import { useRecoilValue } from "recoil";
 
 import { clientState, keplrState } from "../state/cosmos";
 import useTryNextClient from "../hooks/use-try-next-client";
+import { useHowlPrice } from "../hooks/use-howl-price";
 
 function toBaseToken(n: bigint, decimals = 6) {
   return BigInt(n) / BigInt(Math.pow(10, decimals));
@@ -15,6 +16,7 @@ export default function HowlRewards() {
   const keplr = useRecoilValue(keplrState);
   const client = useRecoilValue(clientState);
   const tryNextClient = useTryNextClient();
+  const howlPrice = useHowlPrice();
 
   const total_rewards = useQuery<any, any>(
     ["total_rewards"],
@@ -137,8 +139,24 @@ export default function HowlRewards() {
                 flexDirection: "column",
               }}
             >
-              <Typography variant="h2">{dailyReward.toString()}</Typography>
-              <Typography variant="caption">HOWL</Typography>
+              <Box sx={{ display: "flex", alignItems: "center", gap: "40px" }}>
+                <Box sx={{ textAlign: "center" }}>
+                  <Typography variant="h2" sx={{ display: "inline" }}>
+                    {dailyReward.toString()}
+                  </Typography>
+                  <Typography variant="subtitle1">HOWL</Typography>
+                </Box>
+                <Divider orientation="vertical" />
+                <Box sx={{ textAlign: "center" }}>
+                  <Typography variant="h5" sx={{ display: "inline" }}>
+                    {(
+                      (Number(dailyReward) * parseInt(howlPrice.data || "0")) /
+                      1e6
+                    ).toPrecision(3)}
+                  </Typography>
+                  <Typography variant="subtitle1">USD</Typography>
+                </Box>
+              </Box>
             </Box>
           </Card>
         </Grid>
@@ -151,10 +169,11 @@ export default function HowlRewards() {
             <Grid container spacing={2} sx={{ textAlign: "center" }}>
               <Grid item xs={6}>
                 <Typography variant="h6">
-                  {toBaseToken(total_rewards.data.staked).toLocaleString()}
+                  {(parseInt(howlPrice.data || "0") / 1e6).toPrecision(3)}$
                 </Typography>
-                <Typography variant="caption">Staked via Howl posts</Typography>
+                <Typography variant="caption">HOWL price</Typography>
               </Grid>
+
               <Grid item xs={6}>
                 <Typography variant="h6">
                   {toBaseToken(
@@ -171,7 +190,12 @@ export default function HowlRewards() {
                 </Typography>
                 <Typography variant="caption">Total supply</Typography>
               </Grid>
-              <Grid item xs={6}></Grid>
+              <Grid item xs={6}>
+                <Typography variant="h6">
+                  {toBaseToken(total_rewards.data.staked).toLocaleString()}
+                </Typography>
+                <Typography variant="caption">Staked via Howl posts</Typography>
+              </Grid>
             </Grid>
           </Card>
         </Grid>

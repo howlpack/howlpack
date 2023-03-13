@@ -21,8 +21,7 @@ export default function WithKeplr({ children }: { children?: any }) {
           <Typography variant="body1">
             Ready to unleash the full potential of Howlpack? Simply connect your
             Keplr wallet by clicking the top right button and we'll do the rest!
-            By doing so, we'll be able to fetch your (de)NS addresses and
-            provide you with personalized notifications. Let's howl together!
+            Let's howl together!
           </Typography>
         </Card>
       </Fragment>
