@@ -12,6 +12,7 @@ import RouteIcon from "@mui/icons-material/Route";
 import LiveHelpIcon from "@mui/icons-material/LiveHelp";
 import LinkIcon from "@mui/icons-material/Link";
 import LoopIcon from "@mui/icons-material/Loop";
+import TollIcon from "@mui/icons-material/Toll";
 
 import { Link, useLocation } from "react-router-dom";
 
@@ -88,6 +89,19 @@ export default function Menu() {
         subheader={<ListSubheader component="div">Other</ListSubheader>}
       >
         <List component="div" disablePadding>
+          <ListItemButton
+            component={Link}
+            to={"/howl-rewards"}
+            selected={currentPathname === "/howl-rewards"}
+          >
+            <ListItemIcon>
+              <TollIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="HOWL Rewards"
+              sx={{ whiteSpace: "nowrap" }}
+            />
+          </ListItemButton>
           <ListItemButton
             component={Link}
             to={"/faq"}
