@@ -52,6 +52,7 @@ jobs:
           pulumi stack select howlpack-${{ matrix.environment }}
           echo "webapp_url=$(pulumi stack output webapp | jq -r '.url')" >> $GITHUB_ENV
           echo "backend_url=$(pulumi stack output backend | jq -r '.url')" >> $GITHUB_ENV
+          echo "juno_notifications_contract=$(pulumi config get --path juno:notifications_contract)" >> $GITHUB_ENV
           echo "juno_rpcs=$(pulumi config get --path juno:rpcs)" >> $GITHUB_ENV
           echo "juno_howl_token=$(pulumi config get --path juno:howl_token)" >> $GITHUB_ENV
           echo "juno_howl_staking=$(pulumi config get --path juno:howl_staking)" >> $GITHUB_ENV
