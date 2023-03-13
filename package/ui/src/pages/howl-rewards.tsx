@@ -229,8 +229,7 @@ daily_reward        = ${toBaseToken(
         </Box>
         <Typography variant="body2">
           If you encounter any bugs or inconsistencies in the formula, please
-          let us know. To report any issues, please give us a shout on Howl or
-          Twitter.
+          let us know on Howl or Twitter.
         </Typography>
       </Box>
     </Fragment>
