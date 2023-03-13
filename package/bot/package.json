@@ -1,0 +1,18 @@
+{
+  "name": "@howlpack/howlpack-bot",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "env": "dotenv -e ../../.env -- node"
+  },
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@cosmjs/encoding": "0.30.0",
+    "cosmjs-types": "0.7.1",
+    "decimal.js": "10.4.3"
+  }
+}

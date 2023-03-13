@@ -84,3 +84,38 @@ export async function withSigningClient(
 export function toBaseToken(n, decimals = 6) {
   return BigInt(n) / BigInt(Math.pow(10, decimals));
 }
+
+/**
+ *
+ * @param {import("decimal.js").Decimal} junoBalance
+ * @param {import("decimal.js").Decimal} howlBalance
+ * @returns
+ */
+export function updateMetadataBody(junoBalance, howlBalance) {
+  return {
+    update_metadata: {
+      token_id: "howlpack::winston_wolfe",
+      metadata: {
+        image: "https://howlpack.social/winston_wolfe.png",
+        image_data: null,
+        email: null,
+        external_url: "https://get.howlpack.social/bots/winston-wolfe",
+        public_name: "Winston Wolfe ᴮᴼᵀ",
+        public_bio: `${
+          junoBalance.greaterThan(2000) && howlBalance.greaterThan(0)
+            ? "✅ Systems operational"
+            : "❌ Systems out of service"
+        }, available balance: ${howlBalance
+          .toNumber()
+          .toLocaleString(
+            "en-US"
+          )}HOWL. I'm Winston Wolfe, and I solve problems. I stake back too. Normally it'd take you 30 blocks to stake back, but I do it in under 10. And that, my friend, is what I call efficiency.`,
+        twitter_id: "howlpack",
+        discord_id: null,
+        telegram_id: null,
+        keybase_id: null,
+        validator_operator_address: null,
+      },
+    },
+  };
+}

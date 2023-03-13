@@ -1,4 +1,5 @@
 import {
+  updateMetadataBody,
   withClient,
   withSigningClient,
 } from "@howlpack/howlpack-shared/cosmwasm.js";
@@ -143,34 +144,9 @@ export default (router) => {
                 "juno1mf309nyvr4k4zv0m7m40am9n7nqjf6gupa0wukamwmhgntqj0gxs9hqlrr",
               msg: toBase64(
                 toUtf8(
-                  JSON.stringify({
-                    update_metadata: {
-                      token_id: "howlpack::winston_wolfe",
-                      metadata: {
-                        image: "https://howlpack.social/winston_wolfe.png",
-                        image_data: null,
-                        email: null,
-                        external_url:
-                          "https://get.howlpack.social/bots/winston-wolfe",
-                        public_name: "Winston Wolfe ᴮᴼᵀ",
-                        public_bio: `${
-                          junoBalance.greaterThan(2000) &&
-                          balanceAfterStake.greaterThan(0)
-                            ? "✅ Systems operational"
-                            : "❌ Systems out of service"
-                        }, available balance: ${balanceAfterStake
-                          .toNumber()
-                          .toLocaleString(
-                            "en-US"
-                          )}HOWL. I'm Winston Wolfe, and I solve problems. I stake back too. Normally it'd take you 30 blocks to stake back, but I do it in under 10. And that, my friend, is what I call efficiency.`,
-                        twitter_id: "howlpack",
-                        discord_id: null,
-                        telegram_id: null,
-                        keybase_id: null,
-                        validator_operator_address: null,
-                      },
-                    },
-                  })
+                  JSON.stringify(
+                    updateMetadataBody(junoBalance, balanceAfterStake)
+                  )
                 )
               ),
               funds: [],
