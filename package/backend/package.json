@@ -22,7 +22,7 @@
     "koa-bodyparser": "4.4.0",
     "koa-session": "6.4.0",
     "koa-static": "5.0.0",
-    "node-fetch": "3.3.0",
+    "node-fetch": "3.3.1",
     "prettier": "2.8.6",
     "qrcode": "1.5.1",
     "ramda": "0.28.0",
