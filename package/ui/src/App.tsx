@@ -11,6 +11,7 @@ import { RecoilRoot } from "recoil";
 import KeplrWatcher from "./components/keplr-watcher";
 import Loading from "./components/loading";
 import AppLayout from "./layout/app";
+import DensLayout from "./layout/dens";
 import rollbar from "./lib/rollbar";
 import WithKeplr from "./layout/with-keplr";
 import WithDENS from "./layout/with-dens";
@@ -26,6 +27,8 @@ const WebhookEditNotifications = lazy(
   () => import("./pages/notifications/webhook/edit")
 );
 
+const DensPath = lazy(() => import("./pages/dens-path/index"));
+
 const IFTTT = lazy(() => import("./pages/tutorials/ifttt"));
 const FAQ = lazy(() => import("./pages/faq"));
 const HowlRewards = lazy(() => import("./pages/howl-rewards"));
@@ -40,6 +43,20 @@ const EmailCreateForm = lazy(
 const EmailEditForm = lazy(() => import("./pages/notifications/email/edit"));
 
 const router = createBrowserRouter([
+  {
+    path: "/dens-path",
+    element: <DensLayout />,
+    children: [
+      {
+        index: true,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <DensPath />
+          </Suspense>
+        ),
+      },
+    ],
+  },
   {
     path: "/",
     element: <AppLayout />,
