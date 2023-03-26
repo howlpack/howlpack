@@ -8,8 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { toBaseToken } from "../../../lib/token";
-import { PathTLD } from "../../../types/howlpack";
-import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
+import { PathTLD } from "../../../types/types";
 
 export const pathTLDs: PathTLD[] = [
   {
