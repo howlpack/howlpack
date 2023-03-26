@@ -2,14 +2,17 @@ import { Outlet } from "react-router-dom";
 import {
   Box,
   CssBaseline,
+  Divider,
   Grid,
   ThemeProvider,
+  Typography,
   useMediaQuery,
 } from "@mui/material";
 import { darkTheme, lightTheme } from "../lib/theme";
 import { Helmet } from "react-helmet";
 import Snackbar from "../components/snackbar";
 import useScrollPosition from "../hooks/use-scroll-position";
+import { Container } from "@mui/system";
 
 function BackgroundImage() {
   const scrollPosition = useScrollPosition();
@@ -17,7 +20,7 @@ function BackgroundImage() {
   return (
     <Box
       sx={{
-        background: "url(/dens-background-min.png) no-repeat bottom",
+        background: "url(/dens-background.jpg) no-repeat bottom",
         backgroundSize: "auto 100%",
         height: "100vh",
         width: "100%",
@@ -80,7 +83,86 @@ export default function Dens() {
           <BackgroundImage />
         </Grid>
       </Grid>
-      <Box sx={{ height: "1000px" }}></Box>
+      <Container maxWidth="md" sx={{ mt: 10, minHeight: "1000px" }}>
+        <Box>
+          <Typography
+            variant="h5"
+            component="h2"
+            sx={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              mb: 3,
+            }}
+          >
+            What is (de)NS?
+          </Typography>
+
+          <Typography
+            variant="body1"
+            sx={{
+              fontFamily: "'Space Grotesk', sans-serif",
+            }}
+          >
+            (de)NS is a decentralized nameservice built on top of the JUNO
+            network. It allows users to create and manage custom subdomains,
+            known as paths, under the (de)NS root domain.
+          </Typography>
+        </Box>
+        <Divider sx={{ mt: 8, mb: 6, width: "50%", mx: "auto" }} />
+        <Box>
+          <Typography
+            variant="h5"
+            component="h2"
+            sx={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              mb: 3,
+            }}
+          >
+            Are there any limitations to creating a path under the (de)NS root
+            domain?
+          </Typography>
+
+          <Typography
+            variant="body1"
+            sx={{
+              fontFamily: "'Space Grotesk', sans-serif",
+            }}
+          >
+            No, there are no limitations to creating a path under the (de)NS
+            root domain. Paths are equivalent to subdomains and have the same
+            functionality as any other domain name registered on the (de)NS
+            network. This means that the owner of the path has self-sovereign
+            control over the domain name, without any restrictions or
+            limitations from the (de)NS root domain.
+          </Typography>
+        </Box>
+        <Divider sx={{ mt: 8, mb: 6, width: "50%", mx: "auto" }} />
+        <Box>
+          <Typography
+            variant="h5"
+            component="h2"
+            sx={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              mb: 3,
+            }}
+          >
+            Why would I want to create a path under the (de)NS root domain?
+          </Typography>
+
+          <Typography
+            variant="body1"
+            sx={{
+              fontFamily: "'Space Grotesk', sans-serif",
+            }}
+          >
+            Creating a path under the (de)NS root domain can be a cheap way to
+            purchase your own (de)NS, compared to purchasing a full domain name.
+            Paths are equivalent to subdomains and are typically priced lower
+            than full domain names, making them a cost-effective option for
+            individuals or businesses who want to establish their online
+            presence on the (de)NS network.
+          </Typography>
+        </Box>
+      </Container>
     </ThemeProvider>
   );
 }
