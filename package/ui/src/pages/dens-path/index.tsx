@@ -1,10 +1,33 @@
 import { Button, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { Fragment } from "react";
 import useFormData from "../../hooks/use-form-data";
 import Path from "./components/path";
 import SelectRoot from "./components/select-root";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import useScrollPosition from "../../hooks/use-scroll-position";
+
+function ScrollDown() {
+  const scrollPosition = useScrollPosition();
+
+  return (
+    <Box
+      sx={{
+        opacity: 1 - Math.min(1, scrollPosition / 500),
+      }}
+    >
+      <Typography
+        variant="body1"
+        sx={{
+          fontFamily: "'Space Grotesk', sans-serif",
+        }}
+      >
+        Scroll for more information
+      </Typography>
+      <ExpandMoreIcon />
+    </Box>
+  );
+}
 
 export default function DensPath() {
   const { formState, onChange } = useFormData({
@@ -13,7 +36,7 @@ export default function DensPath() {
   });
 
   return (
-    <Fragment>
+    <Box sx={{ mt: { sm: 0, md: 5 }, height: "100%", position: "relative" }}>
       <Typography
         variant="h4"
         component="h1"
@@ -23,7 +46,7 @@ export default function DensPath() {
       >
         Buy (de)NS path domain
       </Typography>
-      <Box sx={{ mt: 8 }}>
+      <Box sx={{ mt: { xs: 5, sm: 8 } }}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={4}>
             <SelectRoot formData={formState} onChange={onChange} />
@@ -51,6 +74,20 @@ export default function DensPath() {
           Buy for 1 JUNO
         </Button>
       </Box>
-    </Fragment>
+      <Box
+        sx={{
+          position: "absolute",
+          bottom: "0",
+          textAlign: "center",
+          width: "100%",
+          display: {
+            xs: "none",
+            md: "block",
+          },
+        }}
+      >
+        <ScrollDown />
+      </Box>
+    </Box>
   );
 }
