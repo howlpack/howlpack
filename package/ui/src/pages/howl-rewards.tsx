@@ -7,10 +7,7 @@ import { useRecoilValue } from "recoil";
 import { clientState, keplrState } from "../state/cosmos";
 import useTryNextClient from "../hooks/use-try-next-client";
 import { useHowlPrice } from "../hooks/use-howl-price";
-
-function toBaseToken(n: bigint, decimals = 6) {
-  return BigInt(n) / BigInt(Math.pow(10, decimals));
-}
+import { toBaseToken } from "../lib/token";
 
 export default function HowlRewards() {
   const keplr = useRecoilValue(keplrState);

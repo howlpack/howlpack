@@ -46,6 +46,11 @@ const router = createBrowserRouter([
   {
     path: "/dens-path",
     element: <DensLayout />,
+    errorElement: (
+      <div style={{ width: "50%", margin: "50px auto" }}>
+        <Error />
+      </div>
+    ),
     children: [
       {
         index: true,
