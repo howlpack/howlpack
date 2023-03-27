@@ -31,7 +31,14 @@ const DensPath = lazy(() => import("./pages/dens-path/index"));
 
 const IFTTT = lazy(() => import("./pages/tutorials/ifttt"));
 const FAQ = lazy(() => import("./pages/faq"));
-const HowlRewards = lazy(() => import("./pages/howl-rewards"));
+const HowlRewardsKeplr = lazy(() =>
+  import("./pages/howl-rewards").then((m) => ({ default: m.HowlRewardsKeplr }))
+);
+const HowlRewardsTokenId = lazy(() =>
+  import("./pages/howl-rewards").then((m) => ({
+    default: m.HowlRewardsTokenId,
+  }))
+);
 const WinstonWolfe = lazy(() => import("./pages/bots/winston-wolfe"));
 const Roadmap = lazy(() => import("./pages/roadmap"));
 const EmailNotifications = lazy(
@@ -76,11 +83,16 @@ const router = createBrowserRouter([
         path: "howl-rewards",
         element: (
           <Suspense fallback={<Loading />}>
-            <WithKeplr>
-              <HowlRewards />
-            </WithKeplr>
+            <Outlet />
           </Suspense>
         ),
+        children: [
+          { index: true, element: <HowlRewardsKeplr /> },
+          {
+            path: ":dens",
+            element: <HowlRewardsTokenId />,
+          },
+        ],
       },
       {
         path: "roadmap",

@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
 
-import { signClientState } from "../state/cosmos";
+import { clientState } from "../state/cosmos";
 import useTryNextClient from "./use-try-next-client";
 
 export function useHowlPrice() {
@@ -32,17 +32,17 @@ export function useHowlPrice() {
     },
   ];
 
-  const signClient = useRecoilValue(signClientState);
+  const client = useRecoilValue(clientState);
   const tryNextClient = useTryNextClient();
 
   return useQuery<string>(
     ["howl_price"],
     async () => {
-      if (!signClient) {
+      if (!client) {
         return [];
       }
 
-      const { amount } = await signClient.queryContractSmart(
+      const { amount } = await client.queryContractSmart(
         "juno1pctfpv9k03v0ff538pz8kkw5ujlptntzkwjg6c0lrtqv87s9k28qdtl50w",
         {
           simulate_swap_operations: {
@@ -56,7 +56,7 @@ export function useHowlPrice() {
       return amount;
     },
     {
-      enabled: Boolean(signClient),
+      enabled: Boolean(client),
       staleTime: 60000,
       onError: tryNextClient,
       suspense: true,

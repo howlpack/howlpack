@@ -67,6 +67,29 @@ export const signClientState = selector<any | null>({
   },
 });
 
+export const clientState = selector<any | null>({
+  key: "clientState",
+  dangerouslyAllowMutability: true,
+  get: async ({ get }) => {
+    const { CosmWasmClient } = await import("@cosmjs/cosmwasm-stargate");
+
+    const clientIx = get(clientIxState);
+    for (let i = 0; i < JUNO_RPCS.length; i++) {
+      try {
+        const client = await CosmWasmClient.connect(
+          JUNO_RPCS[(clientIx + i) % JUNO_RPCS.length]
+        );
+
+        return client;
+      } catch (e) {
+        // connect error, try next client
+      }
+    }
+
+    return null;
+  },
+});
+
 export const clientIxState = atom<number>({
   key: "clientIxState",
   default: 0,
