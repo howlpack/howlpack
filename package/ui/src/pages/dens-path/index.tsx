@@ -48,10 +48,10 @@ export default function DensPath() {
       </Typography>
       <Box sx={{ mt: { xs: 5, sm: 8 } }}>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={5}>
             <SelectRoot formData={formState} onChange={onChange} />
           </Grid>
-          <Grid item xs={12} md={8}>
+          <Grid item xs={12} md={7}>
             <Path formData={formState} onChange={onChange} />
           </Grid>
         </Grid>
