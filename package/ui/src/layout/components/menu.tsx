@@ -58,6 +58,16 @@ export default function Menu() {
               <ListItemText primary="Webhooks" />
             </ListItemButton>
           </span>
+          <ListItemButton
+            component={Link}
+            to={"/notifications/faq"}
+            selected={currentPathname === "/notifications/faq"}
+          >
+            <ListItemIcon>
+              <LiveHelpIcon />
+            </ListItemIcon>
+            <ListItemText primary="FAQ" />
+          </ListItemButton>
         </List>
       </List>
       <List
@@ -101,16 +111,6 @@ export default function Menu() {
               primary="HOWL Rewards"
               sx={{ whiteSpace: "nowrap" }}
             />
-          </ListItemButton>
-          <ListItemButton
-            component={Link}
-            to={"/faq"}
-            selected={currentPathname === "/faq"}
-          >
-            <ListItemIcon>
-              <LiveHelpIcon />
-            </ListItemIcon>
-            <ListItemText primary="FAQ" />
           </ListItemButton>
           <ListItemButton
             component={Link}

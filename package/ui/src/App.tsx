@@ -73,14 +73,6 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/notifications" replace /> },
       {
-        path: "faq",
-        element: (
-          <Suspense fallback={<Loading />}>
-            <FAQ />
-          </Suspense>
-        ),
-      },
-      {
         path: "howl-rewards",
         element: (
           <Suspense fallback={<Loading />}>
@@ -134,6 +126,14 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <Navigate to="email" replace />,
+          },
+          {
+            path: "faq",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <FAQ />
+              </Suspense>
+            ),
           },
           {
             path: "email",
