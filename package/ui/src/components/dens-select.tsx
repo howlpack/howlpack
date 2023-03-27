@@ -12,13 +12,13 @@ import { Fragment, useEffect } from "react";
 import { useQuery } from "react-query";
 import { useRecoilState, useRecoilValue } from "recoil";
 import useTryNextClient from "../hooks/use-try-next-client";
-import { clientState, keplrState } from "../state/cosmos";
+import { signClientState, keplrState } from "../state/cosmos";
 import { densInitializedState, selectedDensState } from "../state/howlpack";
 import Loading from "./loading";
 
 export default function DENSSelect() {
   const keplr = useRecoilValue(keplrState);
-  const client = useRecoilValue(clientState);
+  const signClient = useRecoilValue(signClientState);
   const tryNextClient = useTryNextClient();
 
   const [selectedDens, setSelectedDens] = useRecoilState(
@@ -33,11 +33,11 @@ export default function DENSSelect() {
   const { data: dens_addr } = useQuery<string | null>(
     ["dens_addr"],
     async () => {
-      if (!client) {
+      if (!signClient) {
         return null;
       }
 
-      const config = await client.queryContractSmart(
+      const config = await signClient.queryContractSmart(
         import.meta.env.VITE_NOTIFICATIONS_CONTRACT,
         {
           get_config: {},
@@ -47,7 +47,7 @@ export default function DENSSelect() {
       return config.dens_addr;
     },
     {
-      enabled: Boolean(client),
+      enabled: Boolean(signClient),
       onError: tryNextClient,
       staleTime: 300000,
     }
@@ -61,7 +61,7 @@ export default function DENSSelect() {
   } = useQuery<string[]>(
     ["base_tokens", dens_addr, keplr.account],
     async () => {
-      if (!client) {
+      if (!signClient) {
         return [];
       }
 
@@ -69,14 +69,14 @@ export default function DENSSelect() {
         return [];
       }
 
-      const dens = await client.queryContractSmart(dens_addr, {
+      const dens = await signClient.queryContractSmart(dens_addr, {
         base_tokens: { owner: keplr.account },
       });
 
       return dens.tokens;
     },
     {
-      enabled: Boolean(client) && Boolean(dens_addr),
+      enabled: Boolean(signClient) && Boolean(dens_addr),
       onError: tryNextClient,
       staleTime: 300000,
       onSuccess: () => setDensInitialized(true),
@@ -86,7 +86,7 @@ export default function DENSSelect() {
   const { data: paths } = useQuery<string[]>(
     ["paths", dens_addr, dens],
     async () => {
-      if (!client) {
+      if (!signClient) {
         return [];
       }
 
@@ -96,7 +96,7 @@ export default function DENSSelect() {
 
       let paths: string[] = [];
       for (const d of dens) {
-        const d_paths = await client.queryContractSmart(dens_addr, {
+        const d_paths = await signClient.queryContractSmart(dens_addr, {
           paths_for_token: { owner: keplr.account, token_id: d },
         });
 
@@ -122,7 +122,7 @@ export default function DENSSelect() {
     }
   }, [dens, selectedDens, setSelectedDens]);
 
-  if (!client) {
+  if (!signClient) {
     return null;
   }
 

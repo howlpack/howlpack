@@ -10,7 +10,7 @@ import { Fragment, useCallback, useEffect, useMemo } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import Loading from "../../../components/loading";
 import useFormData from "../../../hooks/use-form-data";
-import { clientState, keplrState } from "../../../state/cosmos";
+import { signClientState, keplrState } from "../../../state/cosmos";
 import { selectedDensState } from "../../../state/howlpack";
 import { notification, constants } from "@howlpack/howlpack-shared";
 import { useNavigate } from "react-router-dom";
@@ -25,7 +25,7 @@ import { snackbarState } from "../../../state/snackbar";
 export default function EmailNotifications() {
   const keplr = useRecoilValue(keplrState);
   const selectedDens = useRecoilValue(selectedDensState(keplr.account));
-  const client = useRecoilValue(clientState);
+  const signClient = useRecoilValue(signClientState);
   const queryClient = useQueryClient();
   const { formState, setFormState } = useFormData({});
   const navigate = useNavigate();
@@ -66,7 +66,7 @@ export default function EmailNotifications() {
   } = useMutation<DeliverTxResponse | null, unknown>(
     ["notifications"],
     async () => {
-      if (!client) {
+      if (!signClient) {
         return null;
       }
 
@@ -96,10 +96,14 @@ export default function EmailNotifications() {
         }),
       };
 
-      const result = await client.signAndBroadcast(keplr.account, [updateMsg], {
-        amount: [{ amount: "0.025", denom: "ujuno" }],
-        gas: "400000",
-      });
+      const result = await signClient.signAndBroadcast(
+        keplr.account,
+        [updateMsg],
+        {
+          amount: [{ amount: "0.025", denom: "ujuno" }],
+          gas: "400000",
+        }
+      );
 
       queryClient.setQueryData(
         ["get_notifications", keplr.account],

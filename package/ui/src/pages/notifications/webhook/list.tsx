@@ -2,7 +2,7 @@ import { Box, Button, Card, Chip, Divider, Typography } from "@mui/material";
 import { Fragment, useMemo } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import Loading from "../../../components/loading";
-import { clientState, keplrState } from "../../../state/cosmos";
+import { signClientState, keplrState } from "../../../state/cosmos";
 import { selectedDensState } from "../../../state/howlpack";
 import { useNavigate } from "react-router-dom";
 import useGetNotification from "../../../hooks/use-get-notification";
@@ -17,7 +17,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 export default function WebhookListNotifications() {
   const keplr = useRecoilValue(keplrState);
   const selectedDens = useRecoilValue(selectedDensState(keplr.account));
-  const client = useRecoilValue(clientState);
+  const signClient = useRecoilValue(signClientState);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -33,7 +33,7 @@ export default function WebhookListNotifications() {
   } = useMutation<DeliverTxResponse | null, unknown, any>(
     ["notifications"],
     async (webhookNotification: any) => {
-      if (!client) {
+      if (!signClient) {
         return null;
       }
 
@@ -63,10 +63,14 @@ export default function WebhookListNotifications() {
         }),
       };
 
-      const result = await client.signAndBroadcast(keplr.account, [updateMsg], {
-        amount: [{ amount: "0.025", denom: "ujuno" }],
-        gas: "400000",
-      });
+      const result = await signClient.signAndBroadcast(
+        keplr.account,
+        [updateMsg],
+        {
+          amount: [{ amount: "0.025", denom: "ujuno" }],
+          gas: "400000",
+        }
+      );
 
       queryClient.setQueryData(
         ["get_notifications", keplr.account],

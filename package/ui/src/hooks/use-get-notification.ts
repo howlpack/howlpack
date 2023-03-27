@@ -1,24 +1,24 @@
 import { useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
 
-import { clientState, keplrState } from "../state/cosmos";
+import { signClientState, keplrState } from "../state/cosmos";
 import { selectedDensState } from "../state/howlpack";
 import useTryNextClient from "./use-try-next-client";
 
 export default function useGetNotification() {
   const keplr = useRecoilValue(keplrState);
-  const client = useRecoilValue(clientState);
+  const signClient = useRecoilValue(signClientState);
   const tryNextClient = useTryNextClient();
   const selectedDens = useRecoilValue(selectedDensState(keplr.account));
 
   return useQuery<any>(
     ["get_notifications", keplr.account, selectedDens],
     async () => {
-      if (!client) {
+      if (!signClient) {
         return [];
       }
 
-      const notifications = await client.queryContractSmart(
+      const notifications = await signClient.queryContractSmart(
         import.meta.env.VITE_NOTIFICATIONS_CONTRACT,
         {
           get_notifications: { token_id: selectedDens },
@@ -28,7 +28,7 @@ export default function useGetNotification() {
       return notifications;
     },
     {
-      enabled: Boolean(client),
+      enabled: Boolean(signClient),
       staleTime: 3000000,
       onError: tryNextClient,
       suspense: true,

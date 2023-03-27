@@ -32,8 +32,8 @@ export const keplrState = atom<{
 
 export const JUNO_RPCS = JSON.parse(import.meta.env.VITE_JUNO_RPCS) as string[];
 
-export const clientState = selector<any | null>({
-  key: "clientState",
+export const signClientState = selector<any | null>({
+  key: "signClientState",
   dangerouslyAllowMutability: true,
   get: async ({ get }) => {
     const { SigningCosmWasmClient } = await import("@cosmjs/cosmwasm-stargate");

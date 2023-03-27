@@ -21,7 +21,7 @@ import {
 } from "@howlpack/howlpack-shared";
 import useFormData from "../../../hooks/use-form-data";
 import useGetNotification from "../../../hooks/use-get-notification";
-import { clientState, keplrState } from "../../../state/cosmos";
+import { signClientState, keplrState } from "../../../state/cosmos";
 import { selectedDensState } from "../../../state/howlpack";
 import Joi from "joi";
 import Email, { emailValidator } from "../components/email";
@@ -88,7 +88,7 @@ export default function EmailEdit() {
 
   const keplr = useRecoilValue(keplrState);
   const selectedDens = useRecoilValue(selectedDensState(keplr.account));
-  const client = useRecoilValue(clientState);
+  const signClient = useRecoilValue(signClientState);
 
   const { mutateAsync: encryptEmail } = useMutation(
     ["/api/crypto/encrypt", formState.get("email")],
@@ -113,7 +113,7 @@ export default function EmailEdit() {
     useMutation<DeliverTxResponse | null, unknown, string[]>(
       ["notifications"],
       async ([masked_addr, encryptedEmail]) => {
-        if (!client) {
+        if (!signClient) {
           return null;
         }
 
@@ -160,7 +160,7 @@ export default function EmailEdit() {
           }),
         };
 
-        const result = await client.signAndBroadcast(
+        const result = await signClient.signAndBroadcast(
           keplr.account,
           [updateMsg],
           {

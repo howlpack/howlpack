@@ -4,25 +4,25 @@ import { Fragment } from "react";
 import { useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
 
-import { clientState, keplrState } from "../state/cosmos";
+import { signClientState, keplrState } from "../state/cosmos";
 import useTryNextClient from "../hooks/use-try-next-client";
 import { useHowlPrice } from "../hooks/use-howl-price";
 import { toBaseToken } from "../lib/token";
 
 export default function HowlRewards() {
   const keplr = useRecoilValue(keplrState);
-  const client = useRecoilValue(clientState);
+  const signClient = useRecoilValue(signClientState);
   const tryNextClient = useTryNextClient();
   const howlPrice = useHowlPrice();
 
   const total_rewards = useQuery<any, any>(
     ["total_rewards"],
     async () => {
-      if (!client) {
+      if (!signClient) {
         return null;
       }
 
-      const { amount: amount_string } = await client.queryContractSmart(
+      const { amount: amount_string } = await signClient.queryContractSmart(
         import.meta.env.VITE_HOWL_STAKING,
         {
           total_staked_at_height: {},
@@ -31,14 +31,14 @@ export default function HowlRewards() {
 
       const staked = BigInt(amount_string);
 
-      const { rate, split } = await client.queryContractSmart(
+      const { rate, split } = await signClient.queryContractSmart(
         import.meta.env.VITE_HOWL_STAKING,
         {
           rewards_config: {},
         }
       );
 
-      const { total_supply } = await client.queryContractSmart(
+      const { total_supply } = await signClient.queryContractSmart(
         import.meta.env.VITE_HOWL_TOKEN,
         {
           token_info: {},
@@ -54,7 +54,7 @@ export default function HowlRewards() {
       };
     },
     {
-      enabled: Boolean(client),
+      enabled: Boolean(signClient),
       // 12 hours
       staleTime: 43200000,
       onError: tryNextClient,
@@ -65,16 +65,19 @@ export default function HowlRewards() {
   const user_rewards = useQuery<any, any>(
     ["user_rewards", keplr.account],
     async () => {
-      if (!client) {
+      if (!signClient) {
         return null;
       }
 
       const {
         delegated_by_active: delegated_by_active_string,
         delegated_to_active: delegated_to_active_string,
-      } = await client.queryContractSmart(import.meta.env.VITE_HOWL_STAKING, {
-        user_stats: { address: keplr.account },
-      });
+      } = await signClient.queryContractSmart(
+        import.meta.env.VITE_HOWL_STAKING,
+        {
+          user_stats: { address: keplr.account },
+        }
+      );
 
       const delegated_by_active = BigInt(delegated_by_active_string);
       const delegated_to_active = BigInt(delegated_to_active_string);
@@ -82,7 +85,7 @@ export default function HowlRewards() {
       return { delegated_by_active, delegated_to_active };
     },
     {
-      enabled: Boolean(client),
+      enabled: Boolean(signClient),
       // 1 minute
       staleTime: 60000,
       onError: tryNextClient,
