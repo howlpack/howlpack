@@ -1,4 +1,10 @@
-import { Button, Fade, Grid, Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Fade,
+  Grid,
+  Typography,
+} from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Box } from "@mui/system";
@@ -176,7 +182,13 @@ export default function DensPath() {
             color="secondary"
             size="large"
             target={"_blank"}
-            startIcon={<AddShoppingCartIcon />}
+            startIcon={
+              isMintNFTLoading ? (
+                <CircularProgress size={20} sx={{ mr: 1 }} />
+              ) : (
+                <AddShoppingCartIcon />
+              )
+            }
             href=""
             onClick={async () => {
               try {
@@ -197,22 +209,30 @@ export default function DensPath() {
               !getEnabled || !formState.get("available") || isMintNFTLoading
             }
           >
-            {!formState.get("TLD") && <Fragment>Select root domain</Fragment>}
+            {isMintNFTLoading && <Fragment>MINTING</Fragment>}
 
-            {formState.get("TLD") && (
+            {!isMintNFTLoading && (
               <Fragment>
-                {!formState.get("path") && <Fragment>Type path</Fragment>}
+                {!formState.get("TLD") && (
+                  <Fragment>Select root domain</Fragment>
+                )}
 
-                {formState.get("path") && (
+                {formState.get("TLD") && (
                   <Fragment>
-                    {formState.get("TLD").price_label && (
-                      <Fragment>
-                        Buy for {formState.get("TLD").price_label}
-                      </Fragment>
-                    )}
+                    {!formState.get("path") && <Fragment>Type path</Fragment>}
 
-                    {!formState.get("TLD").price_label && (
-                      <Fragment>Get for FREE</Fragment>
+                    {formState.get("path") && (
+                      <Fragment>
+                        {formState.get("TLD").price_label && (
+                          <Fragment>
+                            Buy for {formState.get("TLD").price_label}
+                          </Fragment>
+                        )}
+
+                        {!formState.get("TLD").price_label && (
+                          <Fragment>Get for FREE</Fragment>
+                        )}
+                      </Fragment>
                     )}
                   </Fragment>
                 )}
