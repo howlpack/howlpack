@@ -134,6 +134,18 @@ export default function Dens() {
             control over the domain name, without any restrictions or
             limitations from the (de)NS root domain.
           </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              mt: 2,
+            }}
+          >
+            Please note that while (de)NS paths offer a cost-effective way to
+            own a domain on the JUNO network, they are not eligible for any
+            potential airdrops or other rewards that may be offered exclusively
+            to full domain name holders.
+          </Typography>
         </Box>
         <Divider sx={{ mt: 8, mb: 6, width: "50%", mx: "auto" }} />
         <Box>
