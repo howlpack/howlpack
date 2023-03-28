@@ -75,31 +75,43 @@ export default function DensPath() {
         return null;
       }
 
-      const updateMsg = {
-        typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
-        value: MsgExecuteContract.fromPartial({
-          sender: keplr.account,
-          contract: formState.get("TLD").tld,
-          msg: toUtf8(
-            JSON.stringify({
-              mint_path: {
-                path: formState.get("path"),
-              },
-            })
-          ),
+      const msgs: any[] = [];
+      const isFree = !formState.get("TLD").payment_details.payment_details;
 
-          funds: [],
-        }),
-      };
+      if (
+        isFree ||
+        formState.get("TLD").payment_details.payment_details?.native
+      ) {
+        const mintMsg = {
+          typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+          value: MsgExecuteContract.fromPartial({
+            sender: keplr.account,
+            contract: formState.get("TLD").tld,
+            msg: toUtf8(
+              JSON.stringify({
+                mint_path: {
+                  path: formState.get("path"),
+                },
+              })
+            ),
 
-      const result = await signClient.signAndBroadcast(
-        keplr.account,
-        [updateMsg],
-        {
-          amount: [{ amount: "0.025", denom: "ujuno" }],
-          gas: "400000",
+            funds: [],
+          }),
+        };
+
+        if (!isFree) {
+          mintMsg.value.funds.push(
+            formState.get("TLD").payment_details.payment_details?.native
+          );
         }
-      );
+
+        msgs.push(mintMsg);
+      }
+
+      const result = await signClient.signAndBroadcast(keplr.account, msgs, {
+        amount: [{ amount: "0.025", denom: "ujuno" }],
+        gas: "400000",
+      });
 
       queryClient.setQueryData(
         [
