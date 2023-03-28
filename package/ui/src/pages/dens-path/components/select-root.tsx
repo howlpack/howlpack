@@ -12,39 +12,47 @@ import { useRecoilValue } from "recoil";
 import { Decimal } from "decimal.js";
 import useTryNextClient from "../../../hooks/use-try-next-client";
 import { clientState } from "../../../state/cosmos";
-import { PathTLD } from "../../../types/types";
+import { TokenInfoResponse } from "../../../types/types";
 import { Config, PaymentDetailsResponse } from "../../../types/whoami";
 import tlds from "../tlds";
+import { IBC_ASSETS } from "../../../lib/token";
 
-export const pathTLDs: PathTLD[] = [
-  {
-    denom: "JUNO",
-    name: "username",
-    price: "1000000",
-  },
-  {
-    denom: "JUNO",
-    name: "name",
-    price: "1000000",
-  },
-  {
-    denom: "JUNO",
-    name: "user",
-    price: "1000000",
-  },
-];
-
-function price(payment_details?: PaymentDetailsResponse) {
+function price(
+  payment_details?: PaymentDetailsResponse,
+  token_info?: TokenInfoResponse
+) {
   if (!payment_details) {
     return null;
   }
 
+  let ibc_asset = null;
+
   if (payment_details.payment_details?.native) {
+    const denom = payment_details.payment_details?.native.denom;
+    if (denom === "ujuno") {
+      return {
+        amount: new Decimal(payment_details.payment_details?.native.amount)
+          .div(1e6)
+          .toDP(6),
+        symbol: "JUNO",
+      };
+    } else if ((ibc_asset = IBC_ASSETS.find((i) => i.denom === denom))) {
+      return {
+        amount: new Decimal(payment_details.payment_details?.native.amount)
+          .div(Decimal.pow(10, ibc_asset.decimals))
+          .toDP(6),
+        symbol: ibc_asset.symbol,
+      };
+    } else {
+      return null;
+    }
+  }
+  if (payment_details.payment_details?.cw20) {
     return {
-      amount: new Decimal(payment_details.payment_details?.native.amount)
-        .div(1e6)
+      amount: new Decimal(payment_details.payment_details?.cw20.amount)
+        .div(Decimal.pow(10, token_info?.decimals || 6))
         .toDP(6),
-      denom: "JUNO",
+      symbol: token_info?.symbol,
     };
   }
 }
@@ -70,7 +78,11 @@ export default function SelectRoot({
   const configs = useQueries(
     tlds.map<
       UseQueryOptions<
-        { config: Config; payment_details: PaymentDetailsResponse } | null,
+        {
+          config: Config;
+          payment_details: PaymentDetailsResponse;
+          cw20config?: TokenInfoResponse;
+        } | null,
         Error
       >
     >((tld) => {
@@ -89,7 +101,17 @@ export default function SelectRoot({
             payment_details: {},
           });
 
-          return { config, payment_details };
+          let cw20config;
+          if (payment_details.payment_details?.cw20) {
+            cw20config = await client.queryContractSmart(
+              payment_details.payment_details?.cw20.token_address,
+              {
+                token_info: {},
+              }
+            );
+          }
+
+          return { config, payment_details, cw20config };
         },
         enabled: Boolean(client),
         onError: tryNextClient,
@@ -125,7 +147,7 @@ export default function SelectRoot({
         {configs
           .filter((c) => Boolean(c.data?.config.token_id))
           .map((c, ix) => {
-            const p = price(c.data?.payment_details);
+            const p = price(c.data?.payment_details, c.data?.cw20config);
             return (
               <MenuItem key={ix} value={c.data?.config.token_id || ""}>
                 <Box
@@ -145,7 +167,7 @@ export default function SelectRoot({
                     sx={{ m: 0 }}
                     label={
                       p
-                        ? p.amount.toNumber().toLocaleString() + p.denom
+                        ? p.amount.toNumber().toLocaleString() + p.symbol
                         : "FREE"
                     }
                   />

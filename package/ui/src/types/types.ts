@@ -1,11 +1,5 @@
 import { Decimal } from "decimal.js";
 
-export type PathTLD = {
-  name: string;
-  price: string;
-  denom: string;
-};
-
 export type RewardsStakingStats = {
   staked: Decimal;
   totalSupply: Decimal;
@@ -17,4 +11,11 @@ export type RewardsStakingStats = {
 export type RewardsStakingUserStats = {
   delegated_by_active: Decimal;
   delegated_to_active: Decimal;
+};
+
+export type TokenInfoResponse = {
+  decimals: number;
+  name: string;
+  symbol: string;
+  total_supply: string;
 };
