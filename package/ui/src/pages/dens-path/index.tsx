@@ -12,7 +12,7 @@ import { Fragment, Suspense, useMemo } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { DeliverTxResponse } from "@cosmjs/cosmwasm-stargate";
 import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
-import { toUtf8 } from "@cosmjs/encoding";
+import { toBase64, toUtf8 } from "@cosmjs/encoding";
 
 import useFormData from "../../hooks/use-form-data";
 import Path, { pathValidator } from "./components/path";
@@ -83,11 +83,10 @@ export default function DensPath() {
 
       const msgs: any[] = [];
       const isFree = !formState.get("TLD").payment_details.payment_details;
+      const feeIsNative =
+        formState.get("TLD").payment_details.payment_details?.native;
 
-      if (
-        isFree ||
-        formState.get("TLD").payment_details.payment_details?.native
-      ) {
+      if (isFree || feeIsNative) {
         const mintMsg = {
           typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
           value: MsgExecuteContract.fromPartial({
@@ -112,11 +111,44 @@ export default function DensPath() {
         }
 
         msgs.push(mintMsg);
+      } else if (formState.get("TLD").payment_details.payment_details?.cw20) {
+        const mintMsg = {
+          typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+          value: MsgExecuteContract.fromPartial({
+            sender: keplr.account,
+            contract:
+              formState.get("TLD").payment_details.payment_details?.cw20
+                .token_address,
+            msg: toUtf8(
+              JSON.stringify({
+                send: {
+                  amount:
+                    formState.get("TLD").payment_details.payment_details?.cw20
+                      .amount,
+                  contract: formState.get("TLD").tld,
+                  msg: toBase64(
+                    toUtf8(
+                      JSON.stringify({
+                        mint_path: {
+                          path: formState.get("path"),
+                        },
+                      })
+                    )
+                  ),
+                },
+              })
+            ),
+
+            funds: [],
+          }),
+        };
+
+        msgs.push(mintMsg);
       }
 
       const result = await signClient.signAndBroadcast(keplr.account, msgs, {
         amount: [{ amount: "0.025", denom: "ujuno" }],
-        gas: "400000",
+        gas: feeIsNative ? "400000" : "600000",
       });
 
       queryClient.setQueryData(
