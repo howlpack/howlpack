@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from "@mui/material";
+import { Button, Fade, Grid, Typography } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Box } from "@mui/system";
@@ -20,6 +20,7 @@ import CheckAvailability, {
   Loading as CheckAvailabilityLoading,
 } from "./components/check-availability";
 import { snackbarState } from "../../state/snackbar";
+import HowlPreview from "./components/howl-preview";
 
 function ScrollDown() {
   const scrollPosition = useScrollPosition();
@@ -210,6 +211,15 @@ export default function DensPath() {
           <KeplrButton />
         )}
       </Box>
+
+      <Fade in={formState.get("available") && getEnabled}>
+        <Box sx={{ mt: 4 }}>
+          <HowlPreview
+            name={formState.get("TLD")?.token_id + "::" + formState.get("path")}
+          />
+        </Box>
+      </Fade>
+
       <Box
         sx={{
           position: "absolute",
