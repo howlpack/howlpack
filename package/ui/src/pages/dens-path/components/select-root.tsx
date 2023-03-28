@@ -134,9 +134,9 @@ export default function SelectRoot({
         label="TLD"
         name="TLD"
         disabled={!someIsFetched}
-        value={formData.get("TLD")}
+        value={formData.get("TLD") || ""}
         onChange={handleChange}
-        renderValue={(selected) => <Typography>{selected}</Typography>}
+        renderValue={(selected) => <Typography>{selected.token_id}</Typography>}
         MenuProps={{
           sx: {
             minWidth: "500px",
@@ -148,8 +148,17 @@ export default function SelectRoot({
           .filter((c) => Boolean(c.data?.config.token_id))
           .map((c, ix) => {
             const p = price(c.data?.payment_details, c.data?.cw20config);
+            const price_label = p
+              ? p.amount.toNumber().toLocaleString() + p.symbol
+              : null;
+
+            const value = {
+              token_id: c.data?.config.token_id || "",
+              whoami_address: c.data?.config.whoami_address || "",
+              price_label,
+            };
             return (
-              <MenuItem key={ix} value={c.data?.config.token_id || ""}>
+              <MenuItem key={ix} value={value as any}>
                 <Box
                   sx={{
                     display: "flex",

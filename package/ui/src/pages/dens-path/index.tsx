@@ -1,11 +1,19 @@
 import { Button, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import useFormData from "../../hooks/use-form-data";
-import Path from "./components/path";
+import Path, { pathValidator } from "./components/path";
 import SelectRoot from "./components/select-root";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import useScrollPosition from "../../hooks/use-scroll-position";
+import { useRecoilValue } from "recoil";
+import { keplrState } from "../../state/cosmos";
+import KeplrButton from "../../components/keplr-button";
+import { Fragment, Suspense, useMemo } from "react";
+import Joi from "joi";
+import CheckAvailability, {
+  Loading as CheckAvailabilityLoading,
+} from "./components/check-availability";
 
 function ScrollDown() {
   const scrollPosition = useScrollPosition();
@@ -29,11 +37,22 @@ function ScrollDown() {
   );
 }
 
+const densPathValidator = Joi.object({
+  path: pathValidator.required(),
+  TLD: Joi.object().unknown(true),
+});
+
 export default function DensPath() {
   const { formState, onChange } = useFormData({
     path: "",
-    TLD: "",
+    TLD: null,
   });
+
+  const keplr = useRecoilValue(keplrState);
+
+  const getEnabled = useMemo<boolean>(() => {
+    return densPathValidator.validate(formState.toJSON()).error == null;
+  }, [formState]);
 
   return (
     <Box sx={{ mt: { sm: 0, md: 5 }, height: "100%", position: "relative" }}>
@@ -59,20 +78,44 @@ export default function DensPath() {
       <Box
         sx={{
           textAlign: "right",
+          display: "flex",
+          width: "100%",
+          justifyContent: "right",
+          gap: 3,
+          py: 4,
         }}
       >
-        <Button
-          variant="contained"
-          disableElevation
-          color="secondary"
-          size="large"
-          target={"_blank"}
-          sx={{ my: 4 }}
-          startIcon={<AddShoppingCartIcon />}
-          href=""
-        >
-          Buy for 1 JUNO
-        </Button>
+        {formState.get("TLD") && formState.get("path") && (
+          <Suspense fallback={<CheckAvailabilityLoading />}>
+            <CheckAvailability
+              path={formState.get("path")}
+              token_id={formState.get("TLD")?.token_id}
+              whoami_address={formState.get("TLD")?.whoami_address}
+            />
+          </Suspense>
+        )}
+
+        {keplr.account ? (
+          <Button
+            variant="contained"
+            disableElevation
+            color="secondary"
+            size="large"
+            target={"_blank"}
+            startIcon={<AddShoppingCartIcon />}
+            href=""
+            disabled={!getEnabled}
+          >
+            {formState.get("TLD") && formState.get("TLD").price_label && (
+              <Fragment>Buy for {formState.get("TLD").price_label}</Fragment>
+            )}
+            {formState.get("TLD") && !formState.get("TLD").price_label && (
+              <Fragment>Get for FREE</Fragment>
+            )}
+          </Button>
+        ) : (
+          <KeplrButton />
+        )}
       </Box>
       <Box
         sx={{
