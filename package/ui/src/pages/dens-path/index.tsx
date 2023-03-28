@@ -1,19 +1,25 @@
 import { Button, Grid, Typography } from "@mui/material";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Box } from "@mui/system";
+import { Fragment, Suspense, useMemo } from "react";
+import { useMutation, useQueryClient } from "react-query";
+import { DeliverTxResponse } from "@cosmjs/cosmwasm-stargate";
+import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
+import { toUtf8 } from "@cosmjs/encoding";
+
 import useFormData from "../../hooks/use-form-data";
 import Path, { pathValidator } from "./components/path";
 import SelectRoot from "./components/select-root";
-import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import useScrollPosition from "../../hooks/use-scroll-position";
-import { useRecoilValue } from "recoil";
-import { keplrState } from "../../state/cosmos";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { keplrState, signClientState } from "../../state/cosmos";
 import KeplrButton from "../../components/keplr-button";
-import { Fragment, Suspense, useMemo } from "react";
 import Joi from "joi";
 import CheckAvailability, {
   Loading as CheckAvailabilityLoading,
 } from "./components/check-availability";
+import { snackbarState } from "../../state/snackbar";
 
 function ScrollDown() {
   const scrollPosition = useScrollPosition();
@@ -40,19 +46,73 @@ function ScrollDown() {
 const densPathValidator = Joi.object({
   path: pathValidator.required(),
   TLD: Joi.object().unknown(true),
+  available: Joi.bool(),
 });
 
 export default function DensPath() {
-  const { formState, onChange } = useFormData({
+  const { formState, onChange, setFormState } = useFormData({
     path: "",
     TLD: null,
+    available: false,
   });
 
   const keplr = useRecoilValue(keplrState);
+  const signClient = useRecoilValue(signClientState);
+  const queryClient = useQueryClient();
 
   const getEnabled = useMemo<boolean>(() => {
     return densPathValidator.validate(formState.toJSON()).error == null;
   }, [formState]);
+
+  const { mutateAsync: mintNFT, isLoading: isMintNFTLoading } =
+    useMutation<DeliverTxResponse | null>(["mint_nft"], async () => {
+      if (!signClient) {
+        return null;
+      }
+
+      if (!keplr.account) {
+        return null;
+      }
+
+      const updateMsg = {
+        typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+        value: MsgExecuteContract.fromPartial({
+          sender: keplr.account,
+          contract: formState.get("TLD").tld,
+          msg: toUtf8(
+            JSON.stringify({
+              mint_path: {
+                path: formState.get("path"),
+              },
+            })
+          ),
+
+          funds: [],
+        }),
+      };
+
+      const result = await signClient.signAndBroadcast(
+        keplr.account,
+        [updateMsg],
+        {
+          amount: [{ amount: "0.025", denom: "ujuno" }],
+          gas: "400000",
+        }
+      );
+
+      queryClient.setQueryData(
+        [
+          "check_availability",
+          formState.get("TLD").whoami_address,
+          formState.get("TLD").token_id + "::" + formState.get("path"),
+        ],
+        keplr.account
+      );
+
+      return result;
+    });
+
+  const [, setSnackbar] = useRecoilState(snackbarState);
 
   return (
     <Box sx={{ mt: { sm: 0, md: 5 }, height: "100%", position: "relative" }}>
@@ -88,6 +148,7 @@ export default function DensPath() {
         {formState.get("TLD") && formState.get("path") && (
           <Suspense fallback={<CheckAvailabilityLoading />}>
             <CheckAvailability
+              setFormState={setFormState}
               path={formState.get("path")}
               token_id={formState.get("TLD")?.token_id}
               whoami_address={formState.get("TLD")?.whoami_address}
@@ -104,13 +165,45 @@ export default function DensPath() {
             target={"_blank"}
             startIcon={<AddShoppingCartIcon />}
             href=""
-            disabled={!getEnabled}
+            onClick={async () => {
+              try {
+                await mintNFT();
+
+                setSnackbar({
+                  message: `Path ${
+                    formState.get("TLD").token_id + "::" + formState.get("path")
+                  } successfully minted`,
+                });
+              } catch (e: any) {
+                setSnackbar({
+                  message: "Error minting path: " + e.message,
+                });
+              }
+            }}
+            disabled={
+              !getEnabled || !formState.get("available") || isMintNFTLoading
+            }
           >
-            {formState.get("TLD") && formState.get("TLD").price_label && (
-              <Fragment>Buy for {formState.get("TLD").price_label}</Fragment>
-            )}
-            {formState.get("TLD") && !formState.get("TLD").price_label && (
-              <Fragment>Get for FREE</Fragment>
+            {!formState.get("TLD") && <Fragment>Select root domain</Fragment>}
+
+            {formState.get("TLD") && (
+              <Fragment>
+                {!formState.get("path") && <Fragment>Type path</Fragment>}
+
+                {formState.get("path") && (
+                  <Fragment>
+                    {formState.get("TLD").price_label && (
+                      <Fragment>
+                        Buy for {formState.get("TLD").price_label}
+                      </Fragment>
+                    )}
+
+                    {!formState.get("TLD").price_label && (
+                      <Fragment>Get for FREE</Fragment>
+                    )}
+                  </Fragment>
+                )}
+              </Fragment>
             )}
           </Button>
         ) : (

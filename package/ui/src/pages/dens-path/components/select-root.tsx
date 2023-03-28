@@ -7,7 +7,7 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import { useQueries, useQuery, UseQueryOptions } from "react-query";
+import { useQueries, UseQueryOptions } from "react-query";
 import { useRecoilValue } from "recoil";
 import { Decimal } from "decimal.js";
 import useTryNextClient from "../../../hooks/use-try-next-client";
@@ -60,7 +60,6 @@ function price(
 export default function SelectRoot({
   formData,
   onChange,
-  label,
   disabled = false,
 }: {
   formData: any;
@@ -82,6 +81,7 @@ export default function SelectRoot({
           config: Config;
           payment_details: PaymentDetailsResponse;
           cw20config?: TokenInfoResponse;
+          tld: string;
         } | null,
         Error
       >
@@ -111,7 +111,7 @@ export default function SelectRoot({
             );
           }
 
-          return { config, payment_details, cw20config };
+          return { config, payment_details, cw20config, tld };
         },
         enabled: Boolean(client),
         onError: tryNextClient,
@@ -127,13 +127,12 @@ export default function SelectRoot({
       sx={{ width: "100%" }}
       component="fieldset"
       variant="outlined"
-      disabled={disabled}
+      disabled={disabled || !someIsFetched}
     >
       <InputLabel id="root-domain-label">TLD</InputLabel>
       <Select
         label="TLD"
         name="TLD"
-        disabled={!someIsFetched}
         value={formData.get("TLD") || ""}
         onChange={handleChange}
         renderValue={(selected) => <Typography>{selected.token_id}</Typography>}
@@ -155,8 +154,11 @@ export default function SelectRoot({
             const value = {
               token_id: c.data?.config.token_id || "",
               whoami_address: c.data?.config.whoami_address || "",
+              tld: c.data?.tld || "",
               price_label,
+              payment_details: c.data?.payment_details,
             };
+
             return (
               <MenuItem key={ix} value={value as any}>
                 <Box
