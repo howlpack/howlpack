@@ -77,7 +77,9 @@ export default function Dens() {
             },
           }}
         >
-          <Outlet />
+          <Box sx={{ maxWidth: "800px", height: "100%", mx: "auto" }}>
+            <Outlet />
+          </Box>
         </Grid>
         <Grid item xs={12} md={6}>
           <BackgroundImage />

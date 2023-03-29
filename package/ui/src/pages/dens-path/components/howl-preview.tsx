@@ -1,6 +1,6 @@
 import { Avatar, Divider, IconButton, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
@@ -22,6 +22,13 @@ const body = [
 
 export default function HowlPreview({ name }: { name: string }) {
   const [display, setDisplay] = useState(false);
+  const [random, setRandom] = useState(Math.random());
+
+  useEffect(() => {
+    if (!display) {
+      setRandom(Math.random());
+    }
+  }, [display]);
 
   return (
     <Fragment>
@@ -29,6 +36,10 @@ export default function HowlPreview({ name }: { name: string }) {
         variant="h6"
         sx={{
           fontFamily: "'Space Grotesk', sans-serif",
+          textAlign: {
+            xs: "center",
+            sm: "initial",
+          },
         }}
       >
         How your Howl message might look
@@ -67,12 +78,12 @@ export default function HowlPreview({ name }: { name: string }) {
             </Avatar>
             <Typography variant="caption">{name}</Typography>
             <Typography variant="caption">
-              {Math.ceil(Math.random() * 30)} minutes ago
+              {Math.ceil(random * 30)} minutes ago
             </Typography>
           </Box>
           <Box sx={{ pt: 2, pb: 1 }}>
             <Typography variant="body1">
-              {body[Math.floor(Math.random() * body.length)]}
+              {body[Math.floor(random * body.length)]}
             </Typography>
           </Box>
           <Box
@@ -93,7 +104,7 @@ export default function HowlPreview({ name }: { name: string }) {
             >
               <ChatBubbleOutlineIcon />
               <Typography variant="caption">
-                {Math.ceil(Math.random() * 30)}
+                {Math.ceil(random * 30)}
               </Typography>
             </Box>
             <Box
@@ -105,7 +116,7 @@ export default function HowlPreview({ name }: { name: string }) {
             >
               <FavoriteBorderIcon />
               <Typography variant="caption">
-                {Math.ceil(Math.random() * 300) / 10}k
+                {Math.ceil(random * 300) / 10}k
               </Typography>
             </Box>
             <Box

@@ -28,7 +28,7 @@ import CheckAvailability, {
 import { snackbarState } from "../../state/snackbar";
 import HowlPreview from "./components/howl-preview";
 
-function ScrollDown() {
+function ScrollDown({ children }: { children: any }) {
   const scrollPosition = useScrollPosition();
 
   return (
@@ -37,15 +37,7 @@ function ScrollDown() {
         opacity: 1 - Math.min(1, scrollPosition / 500),
       }}
     >
-      <Typography
-        variant="body1"
-        sx={{
-          fontFamily: "'Space Grotesk', sans-serif",
-        }}
-      >
-        Scroll for more information
-      </Typography>
-      <ExpandMoreIcon />
+      {children}
     </Box>
   );
 }
@@ -276,13 +268,17 @@ export default function DensPath() {
         )}
       </Box>
 
-      <Fade in={formState.get("available") && getEnabled}>
-        <Box sx={{ mt: 4 }}>
-          <HowlPreview
-            name={formState.get("TLD")?.token_id + "::" + formState.get("path")}
-          />
-        </Box>
-      </Fade>
+      <ScrollDown>
+        <Fade in={formState.get("available") && getEnabled}>
+          <Box sx={{ mt: 4 }}>
+            <HowlPreview
+              name={
+                formState.get("TLD")?.token_id + "::" + formState.get("path")
+              }
+            />
+          </Box>
+        </Fade>
+      </ScrollDown>
 
       <Box
         sx={{
@@ -296,7 +292,17 @@ export default function DensPath() {
           },
         }}
       >
-        <ScrollDown />
+        <ScrollDown>
+          <Typography
+            variant="body1"
+            sx={{
+              fontFamily: "'Space Grotesk', sans-serif",
+            }}
+          >
+            Scroll for more information
+          </Typography>
+          <ExpandMoreIcon />
+        </ScrollDown>
       </Box>
     </Box>
   );

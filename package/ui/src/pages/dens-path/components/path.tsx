@@ -36,7 +36,8 @@ export default function Path({
 
   const [invalidPath, setPathBlurred] = useFormValidation(
     formData.get("path"),
-    validator.messages({})
+    validator.messages({}),
+    { validateAfterBlur: false, validateAfterChange: true }
   );
 
   const value = formData.get("path");
