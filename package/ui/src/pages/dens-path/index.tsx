@@ -188,7 +188,7 @@ export default function DensPath() {
           py: 4,
         }}
       >
-        {formState.get("TLD") && formState.get("path") && (
+        {formState.get("TLD") && formState.get("path") && getEnabled && (
           <Suspense fallback={<CheckAvailabilityLoading />}>
             <CheckAvailability
               setFormState={setFormState}
