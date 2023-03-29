@@ -3,7 +3,16 @@ import { MemoTextField } from "../../../components/memo-textfield";
 import useFormValidation from "../../../hooks/use-form-validation";
 import Joi from "joi";
 
-export const pathValidator = Joi.string();
+export const pathValidator = Joi.string()
+  .regex(/^[_-]/, { invert: true })
+  .regex(/[_-]$/, { invert: true })
+  .regex(/[^a-z0-9_-]/, { invert: true })
+  .regex(/[_-]{2,}/, { invert: true })
+  .max(20)
+  .messages({
+    "string.pattern.invert.base":
+      "Invalid path format, only small letters, numbers, - and _ allowed",
+  });
 
 export default function Path({
   formData,
