@@ -11,7 +11,7 @@ export const pathValidator = Joi.string()
   .max(20)
   .messages({
     "string.pattern.invert.base":
-      "Invalid path format, only small letters, numbers, - and _ allowed",
+      "Invalid path format, only lower-case letters, numbers, - and _ allowed",
   });
 
 export default function Path({
