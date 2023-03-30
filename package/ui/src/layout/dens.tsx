@@ -13,6 +13,7 @@ import { Helmet } from "react-helmet";
 import Snackbar from "../components/snackbar";
 import useScrollPosition from "../hooks/use-scroll-position";
 import { Container } from "@mui/system";
+import Footer from "./components/footer";
 
 function BackgroundImage() {
   const scrollPosition = useScrollPosition();
@@ -175,6 +176,11 @@ export default function Dens() {
             individuals or businesses who want to establish their online
             presence on the (de)NS network.
           </Typography>
+        </Box>
+
+        <Divider sx={{ mt: 8, mb: 6, width: "50%", mx: "auto" }} />
+        <Box sx={{ mb: 10 }}>
+          <Footer />
         </Box>
       </Container>
     </ThemeProvider>
