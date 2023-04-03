@@ -261,6 +261,7 @@ export default function CheckAvailability({
           ),
           claim_window.data &&
             claim_window.data.is_in_claim_window &&
+            keplr.account &&
             claim_window.data.path_as_base_owner === keplr.account && (
               <Typography variant="caption">
                 <Box
