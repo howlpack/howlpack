@@ -174,8 +174,11 @@ export default function CheckAvailability({
         height.data
       );
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [height.data]);
+  }, [
+    config.data.config?.initial_height,
+    config.data.config?.path_root_claim_blocks,
+    height.data,
+  ]);
 
   useEffect(() => {
     if (!setFormState) {
@@ -209,6 +212,29 @@ export default function CheckAvailability({
     <Fragment>
       <Fragment>
         {[
+          availability.data && availability.data === keplr.account && (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <AutoAwesomeIcon sx={{ mb: 0.5 }} />{" "}
+              <Typography variant="caption" sx={{ textAlign: "center" }}>
+                YOU ARE THE OWNER
+                <br />
+                <Link
+                  color={"secondary"}
+                  href={"https://dens.sh/tokens/" + token_id_withPath}
+                  target={"_blank"}
+                  rel="noreferrer"
+                >
+                  MANAGE
+                </Link>
+              </Typography>
+            </Box>
+          ),
+          availability.data && availability.data !== keplr.account && (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <CloseIcon sx={{ mb: 0.5 }} />{" "}
+              <Typography variant="caption">TAKEN</Typography>
+            </Box>
+          ),
           claim_window.data &&
             claim_window.data.is_in_claim_window &&
             claim_window.data.path_as_base_owner === keplr.account && (
@@ -224,9 +250,10 @@ export default function CheckAvailability({
                   <CheckIcon /> AVAILABLE <br />
                 </Box>
                 as the owner of the (de)NS <strong>{path}</strong> you are
-                eligible to mint for free{" "}
+                eligible to mint for free
                 {claimWindowDate && (
                   <Fragment>
+                    <br />
                     until ~ <DateFormat date={claimWindowDate} />
                   </Fragment>
                 )}
@@ -249,9 +276,10 @@ export default function CheckAvailability({
                   <br />
                 </Box>
                 the path is reserved for the owner of the (de)NS{" "}
-                <strong>{path}</strong>{" "}
+                <strong>{path}</strong>
                 {claimWindowDate && (
                   <Fragment>
+                    <br />
                     until ~ <DateFormat date={claimWindowDate} />
                   </Fragment>
                 )}
@@ -261,29 +289,6 @@ export default function CheckAvailability({
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <CheckIcon sx={{ mb: 0.5 }} />{" "}
               <Typography variant="caption">AVAILABLE</Typography>
-            </Box>
-          ),
-          availability.data && availability.data === keplr.account && (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <AutoAwesomeIcon sx={{ mb: 0.5 }} />{" "}
-              <Typography variant="caption" sx={{ textAlign: "center" }}>
-                YOU ARE THE OWNER
-                <br />
-                <Link
-                  color={"secondary"}
-                  href={"https://dens.sh/tokens/" + token_id_withPath}
-                  target={"_blank"}
-                  rel="noreferrer"
-                >
-                  MANAGE
-                </Link>
-              </Typography>
-            </Box>
-          ),
-          availability.data && availability.data !== keplr.account && (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <CloseIcon sx={{ mb: 0.5 }} />{" "}
-              <Typography variant="caption">TAKEN</Typography>
             </Box>
           ),
         ].find(Boolean)}
