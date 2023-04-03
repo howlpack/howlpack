@@ -195,16 +195,17 @@ export default function CheckAvailability({
     if (is_in_claim_window && path_as_base_owner) {
       if (path_as_base_owner === keplr.account) {
         setFormState((s: any) =>
-          s
-            .set("available", !availability.data)
-            .setIn(["TLD", "price_label"], null)
-            .setIn(["TLD", "payment_details", "payment_details"], null)
+          s.set("available", !availability.data).set("path_as_base_owner", true)
         );
       } else {
-        setFormState((s: any) => s.set("available", false));
+        setFormState((s: any) =>
+          s.set("available", false).set("path_as_base_owner", false)
+        );
       }
     } else {
-      setFormState((s: any) => s.set("available", !availability.data));
+      setFormState((s: any) =>
+        s.set("available", !availability.data).set("path_as_base_owner", false)
+      );
     }
   }, [availability.data, setFormState, claim_window.data, keplr.account]);
 

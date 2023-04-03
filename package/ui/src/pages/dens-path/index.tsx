@@ -46,6 +46,7 @@ const densPathValidator = Joi.object({
   path: pathValidator.required(),
   TLD: Joi.object().unknown(true),
   available: Joi.bool(),
+  path_as_base_owner: Joi.bool(),
 });
 
 export default function DensPath() {
@@ -53,6 +54,7 @@ export default function DensPath() {
     path: "",
     TLD: null,
     available: false,
+    path_as_base_owner: false,
   });
 
   const keplr = useRecoilValue(keplrState);
@@ -74,7 +76,9 @@ export default function DensPath() {
       }
 
       const msgs: any[] = [];
-      const isFree = !formState.get("TLD").payment_details.payment_details;
+      const isFree =
+        !formState.get("TLD").payment_details.payment_details ||
+        formState.get("path_as_base_owner");
       const feeIsNative =
         formState.get("TLD").payment_details.payment_details?.native;
 
@@ -236,35 +240,18 @@ export default function DensPath() {
               !getEnabled || !formState.get("available") || isMintNFTLoading
             }
           >
-            {isMintNFTLoading && <Fragment>MINTING</Fragment>}
-
-            {!isMintNFTLoading && (
-              <Fragment>
-                {!formState.get("TLD") && (
-                  <Fragment>Select root domain</Fragment>
-                )}
-
-                {formState.get("TLD") && (
-                  <Fragment>
-                    {!formState.get("path") && <Fragment>Type path</Fragment>}
-
-                    {formState.get("path") && (
-                      <Fragment>
-                        {formState.get("TLD").price_label && (
-                          <Fragment>
-                            Buy for {formState.get("TLD").price_label}
-                          </Fragment>
-                        )}
-
-                        {!formState.get("TLD").price_label && (
-                          <Fragment>Get for FREE</Fragment>
-                        )}
-                      </Fragment>
-                    )}
-                  </Fragment>
-                )}
-              </Fragment>
-            )}
+            {[
+              isMintNFTLoading && <Fragment>MINTING</Fragment>,
+              !formState.get("TLD") && <Fragment>Select root domain</Fragment>,
+              !formState.get("path") && <Fragment>Type path</Fragment>,
+              formState.get("path_as_base_owner") && <Fragment>Claim</Fragment>,
+              formState.get("TLD")?.price_label && (
+                <Fragment>Buy for {formState.get("TLD").price_label}</Fragment>
+              ),
+              !formState.get("TLD")?.price_label && (
+                <Fragment>Get for FREE</Fragment>
+              ),
+            ].find(Boolean)}
           </Button>
         ) : (
           <KeplrButton />
