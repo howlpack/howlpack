@@ -197,6 +197,7 @@ export default function DensPath() {
               path={formState.get("path")}
               token_id={formState.get("TLD")?.token_id}
               whoami_address={formState.get("TLD")?.whoami_address}
+              tld={formState.get("TLD")?.tld}
             />
           </Suspense>
         )}

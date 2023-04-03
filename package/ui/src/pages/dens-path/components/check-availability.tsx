@@ -1,5 +1,5 @@
 import { Box } from "@mui/system";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
 import CheckIcon from "@mui/icons-material/Check";
@@ -9,6 +9,7 @@ import { CircularProgress, Link, Typography } from "@mui/material";
 
 import useTryNextClient from "../../../hooks/use-try-next-client";
 import { clientState, keplrState } from "../../../state/cosmos";
+import useJunoHeight from "../../../hooks/use-juno-height";
 
 export function Loading() {
   return (
@@ -21,16 +22,42 @@ export function Loading() {
   );
 }
 
+const JUNO_BLOCK_TIME = 6.043;
+export function calculateClaimWindow(
+  initialHeight: number,
+  claimWindow: number,
+  currentHeight: number
+) {
+  const d = new Date();
+
+  const ms =
+    Math.max(0, initialHeight + claimWindow - currentHeight) *
+    JUNO_BLOCK_TIME *
+    1000;
+
+  return new Date(d.getTime() + ms);
+}
+
+export function DateFormat({ date }: { date: Date }) {
+  return (
+    <Fragment>
+      {date.toLocaleDateString()} {date.toLocaleTimeString()}
+    </Fragment>
+  );
+}
+
 export default function CheckAvailability({
   setFormState,
   whoami_address,
   token_id,
   path,
+  tld,
 }: {
   setFormState?: any;
   whoami_address: string;
   token_id: string;
   path: string;
+  tld: string;
 }) {
   const keplr = useRecoilValue(keplrState);
   const client = useRecoilValue(clientState);
@@ -80,47 +107,186 @@ export default function CheckAvailability({
     }
   );
 
+  const claim_window = useQuery<any>(
+    ["claim_window", tld, path],
+    async () => {
+      if (!client) {
+        return null;
+      }
+
+      try {
+        const claim = await client.queryContractSmart(tld, {
+          claim_info: { path: path },
+        });
+
+        return claim;
+      } catch (e) {
+        return null;
+      }
+    },
+    {
+      enabled: Boolean(client) && Boolean(token_id_withPath),
+      staleTime: 10000,
+      onError: tryNextClient,
+      suspense: true,
+    }
+  );
+
+  const config = useQuery<any>(
+    ["tlds", tld],
+    async () => {
+      if (!client) {
+        return null;
+      }
+
+      const config = await client.queryContractSmart(tld, {
+        config: {},
+      });
+
+      return config;
+    },
+    {
+      enabled: Boolean(client) && Boolean(tld),
+      staleTime: 300000,
+      onError: tryNextClient,
+      suspense: true,
+    }
+  );
+
+  const height = useJunoHeight(
+    useMemo(
+      () => ({
+        refetchOnWindowFocus: false,
+      }),
+      []
+    )
+  );
+
+  const claimWindowDate = useMemo(() => {
+    if (
+      config.data.config.path_root_claim_blocks &&
+      config.data.config.initial_height &&
+      height.data
+    ) {
+      return calculateClaimWindow(
+        config.data.config.initial_height,
+        config.data.config.path_root_claim_blocks,
+        height.data
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [height.data]);
+
   useEffect(() => {
     if (!setFormState) {
       return;
     }
 
-    console.log(availability.data);
-    setFormState((s: any) => s.set("available", !availability.data));
-  }, [availability.data, setFormState]);
+    let is_in_claim_window = false;
+    let path_as_base_owner = "";
+    if (claim_window.data) {
+      is_in_claim_window = claim_window.data.is_in_claim_window;
+      path_as_base_owner = claim_window.data.path_as_base_owner;
+    }
+
+    if (is_in_claim_window && path_as_base_owner) {
+      if (path_as_base_owner === keplr.account) {
+        setFormState((s: any) =>
+          s
+            .set("available", !availability.data)
+            .setIn(["TLD", "price_label"], null)
+            .setIn(["TLD", "payment_details", "payment_details"], null)
+        );
+      } else {
+        setFormState((s: any) => s.set("available", false));
+      }
+    } else {
+      setFormState((s: any) => s.set("available", !availability.data));
+    }
+  }, [availability.data, setFormState, claim_window.data, keplr.account]);
 
   return (
     <Fragment>
       <Fragment>
-        {availability.data === null && (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <CheckIcon sx={{ mb: 0.5 }} />{" "}
-            <Typography variant="caption">AVAILABLE</Typography>
-          </Box>
-        )}
-        {availability.data && availability.data === keplr.account && (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <AutoAwesomeIcon sx={{ mb: 0.5 }} />{" "}
-            <Typography variant="caption" sx={{ textAlign: "center" }}>
-              YOU ARE THE OWNER
-              <br />
-              <Link
-                color={"secondary"}
-                href={"https://dens.sh/tokens/" + token_id_withPath}
-                target={"_blank"}
-                rel="noreferrer"
-              >
-                MANAGE
-              </Link>
-            </Typography>
-          </Box>
-        )}
-        {availability.data && availability.data !== keplr.account && (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <CloseIcon sx={{ mb: 0.5 }} />{" "}
-            <Typography variant="caption">TAKEN</Typography>
-          </Box>
-        )}
+        {[
+          claim_window.data &&
+            claim_window.data.is_in_claim_window &&
+            claim_window.data.path_as_base_owner === keplr.account && (
+              <Typography variant="caption">
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    justifyContent: "right",
+                  }}
+                >
+                  <CheckIcon /> AVAILABLE <br />
+                </Box>
+                as the owner of the (de)NS <strong>{path}</strong> you are
+                eligible to mint for free{" "}
+                {claimWindowDate && (
+                  <Fragment>
+                    until ~ <DateFormat date={claimWindowDate} />
+                  </Fragment>
+                )}
+              </Typography>
+            ),
+          claim_window.data &&
+            claim_window.data.is_in_claim_window &&
+            claim_window.data.path_as_base_owner &&
+            claim_window.data.path_as_base_owner !== keplr.account && (
+              <Typography variant="caption">
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    justifyContent: "right",
+                  }}
+                >
+                  <CloseIcon /> RESERVED
+                  <br />
+                </Box>
+                the path is reserved for the owner of the (de)NS{" "}
+                <strong>{path}</strong>{" "}
+                {claimWindowDate && (
+                  <Fragment>
+                    until ~ <DateFormat date={claimWindowDate} />
+                  </Fragment>
+                )}
+              </Typography>
+            ),
+          availability.data === null && (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <CheckIcon sx={{ mb: 0.5 }} />{" "}
+              <Typography variant="caption">AVAILABLE</Typography>
+            </Box>
+          ),
+          availability.data && availability.data === keplr.account && (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <AutoAwesomeIcon sx={{ mb: 0.5 }} />{" "}
+              <Typography variant="caption" sx={{ textAlign: "center" }}>
+                YOU ARE THE OWNER
+                <br />
+                <Link
+                  color={"secondary"}
+                  href={"https://dens.sh/tokens/" + token_id_withPath}
+                  target={"_blank"}
+                  rel="noreferrer"
+                >
+                  MANAGE
+                </Link>
+              </Typography>
+            </Box>
+          ),
+          availability.data && availability.data !== keplr.account && (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <CloseIcon sx={{ mb: 0.5 }} />{" "}
+              <Typography variant="caption">TAKEN</Typography>
+            </Box>
+          ),
+        ].find(Boolean)}
       </Fragment>
     </Fragment>
   );
