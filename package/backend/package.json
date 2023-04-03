@@ -12,7 +12,7 @@
     "@cosmjs/encoding": "0.30.1",
     "@koa/cors": "4.0.0",
     "@koa/router": "12.0.0",
-    "cosmjs-types": "0.7.1",
+    "cosmjs-types": "0.7.2",
     "csv": "6.2.8",
     "decimal.js": "10.4.3",
     "dotenv-cli": "7.1.0",
