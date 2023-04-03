@@ -138,9 +138,11 @@ export default function DensPath() {
         msgs.push(mintMsg);
       }
 
+      const gas = await signClient.simulate(keplr.account, msgs, "");
+
       const result = await signClient.signAndBroadcast(keplr.account, msgs, {
         amount: [{ amount: "0.025", denom: "ujuno" }],
-        gas: feeIsNative ? "400000" : "600000",
+        gas: Math.ceil(gas * 1.1) + "",
       });
 
       queryClient.setQueryData(
