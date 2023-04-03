@@ -14,7 +14,15 @@ import useJunoHeight from "../../../hooks/use-juno-height";
 export function Loading() {
   return (
     <Fragment>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          height: "100%",
+          justifyContent: { xs: "center", md: "right" },
+        }}
+      >
         <CircularProgress size={15} />{" "}
         <Typography variant="caption">LOADING</Typography>
       </Box>
@@ -214,7 +222,14 @@ export default function CheckAvailability({
       <Fragment>
         {[
           availability.data && availability.data === keplr.account && (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                height: "100%",
+              }}
+            >
               <AutoAwesomeIcon sx={{ mb: 0.5 }} />{" "}
               <Typography variant="caption" sx={{ textAlign: "center" }}>
                 YOU ARE THE OWNER
@@ -231,7 +246,15 @@ export default function CheckAvailability({
             </Box>
           ),
           availability.data && availability.data !== keplr.account && (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                height: "100%",
+                justifyContent: { xs: "center", md: "right" },
+              }}
+            >
               <CloseIcon sx={{ mb: 0.5 }} />{" "}
               <Typography variant="caption">TAKEN</Typography>
             </Box>
@@ -245,7 +268,7 @@ export default function CheckAvailability({
                     display: "flex",
                     alignItems: "center",
                     gap: 1,
-                    justifyContent: "right",
+                    justifyContent: { xs: "center", md: "right" },
                   }}
                 >
                   <CheckIcon /> AVAILABLE <br />
@@ -270,7 +293,7 @@ export default function CheckAvailability({
                     display: "flex",
                     alignItems: "center",
                     gap: 1,
-                    justifyContent: "right",
+                    justifyContent: { xs: "center", md: "right" },
                   }}
                 >
                   <CloseIcon /> RESERVED
@@ -287,7 +310,15 @@ export default function CheckAvailability({
               </Typography>
             ),
           availability.data === null && (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                justifyContent: { xs: "center", md: "right" },
+                height: "100%",
+              }}
+            >
               <CheckIcon sx={{ mb: 0.5 }} />{" "}
               <Typography variant="caption">AVAILABLE</Typography>
             </Box>

@@ -184,79 +184,97 @@ export default function DensPath() {
           </Grid>
         </Grid>
       </Box>
-      <Box
+      <Grid
         sx={{
-          textAlign: "right",
-          display: "flex",
+          textAlign: {
+            xs: "center",
+            md: "right",
+          },
           width: "100%",
           justifyContent: "right",
-          gap: 3,
           py: 4,
         }}
+        gap={3}
+        container
       >
         {formState.get("TLD") && formState.get("path") && getEnabled && (
-          <Suspense fallback={<CheckAvailabilityLoading />}>
-            <CheckAvailability
-              setFormState={setFormState}
-              path={formState.get("path")}
-              token_id={formState.get("TLD")?.token_id}
-              whoami_address={formState.get("TLD")?.whoami_address}
-              tld={formState.get("TLD")?.tld}
-            />
-          </Suspense>
+          <Grid item xs={12} md={"auto"}>
+            <Suspense fallback={<CheckAvailabilityLoading />}>
+              <CheckAvailability
+                setFormState={setFormState}
+                path={formState.get("path")}
+                token_id={formState.get("TLD")?.token_id}
+                whoami_address={formState.get("TLD")?.whoami_address}
+                tld={formState.get("TLD")?.tld}
+              />
+            </Suspense>
+          </Grid>
         )}
-
-        {keplr.account ? (
-          <Button
-            variant="contained"
-            disableElevation
-            color="secondary"
-            size="large"
-            target={"_blank"}
-            startIcon={
-              isMintNFTLoading ? (
-                <CircularProgress size={20} sx={{ mr: 1 }} />
-              ) : (
-                <AddShoppingCartIcon />
-              )
-            }
-            href=""
-            onClick={async () => {
-              try {
-                await mintNFT();
-
-                setSnackbar({
-                  message: `Path ${
-                    formState.get("TLD").token_id + "::" + formState.get("path")
-                  } successfully minted`,
-                });
-              } catch (e: any) {
-                setSnackbar({
-                  message: "Error minting path: " + e.message,
-                });
+        <Grid item xs={12} md={"auto"}>
+          {keplr.account ? (
+            <Button
+              variant="contained"
+              disableElevation
+              color="secondary"
+              size="large"
+              target={"_blank"}
+              startIcon={
+                isMintNFTLoading ? (
+                  <CircularProgress size={20} sx={{ mr: 1 }} />
+                ) : (
+                  <AddShoppingCartIcon />
+                )
               }
-            }}
-            disabled={
-              !getEnabled || !formState.get("available") || isMintNFTLoading
-            }
-          >
-            {[
-              isMintNFTLoading && <Fragment>MINTING</Fragment>,
-              !formState.get("TLD") && <Fragment>Select root domain</Fragment>,
-              !formState.get("path") && <Fragment>Type path</Fragment>,
-              formState.get("path_as_base_owner") && <Fragment>Claim</Fragment>,
-              formState.get("TLD")?.price_label && (
-                <Fragment>Buy for {formState.get("TLD").price_label}</Fragment>
-              ),
-              !formState.get("TLD")?.price_label && (
-                <Fragment>Get for FREE</Fragment>
-              ),
-            ].find(Boolean)}
-          </Button>
-        ) : (
-          <KeplrButton />
-        )}
-      </Box>
+              sx={{
+                minWidth: { xs: "100%", sm: "200px" },
+                height: "60px",
+              }}
+              href=""
+              onClick={async () => {
+                try {
+                  await mintNFT();
+
+                  setSnackbar({
+                    message: `Path ${
+                      formState.get("TLD").token_id +
+                      "::" +
+                      formState.get("path")
+                    } successfully minted`,
+                  });
+                } catch (e: any) {
+                  setSnackbar({
+                    message: "Error minting path: " + e.message,
+                  });
+                }
+              }}
+              disabled={
+                !getEnabled || !formState.get("available") || isMintNFTLoading
+              }
+            >
+              {[
+                isMintNFTLoading && <Fragment>MINTING</Fragment>,
+                !formState.get("TLD") && (
+                  <Fragment>Select root domain</Fragment>
+                ),
+                !formState.get("path") && <Fragment>Type path</Fragment>,
+                formState.get("path_as_base_owner") && (
+                  <Fragment>Claim</Fragment>
+                ),
+                formState.get("TLD")?.price_label && (
+                  <Fragment>
+                    Buy for {formState.get("TLD").price_label}
+                  </Fragment>
+                ),
+                !formState.get("TLD")?.price_label && (
+                  <Fragment>Get for FREE</Fragment>
+                ),
+              ].find(Boolean)}
+            </Button>
+          ) : (
+            <KeplrButton />
+          )}
+        </Grid>
+      </Grid>
 
       <ScrollDown>
         <Fade in={formState.get("available") && getEnabled}>
