@@ -172,19 +172,19 @@ export default function CheckAvailability({
 
   const claimWindowDate = useMemo(() => {
     if (
-      config.data.config.path_root_claim_blocks &&
+      config.data.config.reserve_root_for_n_blocks &&
       config.data.config.initial_height &&
       height.data
     ) {
       return calculateClaimWindow(
         config.data.config.initial_height,
-        config.data.config.path_root_claim_blocks,
+        config.data.config.reserve_root_for_n_blocks,
         height.data
       );
     }
   }, [
     config.data.config?.initial_height,
-    config.data.config?.path_root_claim_blocks,
+    config.data.config?.reserve_root_for_n_blocks,
     height.data,
   ]);
 
