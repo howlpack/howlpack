@@ -335,7 +335,13 @@ export default function HowlRewards({ address }: { address: string | null }) {
           How is the current daily reward calculated?
         </Typography>
         <Divider sx={{ mt: 1, mb: 2 }} />
-        <Box sx={{ background: "#efefef", p: 2, mb: 3 }}>
+        <Box
+          sx={(theme) => ({
+            background: theme.palette.action.hover,
+            p: 2,
+            mb: 3,
+          })}
+        >
           <pre style={{ overflowX: "auto" }}>
             {`your_staked_portion = 0.6 * total_staked_by_you + 0.2 * total_staked_to_your_posts
 daily_reward        = daily_inflation * your_staked_portion / total_staked

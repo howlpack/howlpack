@@ -42,7 +42,12 @@ export default function WebhookExample() {
   const selectedDens = useRecoilValue(selectedDensState(keplr.account));
   const [selectedExampleId, setSelectedExampleId] = useState(0);
   return (
-    <Box sx={{ background: "#efefef", p: 3 }}>
+    <Box
+      sx={(theme) => ({
+        background: theme.palette.action.hover,
+        p: 3,
+      })}
+    >
       <Box
         sx={{
           display: "flex",
