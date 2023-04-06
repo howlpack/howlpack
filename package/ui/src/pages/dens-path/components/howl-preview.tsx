@@ -42,7 +42,7 @@ export default function HowlPreview({ name }: { name: string }) {
           },
         }}
       >
-        How your Howl message might look
+        How your first Howl message might look
         {display ? (
           <IconButton
             aria-label="hide"

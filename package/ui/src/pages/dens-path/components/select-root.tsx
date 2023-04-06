@@ -129,9 +129,9 @@ export default function SelectRoot({
       variant="outlined"
       disabled={disabled || !someIsFetched}
     >
-      <InputLabel id="root-domain-label">TLD</InputLabel>
+      <InputLabel id="root-domain-label">Root Domain</InputLabel>
       <Select
-        label="TLD"
+        label="Root domain"
         name="TLD"
         value={formData.get("TLD") || ""}
         onChange={handleChange}
