@@ -172,7 +172,7 @@ export default function DensPath() {
           fontFamily: "'Space Grotesk', sans-serif",
         }}
       >
-        Buy (de)NS path domain
+        Register (de)NS path domain
       </Typography>
       <Box sx={{ mt: { xs: 5, sm: 8 } }}>
         <Grid container spacing={2}>

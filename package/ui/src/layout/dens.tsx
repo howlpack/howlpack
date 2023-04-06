@@ -4,15 +4,17 @@ import {
   CssBaseline,
   Divider,
   Grid,
+  Link,
   ThemeProvider,
   Typography,
   useMediaQuery,
 } from "@mui/material";
 import { darkTheme, lightTheme } from "../lib/theme";
 import { Helmet } from "react-helmet";
+import { Container } from "@mui/system";
+import { Link as ReactRouterLink } from "react-router-dom";
 import Snackbar from "../components/snackbar";
 import useScrollPosition from "../hooks/use-scroll-position";
-import { Container } from "@mui/system";
 import Footer from "./components/footer";
 
 function BackgroundImage() {
@@ -52,6 +54,7 @@ export default function Dens() {
           href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300&display=swap"
           rel="stylesheet"
         />
+        <title>Register (de)NS Path</title>
       </Helmet>
       <Snackbar />
       <CssBaseline />
@@ -175,6 +178,92 @@ export default function Dens() {
             than full domain names, making them a cost-effective option for
             individuals or businesses who want to establish their online
             presence on the (de)NS network.
+          </Typography>
+        </Box>
+
+        <Divider sx={{ mt: 8, mb: 6, width: "50%", mx: "auto" }} />
+        <Box>
+          <Typography
+            variant="h5"
+            component="h2"
+            sx={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              mb: 3,
+            }}
+          >
+            How can I buy my own root domain?
+          </Typography>
+
+          <Typography
+            variant="body1"
+            sx={{
+              fontFamily: "'Space Grotesk', sans-serif",
+            }}
+          >
+            To purchase your own root domain on the (de)NS network, simply go to{" "}
+            <Link
+              color={"secondary"}
+              href="https://dens.sh/"
+              target={"_blank"}
+              rel="noreferrer"
+              sx={{ fontWeight: "bold" }}
+            >
+              https://dens.sh/
+            </Link>{" "}
+            and register the domain there.
+          </Typography>
+        </Box>
+
+        <Divider sx={{ mt: 8, mb: 6, width: "50%", mx: "auto" }} />
+        <Box>
+          <Typography
+            variant="h5"
+            component="h2"
+            sx={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              mb: 3,
+            }}
+          >
+            What is Howlpack?
+          </Typography>
+
+          <Typography
+            variant="body1"
+            sx={{
+              fontFamily: "'Space Grotesk', sans-serif",
+            }}
+          >
+            Howlpack is an unofficial extension to Howl. Howlpack provides
+            additional functionality to the Howl platform and is developed by
+            the community. With Howlpack, you can check{" "}
+            <Link
+              to="/notifications/email"
+              component={ReactRouterLink}
+              color="secondary"
+              sx={{ fontWeight: "bold" }}
+            >
+              email notifications
+            </Link>
+            , integrate{" "}
+            <Link
+              to="/notifications/webhooks"
+              component={ReactRouterLink}
+              color="secondary"
+              sx={{ fontWeight: "bold" }}
+            >
+              webhooks
+            </Link>
+            , and calculate{" "}
+            <Link
+              to="/howl-rewards"
+              component={ReactRouterLink}
+              color="secondary"
+              sx={{ fontWeight: "bold" }}
+            >
+              Howl rewards
+            </Link>
+            . It's a great way to enhance your Howl experience and stay
+            up-to-date on the latest content and developments.
           </Typography>
         </Box>
 
