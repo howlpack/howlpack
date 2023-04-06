@@ -6,11 +6,12 @@ import {
   ThemeProvider,
   useMediaQuery,
 } from "@mui/material";
-import { darkTheme, lightTheme } from "../lib/theme";
 import { Container } from "@mui/system";
+import { Helmet } from "react-helmet";
+import { Fragment } from "react";
+import { darkTheme, lightTheme } from "../lib/theme";
 import Header from "./components/header";
 import Footer from "./components/footer";
-import { Fragment } from "react";
 import Menu from "./components/menu";
 import Snackbar from "../components/snackbar";
 
@@ -19,6 +20,9 @@ export default function App() {
 
   return (
     <ThemeProvider theme={prefersDarkMode ? darkTheme : lightTheme}>
+      <Helmet>
+        <title>Howlpack 🎒</title>
+      </Helmet>
       <Snackbar />
       <CssBaseline />
 
