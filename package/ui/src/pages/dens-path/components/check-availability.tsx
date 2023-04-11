@@ -87,7 +87,7 @@ export default function CheckAvailability({
 
     timeout.current = setTimeout(() => {
       setToken_idWithPath([token_id, path].join("::"));
-    }, 250);
+    }, 500);
   }, [token_id, path]);
 
   const availability = useQuery<any>(
@@ -109,14 +109,14 @@ export default function CheckAvailability({
     },
     {
       enabled: Boolean(client) && Boolean(token_id_withPath),
-      staleTime: 10000,
+      staleTime: 60000,
       onError: tryNextClient,
       suspense: true,
     }
   );
 
   const claim_window = useQuery<any>(
-    ["claim_window", tld, path],
+    ["claim_window", tld, token_id_withPath],
     async () => {
       if (!client) {
         return null;
@@ -134,7 +134,7 @@ export default function CheckAvailability({
     },
     {
       enabled: Boolean(client) && Boolean(token_id_withPath),
-      staleTime: 10000,
+      staleTime: 60000,
       onError: tryNextClient,
       suspense: true,
     }
