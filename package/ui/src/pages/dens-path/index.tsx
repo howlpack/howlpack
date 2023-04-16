@@ -27,6 +27,7 @@ import CheckAvailability, {
 } from "./components/check-availability";
 import { snackbarState } from "../../state/snackbar";
 import HowlPreview from "./components/howl-preview";
+import rollbar from "../../lib/rollbar";
 
 function ScrollDown({ children }: { children: any }) {
   const scrollPosition = useScrollPosition();
@@ -242,6 +243,7 @@ export default function DensPath() {
                     } successfully minted`,
                   });
                 } catch (e: any) {
+                  rollbar.error(e);
                   setSnackbar({
                     message: "Error minting path: " + e.message,
                   });
