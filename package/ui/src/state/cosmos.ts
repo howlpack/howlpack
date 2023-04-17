@@ -46,13 +46,13 @@ export const signClientState = selector<SigningCosmWasmClient | null>({
       return null;
     }
 
-    if (!window.getOfflineSignerOnlyAmino) {
+    if (!window.getOfflineSignerAuto) {
       return null;
     }
 
     const clientIx = get(clientIxState);
     const chain = get(chainState);
-    const offlineSigner = window.getOfflineSignerOnlyAmino(chain.chainId);
+    const offlineSigner = await window.getOfflineSignerAuto(chain.chainId);
     for (let i = 0; i < JUNO_RPCS.length; i++) {
       try {
         const client = await SigningCosmWasmClient.connectWithSigner(
