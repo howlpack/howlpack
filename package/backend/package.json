@@ -24,7 +24,7 @@
     "koa-static": "5.0.0",
     "node-fetch": "3.3.1",
     "prettier": "2.8.7",
-    "qrcode": "1.5.1",
+    "qrcode": "1.5.3",
     "ramda": "0.29.0",
     "rollbar": "2.26.1",
     "serverless-http": "3.2.0"
