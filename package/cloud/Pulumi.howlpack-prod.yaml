@@ -40,6 +40,8 @@ config:
     ]
   landing:API_DOMAIN: howlpack.social
   landing:ROUTE53_ZONE_NAME: howlpack.social
+  howl-preview:API_DOMAIN: howl-preview.howlpack.social
+  howl-preview:ROUTE53_ZONE_NAME: howlpack.social
   pulumi:env_files: []
   webapp:API_DOMAIN: get.howlpack.social
   webapp:ROUTE53_ZONE_NAME: howlpack.social
