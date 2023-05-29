@@ -9,7 +9,7 @@ import { InfoExtension, PostInfo } from "../../../types/types";
 import { lcdState } from "../../../state/cosmos";
 import useTryNextLCDClient from "../../../hooks/use-try-next-lcd-client";
 
-const SECOND = 1000 * 60;
+const SECOND = 1000;
 const MINUTE = SECOND * 60;
 const HOUR = MINUTE * 60;
 const DAY = HOUR * 24;
@@ -18,41 +18,27 @@ function relativeTime(timestamp: number) {
   const now = Date.now();
   const diff = timestamp - now;
   const days = diff / DAY;
-  const hours = (diff % DAY) / MINUTE;
-  const minutes = (diff % MINUTE) / SECOND;
+  const hours = (diff % DAY) / HOUR;
+  const minutes = (diff % MINUTE) / MINUTE;
   const seconds = (diff % SECOND) / 1000;
   const relative = new Intl.RelativeTimeFormat();
 
-  if (diff > 0) {
-    // If the difference is positive, the timestamp is in the future
-    if (days >= 1) {
-      return `${relative.format(Math.round(days), "day")}`;
-    }
-    if (hours >= 1) {
-      return relative.format(Math.round(hours), "hour");
-    }
-    if (minutes >= 1) {
-      return relative.format(Math.round(minutes), "minute");
-    }
-    if (seconds >= 0) {
-      return relative.format(Math.round(seconds), "second");
-    }
+  if (Math.abs(days) >= 1) {
+    return relative.format(Math.round(days), "day");
   }
-  if (diff < 0) {
-    // If the difference is negative, the timestamp is in the past
-    if (Math.abs(days) >= 1) {
-      return relative.format(Math.round(days), "day");
-    }
-    if (Math.abs(hours) >= 1) {
-      return relative.format(Math.round(hours), "hour");
-    }
-    if (Math.abs(minutes) >= 1) {
-      return relative.format(Math.round(minutes), "minute");
-    }
-    if (Math.abs(seconds) >= 0) {
-      return relative.format(Math.round(seconds), "second");
-    }
+
+  if (Math.abs(hours) >= 1) {
+    return relative.format(Math.round(hours), "hour");
   }
+
+  if (Math.abs(minutes) >= 1) {
+    return relative.format(Math.round(minutes), "minute");
+  }
+
+  if (Math.abs(seconds) >= 0) {
+    return relative.format(Math.round(seconds), "second");
+  }
+
   return "";
 }
 
