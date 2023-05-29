@@ -1,13 +1,14 @@
-import { Avatar, Box, Typography } from "@mui/material";
+import { Avatar, Box, Link, Typography } from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import { useRecoilValue } from "recoil";
-import { useMemo } from "react";
+import { Fragment, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { fetchThrowHttpError } from "@howlpack/howlpack-shared";
 import { InfoExtension, PostInfo } from "../../../types/types";
 import { lcdState } from "../../../state/cosmos";
 import useTryNextLCDClient from "../../../hooks/use-try-next-lcd-client";
+import { constants } from "@howlpack/howlpack-shared";
 
 const SECOND = 1000;
 const MINUTE = SECOND * 60;
@@ -87,29 +88,79 @@ function ProfilePicture({ username }: { username: string }) {
   );
 }
 
+const URL_REGEX =
+  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+
+function renderText(txt: string) {
+  return txt.split(" ").map((part) =>
+    URL_REGEX.test(part) ? (
+      <Fragment key={part}>
+        <Link href={part} target="_blank" color={"primary"}>
+          {part}
+        </Link>{" "}
+      </Fragment>
+    ) : (
+      part + " "
+    )
+  );
+}
+
 export default function Post({ post }: { post: PostInfo }) {
   if (!post.post) {
     return null;
   }
 
   return (
-    <Box sx={{ p: 1 }}>
+    <Box
+      sx={{ p: 1, cursor: "pointer" }}
+      onClick={() => {
+        const post_link = new URL(
+          `/${post.post!.creator}/${post.uuid}`,
+          constants.HOWL_URL
+        ).toString();
+        window.open(post_link, "_blank");
+      }}
+    >
       <Box
         sx={{
           display: "flex",
           gap: 1,
           opacity: 0.8,
           alignItems: "center",
+          justifyItems: "flex-start",
         }}
       >
         <ProfilePicture username={post.post.creator} />
-        <Typography variant="caption">{post.post.creator}</Typography>
+        <Typography variant="caption">
+          <Link
+            href={new URL(
+              `/${post.post!.creator}`,
+              constants.HOWL_URL
+            ).toString()}
+            onClick={(event) => event.stopPropagation()}
+            target="_blank"
+            color={"inherit"}
+          >
+            {post.post.creator}
+          </Link>
+        </Typography>{" "}
         <Typography variant="caption">
           {relativeTime(post.post.timestamp * 1000)}
         </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 1,
+            alignItems: "center",
+            marginLeft: "auto",
+          }}
+        >
+          <ChatBubbleOutlineIcon fontSize="small" />
+          <Typography variant="caption">{post.reply_count}</Typography>
+        </Box>
       </Box>
-      <Box sx={{ p: 2 }}>
-        <Typography variant="body1">{post.post.body}</Typography>
+      <Box sx={{ p: 2, overflowWrap: "anywhere" }}>
+        <Typography variant="body1">{renderText(post.post.body)}</Typography>
       </Box>
       <Box
         sx={{
@@ -118,16 +169,6 @@ export default function Post({ post }: { post: PostInfo }) {
           justifyContent: "right",
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            gap: 1,
-            alignItems: "center",
-          }}
-        >
-          <ChatBubbleOutlineIcon fontSize="small" />
-          <Typography variant="caption">{post.reply_count}</Typography>
-        </Box>
         {/* <Box
           sx={{
             display: "flex",

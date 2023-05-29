@@ -10,6 +10,7 @@ import { Provider as RollbarProvider, ErrorBoundary } from "@rollbar/react";
 import { RecoilRoot } from "recoil";
 import KeplrWatcher from "./components/keplr-watcher";
 import Loading from "./components/loading";
+import EmbeddedLayout from "./layout/embedded";
 import AppLayout from "./layout/app";
 import DensLayout from "./layout/dens";
 import rollbar from "./lib/rollbar";
@@ -74,6 +75,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/embedded",
+    element: <EmbeddedLayout />,
     errorElement: (
       <div style={{ width: "50%", margin: "50px auto" }}>
         <Error />
