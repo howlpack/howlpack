@@ -39,3 +39,26 @@ export interface PostInfo {
   reply_count: number;
   uuid: string;
 }
+
+export interface InfoExtension {
+  contract_address?: null | string;
+  discord_id?: null | string;
+  email?: null | string;
+  external_url?: null | string;
+  image?: null | string;
+  keybase_id?: null | string;
+  /**
+   * For future compatibility, we want to support a recursive lookup of tokens that
+   * constitutes a path somewhat like a DNS if this is None then it is a base token
+   */
+  parent_token_id?: null | string;
+  /**
+   * A public key
+   */
+  pgp_public_key?: null | string;
+  public_bio?: null | string;
+  public_name?: null | string;
+  telegram_id?: null | string;
+  twitter_id?: null | string;
+  validator_operator_address?: null | string;
+}

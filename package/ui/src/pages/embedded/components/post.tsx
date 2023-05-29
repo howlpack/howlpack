@@ -1,6 +1,13 @@
-import { Avatar, Box, Divider, Typography } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import { PostInfo } from "../../../types/types";
+import { useRecoilValue } from "recoil";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { fetchThrowHttpError } from "@howlpack/howlpack-shared";
+import { InfoExtension, PostInfo } from "../../../types/types";
+import { lcdState } from "../../../state/cosmos";
+import useTryNextLCDClient from "../../../hooks/use-try-next-lcd-client";
 
 const SECOND = 1000 * 60;
 const MINUTE = SECOND * 60;
@@ -49,6 +56,51 @@ function relativeTime(timestamp: number) {
   return "";
 }
 
+const DENS_ADDR =
+  "juno1mf309nyvr4k4zv0m7m40am9n7nqjf6gupa0wukamwmhgntqj0gxs9hqlrr";
+
+function ProfilePicture({ username }: { username: string }) {
+  const params = useParams();
+  const lcd = useRecoilValue(lcdState);
+  const tryNextLCDClient = useTryNextLCDClient();
+
+  const queryB64 = useMemo(() => {
+    const q = {
+      nft_info: { token_id: username },
+    };
+    return btoa(JSON.stringify(q));
+  }, [username]);
+
+  const nftInfo = useQuery<InfoExtension | null>(
+    ["nft_info", params.username],
+    async () => {
+      const path = `/cosmwasm/wasm/v1/contract/${DENS_ADDR}/smart/${queryB64}`;
+
+      const d = await fetch(new URL(path, lcd))
+        .then(fetchThrowHttpError.default)
+        .then((b) => b.json())
+        .then((b) => b.data.extension);
+
+      return d;
+    },
+    {
+      // to avoid spamming lcd, fetch only if the page has param username
+      // that is user-feed page
+      enabled: Boolean(params.username) && Boolean(queryB64),
+      onError: tryNextLCDClient,
+    }
+  );
+
+  return (
+    <Avatar
+      sx={{ width: 24, height: 24 }}
+      src={nftInfo.data?.image || undefined}
+    >
+      <Typography variant="caption">{username.slice(0, 1)}</Typography>
+    </Avatar>
+  );
+}
+
 export default function Post({ post }: { post: PostInfo }) {
   if (!post.post) {
     return null;
@@ -64,11 +116,7 @@ export default function Post({ post }: { post: PostInfo }) {
           alignItems: "center",
         }}
       >
-        <Avatar sx={{ width: 24, height: 24 }}>
-          <Typography variant="caption">
-            {post.post.creator.slice(0, 1)}
-          </Typography>
-        </Avatar>
+        <ProfilePicture username={post.post.creator} />
         <Typography variant="caption">{post.post.creator}</Typography>
         <Typography variant="caption">
           {relativeTime(post.post.timestamp * 1000)}
