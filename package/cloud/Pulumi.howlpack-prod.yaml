@@ -38,6 +38,15 @@ config:
       "https://rpc.juno.omniflix.co/",
       "https://rpc.juno.silknodes.io/",
     ]
+  juno:lcds:
+    [
+      "https://lcd-juno.itastakers.com",
+      "https://juno-api.reece.sh/",
+      "https://rest-juno.ecostake.com",
+      "https://juno-api.lavenderfive.com:443",
+      "https://api-juno-ia.cosmosia.notional.ventures/",
+      "https://api-juno.pupmos.network",
+    ]
   landing:API_DOMAIN: howlpack.social
   landing:ROUTE53_ZONE_NAME: howlpack.social
   howl-preview:API_DOMAIN: howl-preview.howlpack.social

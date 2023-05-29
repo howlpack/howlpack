@@ -34,6 +34,7 @@ export const keplrState = atom<{
 });
 
 export const JUNO_RPCS = JSON.parse(import.meta.env.VITE_JUNO_RPCS) as string[];
+export const JUNO_LCDS = JSON.parse(import.meta.env.VITE_JUNO_LCDS) as string[];
 
 export const signClientState = selector<SigningCosmWasmClient | null>({
   key: "signClientState",
@@ -96,4 +97,18 @@ export const clientState = selector<CosmWasmClient | null>({
 export const clientIxState = atom<number>({
   key: "clientIxState",
   default: 0,
+});
+
+export const clientLcdIxState = atom<number>({
+  key: "clientLcdIxState",
+  default: 0,
+});
+
+export const lcdState = selector<string>({
+  key: "lcdState",
+  get: async ({ get }) => {
+    const clientLcdIx = get(clientLcdIxState);
+
+    return JUNO_LCDS[clientLcdIx];
+  },
 });

@@ -28,6 +28,7 @@ const WebhookEditNotifications = lazy(
 );
 
 const DensPath = lazy(() => import("./pages/dens-path/index"));
+const Embedded = lazy(() => import("./pages/embedded/index"));
 
 const IFTTT = lazy(() => import("./pages/tutorials/ifttt"));
 const FAQ = lazy(() => import("./pages/faq"));
@@ -64,6 +65,24 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<Loading />}>
             <DensPath />
+          </Suspense>
+        ),
+      },
+    ],
+  },
+  {
+    path: "/embedded",
+    errorElement: (
+      <div style={{ width: "50%", margin: "50px auto" }}>
+        <Error />
+      </div>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Embedded />
           </Suspense>
         ),
       },
