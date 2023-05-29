@@ -1,7 +1,7 @@
 import { Alert, Card, Divider, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { Fragment, useEffect, useMemo } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { Decimal } from "decimal.js";
 import { useNavigate, useParams } from "react-router-dom";

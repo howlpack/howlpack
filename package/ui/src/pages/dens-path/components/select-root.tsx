@@ -7,7 +7,7 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import { useQueries, UseQueryOptions } from "react-query";
+import { useQueries, UseQueryOptions } from "@tanstack/react-query";
 import { useRecoilValue } from "recoil";
 import { Decimal } from "decimal.js";
 import useTryNextClient from "../../../hooks/use-try-next-client";
@@ -74,8 +74,8 @@ export default function SelectRoot({
   const client = useRecoilValue(clientState);
   const tryNextClient = useTryNextClient();
 
-  const configs = useQueries(
-    tlds.map<
+  const configs = useQueries({
+    queries: tlds.map<
       UseQueryOptions<
         {
           config: Config;
@@ -117,8 +117,8 @@ export default function SelectRoot({
         onError: tryNextClient,
         staleTime: 300000,
       };
-    })
-  );
+    }),
+  });
 
   const someIsFetched = configs.some((c) => c.isFetched);
 

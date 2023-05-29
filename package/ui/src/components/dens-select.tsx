@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { Fragment, useEffect } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useRecoilState, useRecoilValue } from "recoil";
 import useTryNextClient from "../hooks/use-try-next-client";
 import { signClientState, keplrState } from "../state/cosmos";
@@ -56,8 +56,7 @@ export default function DENSSelect() {
   const {
     data: dens,
     isSuccess,
-    isFetching,
-    isIdle,
+    isLoading,
   } = useQuery<string[]>(
     ["base_tokens", dens_addr, keplr.account],
     async () => {
@@ -162,11 +161,7 @@ export default function DENSSelect() {
 
   return (
     <div>
-      <FormControl
-        sx={{ minWidth: 120 }}
-        size="small"
-        disabled={isFetching || isIdle}
-      >
+      <FormControl sx={{ minWidth: 120 }} size="small" disabled={isLoading}>
         <Select
           labelId="dens-select-label"
           value={selectedDens || ""}
@@ -175,11 +170,7 @@ export default function DENSSelect() {
           {dens?.map(renderSelectGroup)}
         </Select>
         <FormHelperText>
-          {isFetching || isIdle ? (
-            <Loading />
-          ) : (
-            <Fragment>Active (de)NS</Fragment>
-          )}
+          {isLoading ? <Loading /> : <Fragment>Active (de)NS</Fragment>}
         </FormHelperText>
       </FormControl>
     </div>

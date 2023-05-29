@@ -16,7 +16,7 @@ import { notification, constants } from "@howlpack/howlpack-shared";
 import { useNavigate } from "react-router-dom";
 import useGetNotification from "../../../hooks/use-get-notification";
 import EmailForm from "../components/email-form";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DeliverTxResponse } from "@cosmjs/stargate";
 import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx.js";
 import { toUtf8 } from "@cosmjs/encoding";

@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useRecoilValue } from "recoil";
 
 import { clientState } from "../state/cosmos";

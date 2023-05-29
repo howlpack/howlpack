@@ -1,6 +1,6 @@
 import { Box } from "@mui/system";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useRecoilValue } from "recoil";
 import CheckIcon from "@mui/icons-material/Check";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";

@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useRecoilValue } from "recoil";
 import { lcdState } from "../../state/cosmos";
 import useTryNextLCDClient from "../../hooks/use-try-next-lcd-client";

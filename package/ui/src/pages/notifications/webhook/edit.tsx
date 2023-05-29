@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { DeliverTxResponse } from "@cosmjs/stargate";
 import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx.js";
