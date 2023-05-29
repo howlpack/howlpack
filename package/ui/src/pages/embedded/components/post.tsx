@@ -95,7 +95,12 @@ function renderText(txt: string) {
   return txt.split(" ").map((part) =>
     URL_REGEX.test(part) ? (
       <Fragment key={part}>
-        <Link href={part} target="_blank" color={"primary"}>
+        <Link
+          href={part}
+          target="_blank"
+          color={"primary"}
+          onClick={(event) => event.stopPropagation()}
+        >
           {part}
         </Link>{" "}
       </Fragment>
