@@ -14,6 +14,7 @@ import LinkIcon from "@mui/icons-material/Link";
 import LoopIcon from "@mui/icons-material/Loop";
 import TollIcon from "@mui/icons-material/Toll";
 import AddRoadIcon from "@mui/icons-material/AddRoad";
+import ListAltIcon from "@mui/icons-material/ListAlt";
 
 import { Link, useLocation } from "react-router-dom";
 
@@ -115,6 +116,16 @@ export default function Menu() {
               <TollIcon />
             </ListItemIcon>
             <ListItemText primary="HOWL Rewards" />
+          </ListItemButton>
+          <ListItemButton
+            component={Link}
+            to={"/share-feed"}
+            selected={currentPathname === "/share-feed"}
+          >
+            <ListItemIcon>
+              <ListAltIcon />
+            </ListItemIcon>
+            <ListItemText primary="Share Howl" />
           </ListItemButton>
           <ListItemButton
             component={Link}

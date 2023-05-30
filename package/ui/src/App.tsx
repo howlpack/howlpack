@@ -30,11 +30,13 @@ const WebhookEditNotifications = lazy(
 
 const DensPath = lazy(() => import("./pages/dens-path/index"));
 
+const ShareFeed = lazy(() => import("./pages/share-feed"));
+
 const EmbeddedAllPosts = lazy(() => import("./pages/embedded/index"));
 const EmbeddedUserFeed = lazy(() => import("./pages/embedded/user-feed"));
 
 const IFTTT = lazy(() => import("./pages/tutorials/ifttt"));
-const FAQ = lazy(() => import("./pages/faq"));
+const FAQ = lazy(() => import("./pages/notifications/faq"));
 const HowlRewardsKeplr = lazy(() =>
   import("./pages/howl-rewards").then((m) => ({ default: m.HowlRewardsKeplr }))
 );
@@ -124,6 +126,15 @@ const router = createBrowserRouter([
             element: <HowlRewardsTokenId />,
           },
         ],
+      },
+      {
+        path: "share-feed",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <Outlet />
+          </Suspense>
+        ),
+        children: [{ index: true, element: <ShareFeed /> }],
       },
       {
         path: "roadmap",

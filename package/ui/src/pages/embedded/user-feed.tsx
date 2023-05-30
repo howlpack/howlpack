@@ -41,5 +41,9 @@ export default function Embedded() {
     }
   );
 
-  return <Fragment>{howls.data && <Posts posts={howls.data} />}</Fragment>;
+  return (
+    <Fragment>
+      {howls.data && <Posts posts={howls.data} creator={params.username} />}
+    </Fragment>
+  );
 }
