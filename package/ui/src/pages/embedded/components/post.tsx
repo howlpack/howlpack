@@ -1,4 +1,4 @@
-import { Avatar, Box, Link, Typography } from "@mui/material";
+import { Avatar, Box, Link, Typography, alpha } from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import { useRecoilValue } from "recoil";
 import { Fragment, useMemo } from "react";
@@ -117,7 +117,14 @@ export default function Post({ post }: { post: PostInfo }) {
 
   return (
     <Box
-      sx={{ p: 1, cursor: "pointer" }}
+      sx={{
+        p: 1,
+        cursor: "pointer",
+        transition: "background 0.2s linear",
+        "&:hover": {
+          background: (theme) => alpha(theme.palette.divider, 0.05),
+        },
+      }}
       onClick={() => {
         const post_link = new URL(
           `/${post.post!.creator}/${post.uuid}`,

@@ -26,6 +26,7 @@ export default function Posts({
             <Button
               variant="text"
               fullWidth
+              color="secondary"
               href={new URL(`/${creator}`, constants.HOWL_URL).toString()}
               target="_blank"
             >
