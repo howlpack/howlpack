@@ -47,7 +47,7 @@ function App() {
           simply fans of the Howl project and aim to build upon their innovative
           work and ideas.
         </Alert>
-        <Card sx={{ p: 3, mt: 4 }} variant="outlined" color="secondary">
+        <Card sx={{ p: 3, mt: 4, mb: 8 }} variant="outlined" color="secondary">
           <Typography variant="body1" sx={{ mb: 2 }}>
             Howlpack is a supplementary add-on for the Howl project. It extends
             the functionality and enhances the user experience of the original
@@ -60,8 +60,12 @@ function App() {
               <li>A new follower is gained</li>
               <li>A new reply is received </li>
               <li>A new like is received</li>
-              <li>... and as usual much more coming</li>
             </ul>
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            Howlpack also provides a rewards dashboard where users can check
+            their earnings, and it also allows for embedding the Howl user feed
+            on any page.
           </Typography>
 
           <Box sx={{ textAlign: "center", mt: 6, mb: 3 }}>
@@ -77,7 +81,19 @@ function App() {
           </Box>
         </Card>
 
-        <Box sx={{ mt: 3, textAlign: "center" }}>
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          Howlpack's howling
+        </Typography>
+
+        <iframe
+          src="https://get.howlpack.social/embedded/user/howlpack"
+          height="550"
+          width="100%"
+          title="howlpack Howl Feed"
+          frameBorder="0"
+        ></iframe>
+
+        <Box sx={{ my: 8, textAlign: "center" }}>
           <Typography variant="caption">
             <Link
               color={"secondary"}
