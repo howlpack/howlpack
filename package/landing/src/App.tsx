@@ -38,7 +38,7 @@ function App() {
                 Howlpack
               </Box>
             </Typography>
-            <Typography variant="caption">[unofficial extension]</Typography>
+            <Typography variant="caption">[the Howl extension]</Typography>
           </Box>
         </Box>
         <Alert severity="info">
