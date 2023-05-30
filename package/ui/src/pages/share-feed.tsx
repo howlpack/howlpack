@@ -1,6 +1,6 @@
 import { Box, Divider, Grid, IconButton, Typography } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { Fragment, useDeferredValue, useState } from "react";
+import { Fragment, useDeferredValue, useEffect, useState } from "react";
 import { MemoTextField } from "../components/memo-textfield";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { keplrState } from "../state/cosmos";
@@ -10,6 +10,11 @@ import { snackbarState } from "../state/snackbar";
 export default function ShareFeed() {
   const keplr = useRecoilValue(keplrState);
   const selectedDens = useRecoilValue(selectedDensState(keplr.account));
+  useEffect(() => {
+    if (selectedDens) {
+      setUsername(selectedDens);
+    }
+  }, [selectedDens]);
   const [username, setUsername] = useState(selectedDens || "");
   const dusername = useDeferredValue(username);
   const [, setSnackbar] = useRecoilState(snackbarState);
@@ -70,6 +75,7 @@ export default function ShareFeed() {
               <pre
                 style={{
                   whiteSpace: "pre-wrap",
+                  overflowWrap: "anywhere",
                   margin: 0,
                 }}
               >
