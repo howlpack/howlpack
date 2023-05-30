@@ -43,7 +43,7 @@ export default function Header() {
                 Howlpack
               </Box>
             </Typography>
-            <Typography variant="caption">[unofficial extension]</Typography>
+            <Typography variant="caption">[the Howl extension]</Typography>
           </Box>
         </MuiLink>
       </Grid>
