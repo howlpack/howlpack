@@ -198,18 +198,20 @@ export default function EmailCreate() {
           )}
         </Button>
 
-        <Button
-          color="secondary"
-          variant="text"
-          sx={{ mt: 2 }}
-          onClick={() => {
-            navigate("../");
-          }}
-          disableElevation
-          disabled={inProgress}
-        >
-          Cancel
-        </Button>
+        {emailNotification && (
+          <Button
+            color="secondary"
+            variant="text"
+            sx={{ mt: 2 }}
+            onClick={() => {
+              navigate("../");
+            }}
+            disableElevation
+            disabled={inProgress}
+          >
+            Cancel
+          </Button>
+        )}
       </Box>
     </Card>
   );

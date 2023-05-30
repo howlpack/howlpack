@@ -6,7 +6,7 @@ import {
   Divider,
   Typography,
 } from "@mui/material";
-import { Fragment, useCallback, useEffect, useMemo } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import Loading from "../../../components/loading";
 import useFormData from "../../../hooks/use-form-data";
@@ -30,7 +30,7 @@ export default function EmailNotifications() {
   const { formState, setFormState } = useFormData({});
   const navigate = useNavigate();
 
-  const { data: notifications } = useGetNotification();
+  const { data: notifications, isFetched } = useGetNotification();
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const fn_void = useCallback(() => {}, []);
@@ -38,6 +38,14 @@ export default function EmailNotifications() {
   const emailNotification = useMemo(() => {
     return notifications?.find((n: any) => n.email)?.email;
   }, [notifications]);
+
+  const redirected = useRef(false);
+  useEffect(() => {
+    if (isFetched && !emailNotification && !redirected.current) {
+      navigate("./create");
+      redirected.current = true;
+    }
+  }, [isFetched, emailNotification, navigate]);
 
   useEffect(() => {
     if (!emailNotification) {
