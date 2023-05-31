@@ -20,5 +20,8 @@
       "automerge": true,
       "automergeType": "branch"
     }
+  ],
+  "ignoreDeps": [
+    "cosmjs-types"
   ]
 }
