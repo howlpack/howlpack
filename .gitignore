@@ -54,5 +54,6 @@ package/**/package-lock.json
 
 package/ui/dist
 package/landing/dist
+package/gateway-2023/dist
 
 .env
