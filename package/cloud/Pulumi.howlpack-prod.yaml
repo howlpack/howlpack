@@ -40,10 +40,10 @@ config:
     ]
   juno:lcds:
     [
-      "https://lcd-juno.itastakers.com",
+      "https://juno-api.lavenderfive.com:443",
       "https://juno-api.reece.sh/",
       "https://rest-juno.ecostake.com",
-      "https://juno-api.lavenderfive.com:443",
+      "https://lcd-juno.itastakers.com",
       "https://api-juno-ia.cosmosia.notional.ventures/",
       "https://api-juno.pupmos.network",
     ]

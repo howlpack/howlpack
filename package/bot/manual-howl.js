@@ -5,10 +5,9 @@ import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx.js";
 import { v4 as uuid } from "uuid";
 
 const msg =
-  "Osmo Sunny sends props to all the projects arising from Terra Supernova.";
+  "Take a tour around the space where the event is being held. Most people are in the main room for Dean Tribble's talk.";
 
-const img =
-  "image:https://www.dropbox.com/s/ymf2bvrop1nta13/IMG20230603102203.jpg?raw=1";
+const img = "youtube:Eg6f2dnrTyQ";
 
 const hashtags = [];
 
