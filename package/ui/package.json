@@ -16,7 +16,7 @@
     "@cosmjs/encoding": "0.30.1",
     "@emotion/react": "11.11.0",
     "@emotion/styled": "11.11.0",
-    "@keplr-wallet/types": "0.12.4",
+    "@keplr-wallet/types": "0.12.5",
     "@mui/icons-material": "5.11.16",
     "@mui/material": "5.13.3",
     "@rollbar/react": "0.11.1",
