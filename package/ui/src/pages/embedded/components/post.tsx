@@ -9,6 +9,7 @@ import { InfoExtension, PostInfo } from "../../../types/types";
 import { lcdState } from "../../../state/cosmos";
 import useTryNextLCDClient from "../../../hooks/use-try-next-lcd-client";
 import { constants } from "@howlpack/howlpack-shared";
+import { PostImage } from "./post-image";
 
 const SECOND = 1000;
 const MINUTE = SECOND * 60;
@@ -174,25 +175,8 @@ export default function Post({ post }: { post: PostInfo }) {
       <Box sx={{ p: 2, overflowWrap: "anywhere" }}>
         <Typography variant="body1">{renderText(post.post.body)}</Typography>
       </Box>
-      <Box
-        sx={{
-          display: "flex",
-          gap: 2,
-          justifyContent: "right",
-        }}
-      >
-        {/* <Box
-          sx={{
-            display: "flex",
-            gap: 1,
-            alignItems: "center",
-          }}
-        >
-          <FavoriteBorderIcon />
-          <Typography variant="caption">
-            {Math.ceil(random * 300) / 10}k
-          </Typography>
-        </Box> */}
+      <Box>
+        {post.post.image_uri && <PostImage image_uri={post.post.image_uri} />}
       </Box>
     </Box>
   );
