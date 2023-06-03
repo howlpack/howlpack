@@ -56,10 +56,17 @@ export function PostImage({ image_uri }: { image_uri: string }) {
     }
     case "image": {
       return params.get("allowImage") ? (
-        <img
-          src={image.uri}
-          style={{ margin: "auto", display: "block", maxHeight: "500px" }}
-        />
+        <a
+          href={image.uri}
+          target="_blank"
+          rel="noreferrer"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <img
+            src={image.uri}
+            style={{ margin: "auto", display: "block", maxHeight: "500px" }}
+          />
+        </a>
       ) : null;
     }
     default: {
