@@ -7,6 +7,11 @@ import { v4 as uuid } from "uuid";
 const msg =
   "Osmo Sunny sends props to all the projects arising from Terra Supernova.";
 
+const img =
+  "image:https://www.dropbox.com/s/ymf2bvrop1nta13/IMG20230603102203.jpg?raw=1";
+
+const hashtags = [];
+
 if (msg.length > 140) {
   throw new Error("TOO LONG");
 }
@@ -26,9 +31,8 @@ export async function handler() {
                 body: msg,
                 creator: "howlpack::gateway2023",
                 mentions: [],
-                hashtags: ["Gateway2023", "Prague"],
-                image_uri:
-                  "image:https://www.dropbox.com/s/ymf2bvrop1nta13/IMG20230603102203.jpg?raw=1",
+                hashtags: ["Gateway2023", "Prague"].concat(hashtags),
+                image_uri: img,
               },
             },
           })

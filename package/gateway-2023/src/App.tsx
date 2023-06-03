@@ -131,7 +131,7 @@ function App() {
             }}
           >
             <iframe
-              src="https://get.howlpack.social/embedded/user/howlpack::gateway2023"
+              src="https://get.howlpack.social/embedded/user/howlpack::gateway2023?allowImage=true"
               width="100%"
               title="howlpack Howl Feed"
               frameBorder="0"
