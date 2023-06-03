@@ -64,7 +64,12 @@ export function PostImage({ image_uri }: { image_uri: string }) {
         >
           <img
             src={image.uri}
-            style={{ margin: "auto", display: "block", maxHeight: "500px" }}
+            style={{
+              margin: "auto",
+              display: "block",
+              maxHeight: "500px",
+              maxWidth: "100%",
+            }}
           />
         </a>
       ) : null;

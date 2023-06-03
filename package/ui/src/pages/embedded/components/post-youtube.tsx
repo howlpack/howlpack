@@ -45,7 +45,7 @@ export function PostYoutube({ youtubeId }: { youtubeId: string }) {
             src={`https://img.youtube.com/vi/${youtubeId}/0.jpg`}
             alt={`Youtube video id ${youtubeId}`}
             onLoad={() => setPreviewImageLoaded(true)}
-            style={{ margin: "auto", display: "block" }}
+            style={{ margin: "auto", display: "block", maxWidth: "100%" }}
           />
         </>
       ) : (
