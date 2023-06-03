@@ -1,3 +1,3 @@
-import { handler } from "./winston-wolfe.js";
+import { handler } from "./manual-howl.js";
 
 handler();
