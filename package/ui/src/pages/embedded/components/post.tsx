@@ -90,7 +90,7 @@ function ProfilePicture({ username }: { username: string }) {
 }
 
 const URL_REGEX =
-  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,10}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
 
 function renderText(txt: string) {
   return txt.split(" ").map((part) =>

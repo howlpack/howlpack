@@ -5,14 +5,15 @@ import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx.js";
 import { v4 as uuid } from "uuid";
 
 const msg =
-  "Take a tour around the space where the event is being held. Most people are in the main room for Dean Tribble's talk.";
+  "Verifiable Randomness for your contract from Secret network as a service over IBC. https://scrt.network/blog/secret-vrf";
 
-const img = "youtube:Eg6f2dnrTyQ";
+const img =
+  "image:https://www.dropbox.com/s/fzkjmsqeiou0mqd/7o7xye.jpg?raw=true";
 
-const hashtags = [];
+const hashtags = ["Secret"];
 
 if (msg.length > 140) {
-  throw new Error("TOO LONG");
+  throw new Error("TOO LONG " + msg.length);
 }
 
 export async function handler() {
