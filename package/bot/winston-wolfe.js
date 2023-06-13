@@ -99,7 +99,7 @@ export async function handler() {
         {
           amount: [
             {
-              amount: "1750",
+              amount: "52500",
               denom: "ujuno",
             },
           ],

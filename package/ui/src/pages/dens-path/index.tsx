@@ -146,7 +146,7 @@ export default function DensPath() {
       const gas = await signClient.simulate(keplr.account, msgs, "");
 
       const result = await signClient.signAndBroadcast(keplr.account, msgs, {
-        amount: [{ amount: "0.025", denom: "ujuno" }],
+        amount: [{ amount: "0.075", denom: "ujuno" }],
         gas: Math.ceil(gas * 1.1) + "",
       });
 

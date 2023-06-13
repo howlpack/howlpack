@@ -189,7 +189,7 @@ export default function EmailEdit() {
           keplr.account,
           [updateMsg],
           {
-            amount: [{ amount: "0.025", denom: "ujuno" }],
+            amount: [{ amount: "0.075", denom: "ujuno" }],
             gas: "400000",
           }
         );
