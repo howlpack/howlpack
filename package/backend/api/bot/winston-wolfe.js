@@ -188,7 +188,7 @@ export default (router) => {
             {
               amount: [
                 {
-                  amount: is_following ? "1750" : "3000",
+                  amount: is_following ? "52500" : "67500",
                   denom: "ujuno",
                 },
               ],
