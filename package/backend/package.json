@@ -26,7 +26,7 @@
     "prettier": "2.8.8",
     "qrcode": "1.5.3",
     "ramda": "0.29.0",
-    "rollbar": "2.26.1",
+    "rollbar": "2.26.2",
     "serverless-http": "3.2.0"
   }
 }
