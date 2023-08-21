@@ -14,7 +14,7 @@
     "@aws-sdk/client-sqs": "^3.276.0",
     "@aws-sdk/lib-dynamodb": "3.300.0",
     "@aws-sdk/util-dynamodb": "3.300.0",
-    "@cosmjs/cosmwasm-stargate": "0.31.0",
+    "@cosmjs/cosmwasm-stargate": "0.31.1",
     "@cosmjs/encoding": "0.31.0",
     "@cosmjs/proto-signing": "0.31.0",
     "cosmjs-types": "0.7.2"
