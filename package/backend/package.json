@@ -4,12 +4,13 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "dotenv -e ../../env/.env.local.test -e ../../env/.env.test -- node --no-warnings --experimental-vm-modules ../../node_modules/.bin/jest --runInBand",
+    "test": "dotenv -e ./.env.test -- node --no-warnings --experimental-vm-modules ../../node_modules/.bin/jest --runInBand",
     "dev": "dotenv -e ../../.env -- nodemon -e js,mjs,cjs server.js"
   },
   "type": "module",
   "dependencies": {
     "@cosmjs/encoding": "0.31.1",
+    "@keplr-wallet/cosmos": "0.12.23",
     "@koa/cors": "4.0.0",
     "@koa/router": "12.0.0",
     "cosmjs-types": "0.7.2",
@@ -27,6 +28,7 @@
     "qrcode": "1.5.3",
     "ramda": "0.29.0",
     "rollbar": "2.26.2",
-    "serverless-http": "3.2.0"
+    "serverless-http": "3.2.0",
+    "twitter-api-sdk": "1.2.1"
   }
 }

@@ -11,6 +11,7 @@ import { lastProcessedBlockTable } from "./dynamo";
 const projectConfig = new pulumi.Config("pulumi");
 const howlpackConfig = new pulumi.Config("howlpack");
 const junoConfig = new pulumi.Config("juno");
+const twitterConfig = new pulumi.Config("twitter");
 
 const names = JSON.parse(projectConfig.require("env_files")) || [];
 
@@ -172,6 +173,10 @@ export const apiBackend = new aws.lambda.Function(
         HOWL_STAKING: junoConfig.get("howl_staking"),
         HOWL_TOKEN: junoConfig.get("howl_token"),
         HOWL_MNEMONIC: howlpackConfig.getSecret("HOWL_MNEMONIC"),
+        NOTIFICATIONS_CONTRACT: junoConfig.get("notifications_contract"),
+        TWITTER_CLIENT_ID: twitterConfig.get("client_id"),
+        TWITTER_CLIENT_SECRET: twitterConfig.getSecret("client_secret"),
+        TWITTER_CODE_CHALLENGE: twitterConfig.getSecret("code_challenge"),
         ROLLBAR_ACCESS_TOKEN: howlpackConfig.getSecret("ROLLBAR_ACCESS_TOKEN"),
         RPC_ENDPOINTS: (JSON.parse(junoConfig.require("rpcs")) || []).join(","),
       },

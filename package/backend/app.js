@@ -6,6 +6,7 @@ import session from "koa-session";
 import HelloRouter from "./api/hello/index.js";
 import CryptoRouter from "./api/crypto/index.js";
 import BotRouter from "./api/bot/index.js";
+import TwitterRouter from "./api/twitter/index.js";
 import error from "./middleware/error.js";
 
 const app = new Koa();
@@ -40,6 +41,7 @@ const publicRoutes = [
   ["/api/hello", HelloRouter.routes(), HelloRouter.allowedMethods()],
   ["/api/crypto", CryptoRouter.routes(), CryptoRouter.allowedMethods()],
   ["/api/bot", BotRouter.routes(), BotRouter.allowedMethods()],
+  ["/api/twitter", TwitterRouter.routes(), TwitterRouter.allowedMethods()],
 ];
 
 publicRoutes.map((r) => publicRouter.use(...r));

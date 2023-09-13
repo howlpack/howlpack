@@ -1,5 +1,5 @@
 import request from "supertest";
-import app from "backend/app.js";
+import app from "@howlpack/howlpack-backend/app.js";
 
 test("Hello world works", async () => {
   const response = await request(app.callback()).get("/api/hello");

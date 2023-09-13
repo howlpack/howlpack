@@ -9,6 +9,7 @@ export default () => async (ctx, next) => {
       message: err.message,
       data: err.data,
     };
+    console.error(err);
     rollbar.error(err, {
       status: ctx.status,
       payload: ctx.body,

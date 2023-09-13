@@ -37,6 +37,7 @@ const EmbeddedUserFeed = lazy(() => import("./pages/embedded/user-feed"));
 
 const IFTTT = lazy(() => import("./pages/tutorials/ifttt"));
 const FAQ = lazy(() => import("./pages/notifications/faq"));
+const Twitter = lazy(() => import("./pages/twitter"));
 const HowlRewardsKeplr = lazy(() =>
   import("./pages/howl-rewards").then((m) => ({ default: m.HowlRewardsKeplr }))
 );
@@ -143,6 +144,25 @@ const router = createBrowserRouter([
             <Roadmap />
           </Suspense>
         ),
+      },
+      {
+        path: "twitter",
+        element: (
+          <WithKeplr>
+            <WithDENS />
+          </WithKeplr>
+        ),
+        errorElement: <Error />,
+        children: [
+          {
+            index: true,
+            element: (
+              <Suspense fallback={<Loading />}>
+                <Twitter />
+              </Suspense>
+            ),
+          },
+        ],
       },
       {
         path: "tutorials",

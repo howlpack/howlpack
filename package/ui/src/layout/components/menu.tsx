@@ -12,6 +12,7 @@ import RouteIcon from "@mui/icons-material/Route";
 import LiveHelpIcon from "@mui/icons-material/LiveHelp";
 import LinkIcon from "@mui/icons-material/Link";
 import LoopIcon from "@mui/icons-material/Loop";
+import TwitterIcon from "@mui/icons-material/Twitter";
 import TollIcon from "@mui/icons-material/Toll";
 import AddRoadIcon from "@mui/icons-material/AddRoad";
 import ListAltIcon from "@mui/icons-material/ListAlt";
@@ -31,6 +32,25 @@ export default function Menu() {
 
   return (
     <Fragment>
+      <List
+        sx={{ width: "100%", maxWidth: 360, mt: 2 }}
+        component="nav"
+        aria-labelledby="twitter"
+        subheader={<ListSubheader component="div">TWITTER</ListSubheader>}
+      >
+        <List component="div" disablePadding>
+          <ListItemButton
+            component={Link}
+            to={"/twitter"}
+            selected={currentPathname === "/twitter"}
+          >
+            <ListItemIcon>
+              <TwitterIcon />
+            </ListItemIcon>
+            <ListItemText primary="Connect 𝕏" sx={{ whiteSpace: "nowrap" }} />
+          </ListItemButton>
+        </List>
+      </List>
       <List
         sx={{ width: "100%", maxWidth: 360 }}
         component="nav"

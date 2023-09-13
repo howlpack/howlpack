@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Hello world works 1`] = `"OK"`;
+
+exports[`Twitter callback 1`] = `"OK"`;
