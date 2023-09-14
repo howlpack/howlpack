@@ -165,7 +165,7 @@ export const apiBackend = new aws.lambda.Function(
       variables: {
         ...environment,
         FRONTEND_URL: webappUrl,
-        BACKEND_URL: backendConfig.require("API_DOMAIN"),
+        BACKEND_URL: "https://" + backendConfig.require("API_DOMAIN"),
         ENCRYPTION_SECRET_KEY: howlpackConfig.getSecret(
           "ENCRYPTION_SECRET_KEY"
         ),
