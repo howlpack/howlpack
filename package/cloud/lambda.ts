@@ -12,6 +12,7 @@ const projectConfig = new pulumi.Config("pulumi");
 const howlpackConfig = new pulumi.Config("howlpack");
 const junoConfig = new pulumi.Config("juno");
 const twitterConfig = new pulumi.Config("twitter");
+const backendConfig = new pulumi.Config("backend");
 
 const names = JSON.parse(projectConfig.require("env_files")) || [];
 
@@ -164,7 +165,7 @@ export const apiBackend = new aws.lambda.Function(
       variables: {
         ...environment,
         FRONTEND_URL: webappUrl,
-        BACKEND_URL: backendUrl,
+        BACKEND_URL: backendConfig.require("API_DOMAIN"),
         ENCRYPTION_SECRET_KEY: howlpackConfig.getSecret(
           "ENCRYPTION_SECRET_KEY"
         ),

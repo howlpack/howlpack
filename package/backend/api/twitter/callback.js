@@ -88,7 +88,6 @@ export default (router) => {
 
       try {
         const { token } = await authClient.requestAccessToken(code);
-        console.log({ token });
       } catch (e) {
         let err = createHttpError.BadRequest("twitter error");
 
