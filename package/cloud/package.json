@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "@pulumi/aws": "5.42.0",
-        "@pulumi/aws-native": "0.75.0",
+        "@pulumi/aws-native": "0.76.0",
         "@pulumi/awsx": "1.0.5",
         "@pulumi/pulumi": "3.82.1",
         "esbuild": "0.19.3"
