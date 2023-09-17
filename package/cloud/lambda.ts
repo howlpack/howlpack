@@ -92,40 +92,42 @@ const sqsLambdaPolicy = new aws.iam.Policy(lambdaPackageName + "-sqs", {
 });
 
 const dynamoLambdaPolicy = new aws.iam.Policy(lambdaPackageName + "-dynamo", {
-  policy: lastProcessedBlockTable.arn.apply((arn) =>
-    JSON.stringify({
-      Version: "2012-10-17",
-      Statement: [
-        {
-          Effect: "Allow",
-          Action: [
-            "dynamodb:List*",
-            "dynamodb:DescribeReservedCapacity*",
-            "dynamodb:DescribeLimits",
-            "dynamodb:DescribeTimeToLive",
-          ],
-          Resource: "*",
-        },
-        {
-          Effect: "Allow",
-          Action: [
-            "dynamodb:BatchGet*",
-            "dynamodb:DescribeStream",
-            "dynamodb:DescribeTable",
-            "dynamodb:Get*",
-            "dynamodb:Query",
-            "dynamodb:Scan",
-            "dynamodb:BatchWrite*",
-            "dynamodb:CreateTable",
-            "dynamodb:Delete*",
-            "dynamodb:Update*",
-            "dynamodb:PutItem",
-          ],
-          Resource: arn,
-        },
-      ],
-    })
-  ),
+  policy: pulumi
+    .all([lastProcessedBlockTable.arn, twitterTable.arn])
+    .apply((arn) =>
+      JSON.stringify({
+        Version: "2012-10-17",
+        Statement: [
+          {
+            Effect: "Allow",
+            Action: [
+              "dynamodb:List*",
+              "dynamodb:DescribeReservedCapacity*",
+              "dynamodb:DescribeLimits",
+              "dynamodb:DescribeTimeToLive",
+            ],
+            Resource: "*",
+          },
+          {
+            Effect: "Allow",
+            Action: [
+              "dynamodb:BatchGet*",
+              "dynamodb:DescribeStream",
+              "dynamodb:DescribeTable",
+              "dynamodb:Get*",
+              "dynamodb:Query",
+              "dynamodb:Scan",
+              "dynamodb:BatchWrite*",
+              "dynamodb:CreateTable",
+              "dynamodb:Delete*",
+              "dynamodb:Update*",
+              "dynamodb:PutItem",
+            ],
+            Resource: arn,
+          },
+        ],
+      })
+    ),
 });
 
 new aws.iam.RolePolicyAttachment(lambdaPackageName + "-lambdaExecute", {
@@ -207,6 +209,7 @@ export const howlProcessor = new aws.lambda.Function(
           "ENCRYPTION_SECRET_KEY"
         ),
         DYNAMO_TWITTER_TABLE: twitterTable.name,
+        BACKEND_URL: "https://" + backendConfig.require("API_DOMAIN"),
         TWITTER_CLIENT_ID: twitterConfig.get("client_id"),
         TWITTER_CLIENT_SECRET: twitterConfig.getSecret("client_secret"),
       },
