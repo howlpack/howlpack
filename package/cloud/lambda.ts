@@ -240,6 +240,7 @@ export const notificationsProcessor = new aws.lambda.Function(
         BACKEND_URL: "https://" + backendConfig.require("API_DOMAIN"),
         TWITTER_CLIENT_ID: twitterConfig.get("client_id"),
         TWITTER_CLIENT_SECRET: twitterConfig.getSecret("client_secret"),
+        DYNAMO_TWITTER_TABLE: twitterTable.name,
       },
     },
   }
