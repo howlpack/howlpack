@@ -18,3 +18,21 @@ export const lastProcessedBlockTable = new aws.dynamodb.Table(
     },
   }
 );
+
+export const twitterTable = new aws.dynamodb.Table(
+  pulumi.getStack() + ".Twitter",
+  {
+    attributes: [
+      {
+        name: "dens",
+        type: "S",
+      },
+    ],
+    readCapacity: 1,
+    writeCapacity: 1,
+    hashKey: "dens",
+    tags: {
+      Environment: pulumi.getStack(),
+    },
+  }
+);

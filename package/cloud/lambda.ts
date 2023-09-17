@@ -6,7 +6,7 @@ import { url as webappUrl } from "./webapp";
 import { url as backendUrl } from "./backend";
 import { buildCodeAsset } from "./lambda-builder";
 import { howl_queue, notification_queue } from "./queue";
-import { lastProcessedBlockTable } from "./dynamo";
+import { lastProcessedBlockTable, twitterTable } from "./dynamo";
 
 const projectConfig = new pulumi.Config("pulumi");
 const howlpackConfig = new pulumi.Config("howlpack");
@@ -180,6 +180,7 @@ export const apiBackend = new aws.lambda.Function(
         TWITTER_CODE_CHALLENGE: twitterConfig.getSecret("code_challenge"),
         ROLLBAR_ACCESS_TOKEN: howlpackConfig.getSecret("ROLLBAR_ACCESS_TOKEN"),
         RPC_ENDPOINTS: (JSON.parse(junoConfig.require("rpcs")) || []).join(","),
+        DYNAMO_TWITTER_TABLE: twitterTable.name,
       },
     },
   }
@@ -206,6 +207,7 @@ export const howlProcessor = new aws.lambda.Function(
         ENCRYPTION_SECRET_KEY: howlpackConfig.getSecret(
           "ENCRYPTION_SECRET_KEY"
         ),
+        DYNAMO_TWITTER_TABLE: twitterTable.name,
       },
     },
   }

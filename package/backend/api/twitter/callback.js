@@ -3,8 +3,12 @@ import { fromBase64 } from "@cosmjs/encoding";
 import Joi from "joi";
 import { withClient } from "@howlpack/howlpack-shared/cosmwasm.js";
 import createHttpError from "http-errors";
+import { ddbClient, ddbDocClient } from "@howlpack/howlpack-shared/dynamo.js";
+import { GetItemCommand } from "@aws-sdk/client-dynamodb";
+import { marshall } from "@aws-sdk/util-dynamodb";
+import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { validate } from "../../middleware/joi-validate.js";
-import { authClient } from "../../lib/twitter.js";
+import { authClient, client } from "../../lib/twitter.js";
 import { generateAuthURL } from "./redirect.js";
 
 // call this method to save code_challenge into the twitter-api-sdk authClient
@@ -86,8 +90,11 @@ export default (router) => {
         });
       }
 
+      let token;
+
       try {
-        const { token } = await authClient.requestAccessToken(code);
+        const resp = await authClient.requestAccessToken(code);
+        token = resp.token;
       } catch (e) {
         let err = createHttpError.BadRequest("twitter error");
 
@@ -97,6 +104,20 @@ export default (router) => {
 
         throw err;
       }
+
+      const user = await client.users.findMyUser({});
+
+      await ddbDocClient.send(
+        new PutCommand({
+          TableName: process.env.DYNAMO_TWITTER_TABLE,
+          Item: {
+            dens: dens_name,
+            user: user.data,
+            token: token,
+            at: new Date().toISOString(),
+          },
+        })
+      );
 
       const redirectUrl = new URL("/twitter", process.env.FRONTEND_URL);
       redirectUrl.searchParams.append("status", "ok");
