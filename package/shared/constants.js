@@ -9,6 +9,7 @@ export const EVENT_TYPES = {
 export const HOWL_QUEUE_TYPES = {
   EMAIL: "email",
   WEBHOOK: "webhook",
+  TWITTER: "twitter",
 };
 
 export const HOWL_URL = "https://beta.howl.social/";

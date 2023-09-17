@@ -3,12 +3,10 @@ import { fromBase64 } from "@cosmjs/encoding";
 import Joi from "joi";
 import { withClient } from "@howlpack/howlpack-shared/cosmwasm.js";
 import createHttpError from "http-errors";
-import { ddbClient, ddbDocClient } from "@howlpack/howlpack-shared/dynamo.js";
-import { GetItemCommand } from "@aws-sdk/client-dynamodb";
-import { marshall } from "@aws-sdk/util-dynamodb";
+import { ddbDocClient } from "@howlpack/howlpack-shared/dynamo.js";
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
+import { authClient, client } from "@howlpack/howlpack-shared/twitter.js";
 import { validate } from "../../middleware/joi-validate.js";
-import { authClient, client } from "../../lib/twitter.js";
 import { generateAuthURL } from "./redirect.js";
 
 // call this method to save code_challenge into the twitter-api-sdk authClient

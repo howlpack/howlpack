@@ -3,7 +3,6 @@ import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as dotenv from "dotenv";
 import { url as webappUrl } from "./webapp";
-import { url as backendUrl } from "./backend";
 import { buildCodeAsset } from "./lambda-builder";
 import { howl_queue, notification_queue } from "./queue";
 import { lastProcessedBlockTable, twitterTable } from "./dynamo";
@@ -208,6 +207,8 @@ export const howlProcessor = new aws.lambda.Function(
           "ENCRYPTION_SECRET_KEY"
         ),
         DYNAMO_TWITTER_TABLE: twitterTable.name,
+        TWITTER_CLIENT_ID: twitterConfig.get("client_id"),
+        TWITTER_CLIENT_SECRET: twitterConfig.getSecret("client_secret"),
       },
     },
   }
@@ -233,6 +234,9 @@ export const notificationsProcessor = new aws.lambda.Function(
     environment: {
       variables: {
         ...environment,
+        BACKEND_URL: "https://" + backendConfig.require("API_DOMAIN"),
+        TWITTER_CLIENT_ID: twitterConfig.get("client_id"),
+        TWITTER_CLIENT_SECRET: twitterConfig.getSecret("client_secret"),
       },
     },
   }
@@ -261,7 +265,7 @@ export const watcher = new aws.lambda.Function(lambdaPackageName + "-watcher", {
     variables: {
       ...environment,
       FRONTEND_URL: webappUrl,
-      BACKEND_URL: backendUrl,
+      BACKEND_URL: "https://" + backendConfig.require("API_DOMAIN"),
       RPC_ENDPOINTS: (JSON.parse(junoConfig.require("rpcs")) || []).join(","),
       NOTIFICATIONS_CONTRACT: junoConfig.get("notifications_contract"),
       HOWL_POSTS_ADDR: junoConfig.get("howl_posts"),
@@ -306,7 +310,7 @@ export const winstonWolfe = new aws.lambda.Function(
       variables: {
         ...environment,
         FRONTEND_URL: webappUrl,
-        BACKEND_URL: backendUrl,
+        BACKEND_URL: "https://" + backendConfig.require("API_DOMAIN"),
         RPC_ENDPOINTS: (JSON.parse(junoConfig.require("rpcs")) || []).join(","),
         HOWL_TOKEN: junoConfig.get("howl_token"),
         HOWL_STAKING: junoConfig.get("howl_staking"),

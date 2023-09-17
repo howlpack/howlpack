@@ -31,7 +31,6 @@
     "qrcode": "1.5.3",
     "ramda": "0.29.0",
     "rollbar": "2.26.2",
-    "serverless-http": "3.2.0",
-    "twitter-api-sdk": "1.2.1"
+    "serverless-http": "3.2.0"
   }
 }

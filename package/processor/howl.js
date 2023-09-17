@@ -7,6 +7,7 @@ import { sqsClient } from "@howlpack/howlpack-shared/sqs.js";
 import { withClient } from "@howlpack/howlpack-shared/cosmwasm.js";
 import { hasPreference } from "@howlpack/howlpack-shared/notification.js";
 import { decrypt } from "@howlpack/howlpack-shared/crypto.js";
+import { getAuthToken } from "@howlpack/howlpack-shared/twitter.js";
 import {
   composeFollowerEmail,
   composeLikesEmail,
@@ -21,6 +22,7 @@ import {
   composeMyHowlWebhook,
   composeReplyWebhook,
 } from "./webhook.js";
+import { composeMyHowlTweet } from "./twitter.js";
 
 export async function handler(event) {
   for (const record of event.Records) {
@@ -196,6 +198,19 @@ export async function handler(event) {
           });
         }
       });
+
+      if (await getAuthToken(myHowlMsg.receiver)) {
+        sqsSendCommands.push({
+          ...composeMyHowlTweet(
+            myHowlMsg.receiver,
+            myHowlMsg.attrs.postId,
+            myHowlMsg.attrs.postBody,
+            myHowlMsg.attrs.mentions
+          ),
+          event_type: EVENT_TYPES.MY_HOWL,
+          type: HOWL_QUEUE_TYPES.TWITTER,
+        });
+      }
     }
 
     for (const sqsSendCommand of sqsSendCommands) {

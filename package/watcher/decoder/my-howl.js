@@ -20,6 +20,7 @@ export default async function myHowl(txMessage) {
     attrs: {
       postId: txMessage.msg.mint.token_id,
       postBody: txMessage.msg.mint.extension.body,
+      mentions: txMessage.msg.mint.extension.mentions,
     },
   };
 }

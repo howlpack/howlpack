@@ -11,9 +11,12 @@
     "@aws-sdk/client-dynamodb": "3.414.0",
     "@aws-sdk/client-sqs": "3.414.0",
     "@aws-sdk/lib-dynamodb": "3.414.0",
+    "@aws-sdk/util-dynamodb": "3.414.0",
     "@cosmjs/cosmwasm-stargate": "0.31.1",
     "@cosmjs/crypto": "0.31.1",
     "@cosmjs/proto-signing": "0.31.1",
-    "ramda": "0.29.0"
+    "exponential-backoff": "3.1.1",
+    "ramda": "0.29.0",
+    "twitter-api-sdk": "1.2.1"
   }
 }

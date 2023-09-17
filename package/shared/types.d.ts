@@ -51,5 +51,6 @@ export type HowlMyHowlQueueMsg = {
   attrs: {
     postId: string;
     postBody: string;
+    mentions: string[];
   };
 };

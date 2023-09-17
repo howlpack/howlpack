@@ -1,6 +1,6 @@
 import Joi from "joi";
+import { authClient } from "@howlpack/howlpack-shared/twitter.js";
 import { validate } from "../../middleware/joi-validate.js";
-import { authClient } from "../../lib/twitter.js";
 
 const redirectValidation = validate({
   query: Joi.object({
