@@ -2,6 +2,7 @@ import Joi from "joi";
 import {
   authClient,
   client,
+  getTwitterUser,
   setAuthTokenFromDB,
 } from "@howlpack/howlpack-shared/twitter.js";
 import { validate } from "../../middleware/joi-validate.js";
@@ -28,9 +29,18 @@ export default (router) => {
         return;
       }
 
-      const user = await client.users.findMyUser({});
-
-      ctx.body = { data: user.data };
+      try {
+        const user = await client.users.findMyUser({});
+        ctx.body = { data: user.data };
+      } catch (e) {
+        if (e.status === 429) {
+          // from DB
+          const user = await getTwitterUser(dens);
+          ctx.body = { data: user };
+        } else {
+          throw e;
+        }
+      }
     }
   );
 };
