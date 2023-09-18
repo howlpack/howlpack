@@ -28,6 +28,32 @@ export const client = new Client(authClient);
 /**
  *
  * @param {string} dens
+ * @returns {import("twitter-api-sdk/dist/gen/openapi-types.js").components['schemas']['User'] | null}
+ */
+export async function getTwitterUser(dens) {
+  const _data = await ddbClient.send(
+    new GetItemCommand({
+      TableName: process.env.DYNAMO_TWITTER_TABLE,
+      Key: marshall({
+        dens: dens,
+      }),
+      ProjectionExpression: "#user",
+      ExpressionAttributeNames: {
+        "#user": "user",
+      },
+    })
+  );
+
+  if (!_data.Item) {
+    return null;
+  }
+
+  return unmarshall(_data.Item).user;
+}
+
+/**
+ *
+ * @param {string} dens
  * @returns {TwitterToken | null}
  */
 export async function getAuthToken(dens) {
@@ -57,7 +83,7 @@ export async function getAuthToken(dens) {
  * @param {string} dens
  * @param {import("twitter-api-sdk/dist/OAuth2User.js").OAuth2User} authClient
  */
-export async function setAuthTokenFromDB(dens, authClient) {
+export async function setAuthTokenFromDB(dens, authClient, force = false) {
   let token = await getAuthToken(dens);
 
   if (!token) {
@@ -66,7 +92,7 @@ export async function setAuthTokenFromDB(dens, authClient) {
 
   authClient.token = token;
 
-  if (authClient.isAccessTokenExpired()) {
+  if (authClient.isAccessTokenExpired() || force) {
     let refreshedToken;
     try {
       const { token } = await backOff(() => authClient.refreshAccessToken(), {

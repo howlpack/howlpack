@@ -37,7 +37,8 @@ const EmbeddedUserFeed = lazy(() => import("./pages/embedded/user-feed"));
 
 const IFTTT = lazy(() => import("./pages/tutorials/ifttt"));
 const FAQ = lazy(() => import("./pages/notifications/faq"));
-const Twitter = lazy(() => import("./pages/twitter"));
+const TwitterIndex = lazy(() => import("./pages/twitter/index"));
+const TwitterConnect = lazy(() => import("./pages/twitter/connect"));
 const HowlRewardsKeplr = lazy(() =>
   import("./pages/howl-rewards").then((m) => ({ default: m.HowlRewardsKeplr }))
 );
@@ -158,7 +159,15 @@ const router = createBrowserRouter([
             index: true,
             element: (
               <Suspense fallback={<Loading />}>
-                <Twitter />
+                <TwitterIndex />
+              </Suspense>
+            ),
+          },
+          {
+            path: "connect",
+            element: (
+              <Suspense fallback={<Loading />}>
+                <TwitterConnect />
               </Suspense>
             ),
           },

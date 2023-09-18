@@ -1,13 +1,16 @@
 import { Button, Card, Divider, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { Fragment, useCallback, useMemo, useState } from "react";
-import { selectedDensState } from "../state/howlpack";
+import { selectedDensState } from "../../state/howlpack";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { keplrState, chainState } from "../state/cosmos";
-import { snackbarState } from "../state/snackbar";
+import { keplrState, chainState } from "../../state/cosmos";
+import { snackbarState } from "../../state/snackbar";
 import { StdSignature } from "@keplr-wallet/types";
+import ConnectedAccountBox, {
+  useConnectedTwitterAccount,
+} from "./components/connected-account";
 
-export default function Twitter() {
+export default function TwitterConnect() {
   const chain = useRecoilValue(chainState);
   const keplr = useRecoilValue(keplrState);
   const selectedDens = useRecoilValue(selectedDensState(keplr.account));
@@ -58,6 +61,9 @@ export default function Twitter() {
     return url;
   }, [signature, messageToSign]);
 
+  const { data: twitter_account, isSuccess } =
+    useConnectedTwitterAccount(selectedDens);
+
   return (
     <Fragment>
       <Card variant="outlined" sx={{ mb: 2, p: 4 }}>
@@ -73,14 +79,24 @@ export default function Twitter() {
           </Typography>
         </Box>
 
-        <Divider sx={{ mt: 1, mb: 4 }} />
+        <Divider sx={{ mt: 1, mb: 2 }} />
+
+        {isSuccess && twitter_account && (
+          <Fragment>
+            <ConnectedAccountBox
+              dens={selectedDens!}
+              twitter={twitter_account.username}
+            />
+          </Fragment>
+        )}
 
         <Box pb={2}>
           <Typography variant="body1">
-            With Howl's integration with Twitter, the process of sending your
-            Howl message as a tweet is completely automated. This means you
-            don't have to manually post your message on Twitter; Howl takes care
-            of it for you.
+            Connect your Howl messages to your Twitter account. Our integration
+            regularly monitors the Juno blockchain for your Howl messages and,
+            with your permission, automatically tweets them on your behalf. It's
+            the way to share your thoughts and updates with a wider audience on
+            Twitter without the need for manual posting. Here's how it works:
           </Typography>
         </Box>
         <Box py={2}>

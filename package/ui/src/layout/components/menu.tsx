@@ -42,7 +42,7 @@ export default function Menu() {
           <ListItemButton
             component={Link}
             to={"/twitter"}
-            selected={currentPathname === "/twitter"}
+            selected={getPathnameElements(1) === "/twitter"}
           >
             <ListItemIcon>
               <TwitterIcon />
