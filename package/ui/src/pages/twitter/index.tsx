@@ -9,14 +9,18 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import ConnectedAccountBox, {
   useConnectedTwitterAccount,
 } from "./components/connected-account";
+import Loading from "../../components/loading";
 
 export default function TwitterIndex() {
   const keplr = useRecoilValue(keplrState);
   const selectedDens = useRecoilValue(selectedDensState(keplr.account));
   const [, setSnackbar] = useRecoilState(snackbarState);
 
-  const { data: twitter_account, isSuccess } =
-    useConnectedTwitterAccount(selectedDens);
+  const {
+    data: twitter_account,
+    isSuccess,
+    isLoading,
+  } = useConnectedTwitterAccount(selectedDens);
 
   const navigate = useNavigate();
 
@@ -62,6 +66,12 @@ export default function TwitterIndex() {
         </Box>
 
         <Divider sx={{ mt: 1, mb: 2 }} />
+
+        {isLoading && (
+          <Fragment>
+            <Loading />
+          </Fragment>
+        )}
 
         {isSuccess && twitter_account && (
           <Fragment>
