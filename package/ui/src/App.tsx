@@ -19,13 +19,13 @@ import WithDENS from "./layout/with-dens";
 import Error from "./pages/error";
 
 const WebhookListNotifications = lazy(
-  () => import("./pages/notifications/webhook/list")
+  () => import("./pages/notifications/webhook/list"),
 );
 const WebhookCreateNotifications = lazy(
-  () => import("./pages/notifications/webhook/create")
+  () => import("./pages/notifications/webhook/create"),
 );
 const WebhookEditNotifications = lazy(
-  () => import("./pages/notifications/webhook/edit")
+  () => import("./pages/notifications/webhook/edit"),
 );
 
 const DensPath = lazy(() => import("./pages/dens-path/index"));
@@ -40,20 +40,20 @@ const FAQ = lazy(() => import("./pages/notifications/faq"));
 const TwitterIndex = lazy(() => import("./pages/twitter/index"));
 const TwitterConnect = lazy(() => import("./pages/twitter/connect"));
 const HowlRewardsKeplr = lazy(() =>
-  import("./pages/howl-rewards").then((m) => ({ default: m.HowlRewardsKeplr }))
+  import("./pages/howl-rewards").then((m) => ({ default: m.HowlRewardsKeplr })),
 );
 const HowlRewardsTokenId = lazy(() =>
   import("./pages/howl-rewards").then((m) => ({
     default: m.HowlRewardsTokenId,
-  }))
+  })),
 );
 const WinstonWolfe = lazy(() => import("./pages/bots/winston-wolfe"));
 const Roadmap = lazy(() => import("./pages/roadmap"));
 const EmailNotifications = lazy(
-  () => import("./pages/notifications/email/get")
+  () => import("./pages/notifications/email/get"),
 );
 const EmailCreateForm = lazy(
-  () => import("./pages/notifications/email/create")
+  () => import("./pages/notifications/email/create"),
 );
 const EmailEditForm = lazy(() => import("./pages/notifications/email/edit"));
 
@@ -199,11 +199,6 @@ const router = createBrowserRouter([
       },
       {
         path: "notifications",
-        element: (
-          <WithKeplr>
-            <WithDENS />
-          </WithKeplr>
-        ),
         errorElement: <Error />,
         children: [
           {
@@ -222,7 +217,9 @@ const router = createBrowserRouter([
             path: "email",
             element: (
               <Suspense fallback={<Loading />}>
-                <Outlet />
+                <WithKeplr>
+                  <WithDENS />
+                </WithKeplr>
               </Suspense>
             ),
             children: [
@@ -244,7 +241,9 @@ const router = createBrowserRouter([
             path: "webhooks",
             element: (
               <Suspense fallback={<Loading />}>
-                <Outlet />
+                <WithKeplr>
+                  <WithDENS />
+                </WithKeplr>
               </Suspense>
             ),
             children: [
