@@ -12,7 +12,7 @@
     "@aws-sdk/client-dynamodb": "3.454.0",
     "@aws-sdk/lib-dynamodb": "3.454.0",
     "@aws-sdk/util-dynamodb": "3.454.0",
-    "@cosmjs/encoding": "0.31.3",
+    "@cosmjs/encoding": "0.32.0",
     "@keplr-wallet/cosmos": "0.12.44",
     "@koa/cors": "4.0.0",
     "@koa/router": "12.0.1",
