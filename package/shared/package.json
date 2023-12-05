@@ -14,7 +14,7 @@
     "@aws-sdk/util-dynamodb": "3.465.0",
     "@cosmjs/cosmwasm-stargate": "0.31.3",
     "@cosmjs/crypto": "0.32.1",
-    "@cosmjs/proto-signing": "0.32.0",
+    "@cosmjs/proto-signing": "0.32.1",
     "exponential-backoff": "3.1.1",
     "ramda": "0.29.1",
     "twitter-api-sdk": "1.2.1"
