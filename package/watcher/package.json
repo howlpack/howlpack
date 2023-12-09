@@ -10,10 +10,10 @@
   "type": "module",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "3.468.0",
+    "@aws-sdk/client-dynamodb": "3.470.0",
     "@aws-sdk/client-sqs": "^3.276.0",
-    "@aws-sdk/lib-dynamodb": "3.468.0",
-    "@aws-sdk/util-dynamodb": "3.468.0",
+    "@aws-sdk/lib-dynamodb": "3.470.0",
+    "@aws-sdk/util-dynamodb": "3.470.0",
     "@cosmjs/cosmwasm-stargate": "0.31.3",
     "@cosmjs/encoding": "0.32.1",
     "@cosmjs/proto-signing": "0.32.1",
