@@ -9,9 +9,9 @@
   },
   "type": "module",
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "3.470.0",
-    "@aws-sdk/lib-dynamodb": "3.470.0",
-    "@aws-sdk/util-dynamodb": "3.470.0",
+    "@aws-sdk/client-dynamodb": "3.473.0",
+    "@aws-sdk/lib-dynamodb": "3.473.0",
+    "@aws-sdk/util-dynamodb": "3.473.0",
     "@cosmjs/encoding": "0.32.1",
     "@keplr-wallet/cosmos": "0.12.50",
     "@koa/cors": "4.0.0",
