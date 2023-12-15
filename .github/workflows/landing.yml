@@ -62,7 +62,7 @@ jobs:
         env:
           FRONTEND_URL: ${{ env.webapp_url }}
           CLIENT_ROLLBAR_ACCESS_TOKEN: ${{ secrets.CLIENT_ROLLBAR_ACCESS_TOKEN }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: landing-howlpack-${{ matrix.environment }}
           path: ./package/landing/dist

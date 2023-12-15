@@ -76,7 +76,7 @@ jobs:
           VITE_HOWL_POSTS: ${{ env.juno_howl_posts }}
           VITE_NOTIFICATIONS_CONTRACT: ${{ env.juno_notifications_contract }}
           VITE_CLIENT_ROLLBAR_ACCESS_TOKEN: ${{ secrets.CLIENT_ROLLBAR_ACCESS_TOKEN }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: website-howlpack-${{ matrix.environment }}
           path: ./package/ui/dist
