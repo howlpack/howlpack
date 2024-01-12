@@ -20,7 +20,7 @@ const environment = names.reduce(
     ...res,
     ...dotenv.config({ path }).parsed,
   }),
-  {}
+  {},
 );
 
 const lambdaPackageName = "howlpack--package-lambda";
@@ -87,7 +87,7 @@ const sqsLambdaPolicy = new aws.iam.Policy(lambdaPackageName + "-sqs", {
             Resource: howl_arn,
           },
         ],
-      })
+      }),
     ),
 });
 
@@ -126,7 +126,7 @@ const dynamoLambdaPolicy = new aws.iam.Policy(lambdaPackageName + "-dynamo", {
             Resource: arn,
           },
         ],
-      })
+      }),
     ),
 });
 
@@ -155,7 +155,7 @@ export const apiBackend = new aws.lambda.Function(
   {
     code: buildCodeAsset(
       require.resolve("@howlpack/howlpack-backend/serverless.js"),
-      true
+      true,
     ),
     handler: "index.handler",
     runtime: "nodejs18.x",
@@ -168,7 +168,7 @@ export const apiBackend = new aws.lambda.Function(
         FRONTEND_URL: webappUrl,
         BACKEND_URL: "https://" + backendConfig.require("API_DOMAIN"),
         ENCRYPTION_SECRET_KEY: howlpackConfig.getSecret(
-          "ENCRYPTION_SECRET_KEY"
+          "ENCRYPTION_SECRET_KEY",
         ),
         WINSTON_WOLFE_KEY: howlpackConfig.getSecret("WINSTON_WOLFE_KEY"),
         HOWL_POSTS_ADDR: junoConfig.get("howl_posts"),
@@ -184,7 +184,7 @@ export const apiBackend = new aws.lambda.Function(
         DYNAMO_TWITTER_TABLE: twitterTable.name,
       },
     },
-  }
+  },
 );
 
 export const howlProcessor = new aws.lambda.Function(
@@ -192,7 +192,7 @@ export const howlProcessor = new aws.lambda.Function(
   {
     code: buildCodeAsset(
       require.resolve("@howlpack/howlpack-processor/howl.js"),
-      true
+      true,
     ),
     handler: "index.handler",
     runtime: "nodejs18.x",
@@ -206,7 +206,7 @@ export const howlProcessor = new aws.lambda.Function(
         NOTIFICATIONS_CONTRACT: junoConfig.get("notifications_contract"),
         NOTIFICATION_QUEUE_URL: notification_queue.url,
         ENCRYPTION_SECRET_KEY: howlpackConfig.getSecret(
-          "ENCRYPTION_SECRET_KEY"
+          "ENCRYPTION_SECRET_KEY",
         ),
         DYNAMO_TWITTER_TABLE: twitterTable.name,
         BACKEND_URL: "https://" + backendConfig.require("API_DOMAIN"),
@@ -214,7 +214,7 @@ export const howlProcessor = new aws.lambda.Function(
         TWITTER_CLIENT_SECRET: twitterConfig.getSecret("client_secret"),
       },
     },
-  }
+  },
 );
 
 new aws.lambda.EventSourceMapping(lambdaPackageName + "-howl", {
@@ -227,7 +227,7 @@ export const notificationsProcessor = new aws.lambda.Function(
   {
     code: buildCodeAsset(
       require.resolve("@howlpack/howlpack-processor/notifications.js"),
-      true
+      true,
     ),
     handler: "index.handler",
     runtime: "nodejs18.x",
@@ -243,7 +243,7 @@ export const notificationsProcessor = new aws.lambda.Function(
         DYNAMO_TWITTER_TABLE: twitterTable.name,
       },
     },
-  }
+  },
 );
 
 new aws.lambda.EventSourceMapping(lambdaPackageName + "-notifications", {
@@ -251,14 +251,10 @@ new aws.lambda.EventSourceMapping(lambdaPackageName + "-notifications", {
   functionName: notificationsProcessor.arn,
 });
 
-const cronRule = new aws.cloudwatch.EventRule(lambdaPackageName + "-cron", {
-  scheduleExpression: "rate(1 minute)",
-});
-
 export const watcher = new aws.lambda.Function(lambdaPackageName + "-watcher", {
   code: buildCodeAsset(
     require.resolve("@howlpack/howlpack-watcher/index.js"),
-    true
+    true,
   ),
   handler: "index.handler",
   runtime: "nodejs18.x",
@@ -281,29 +277,33 @@ export const watcher = new aws.lambda.Function(lambdaPackageName + "-watcher", {
   },
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const cronTarget = new aws.cloudwatch.EventTarget(lambdaPackageName, {
-  arn: watcher.arn,
-  rule: cronRule.name,
-});
+// const cronRule = new aws.cloudwatch.EventRule(lambdaPackageName + "-cron", {
+//   scheduleExpression: "rate(1 minute)",
+// });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const cronPermission = new aws.lambda.Permission(
-  lambdaPackageName + "-watcher",
-  {
-    action: "lambda:InvokeFunction",
-    function: watcher.name,
-    principal: "events.amazonaws.com",
-    sourceArn: cronRule.arn,
-  }
-);
+// // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// const cronTarget = new aws.cloudwatch.EventTarget(lambdaPackageName, {
+//   arn: watcher.arn,
+//   rule: cronRule.name,
+// });
+
+// // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// const cronPermission = new aws.lambda.Permission(
+//   lambdaPackageName + "-watcher",
+//   {
+//     action: "lambda:InvokeFunction",
+//     function: watcher.name,
+//     principal: "events.amazonaws.com",
+//     sourceArn: cronRule.arn,
+//   },
+// );
 
 export const winstonWolfe = new aws.lambda.Function(
   lambdaPackageName + "-winstonWolfe",
   {
     code: buildCodeAsset(
       require.resolve("@howlpack/howlpack-bot/winston-wolfe.js"),
-      true
+      true,
     ),
     handler: "index.handler",
     runtime: "nodejs18.x",
@@ -321,32 +321,32 @@ export const winstonWolfe = new aws.lambda.Function(
         HOWL_MNEMONIC: howlpackConfig.getSecret("HOWL_MNEMONIC"),
       },
     },
-  }
+  },
 );
 
-const cronWinstonRule = new aws.cloudwatch.EventRule(
-  lambdaPackageName + "-cronWinston",
-  {
-    scheduleExpression: "rate(1 day)",
-  }
-);
+// const cronWinstonRule = new aws.cloudwatch.EventRule(
+//   lambdaPackageName + "-cronWinston",
+//   {
+//     scheduleExpression: "rate(1 day)",
+//   }
+// );
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const cronWinstonPermission = new aws.lambda.Permission(
-  lambdaPackageName + "-winston",
-  {
-    action: "lambda:InvokeFunction",
-    function: winstonWolfe.name,
-    principal: "events.amazonaws.com",
-    sourceArn: cronWinstonRule.arn,
-  }
-);
+// // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// const cronWinstonPermission = new aws.lambda.Permission(
+//   lambdaPackageName + "-winston",
+//   {
+//     action: "lambda:InvokeFunction",
+//     function: winstonWolfe.name,
+//     principal: "events.amazonaws.com",
+//     sourceArn: cronWinstonRule.arn,
+//   }
+// );
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const cronWinstonTarget = new aws.cloudwatch.EventTarget(
-  lambdaPackageName + "-winston",
-  {
-    arn: winstonWolfe.arn,
-    rule: cronWinstonRule.name,
-  }
-);
+// // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// const cronWinstonTarget = new aws.cloudwatch.EventTarget(
+//   lambdaPackageName + "-winston",
+//   {
+//     arn: winstonWolfe.arn,
+//     rule: cronWinstonRule.name,
+//   }
+// );
