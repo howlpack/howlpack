@@ -12,7 +12,7 @@
   "type": "module",
   "devDependencies": {
     "nodemon": "3.0.2",
-    "supertest": "6.3.3"
+    "supertest": "6.3.4"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "3.474.0",
